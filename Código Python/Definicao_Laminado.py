@@ -1,5 +1,6 @@
 from Constantes import *
 from Materiais import *
+import math
 
 import numpy as np
 
@@ -17,6 +18,9 @@ class Laminado_Class:
         
 
 def Obter_Matriz_K_Barra(Material, angulo):
+    
+    angulo = math.radians(angulo)
+    
     m = np.cos(angulo)
     n = np.sin(angulo)
     
@@ -82,7 +86,10 @@ Laminado_Lista = [
     {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 0},
     {"Material": MATERIAL_CFRP_HS, "Angulo_Graus": 30},
     {"Material": MATERIAL_GFRP, "Angulo_Graus": 45},
+    {"Material": MATERIAL_CFRP_HS, "Angulo_Graus": -90},
 ]
+
+# print(Obter_Matriz_K_Barra(MATERIAL_GFRP,75))
 
 Laminado = Obter_Laminado(Laminado_Lista)
 Laminado.Escrever_Propriadades()
