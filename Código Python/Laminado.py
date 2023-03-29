@@ -80,8 +80,8 @@ def Obter_Laminado(Laminado_Lista):
 Laminado_Lista = [
     {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 45},
     {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 0},
-    {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 0},
-    {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 45},
+    {"Material": MATERIAL_CFRP_HS, "Angulo_Graus": 30},
+    {"Material": MATERIAL_GFRP, "Angulo_Graus": 45},
 ]
 
 Laminado = Obter_Laminado(Laminado_Lista)
