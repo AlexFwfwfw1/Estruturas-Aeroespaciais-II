@@ -12,7 +12,7 @@ class Laminado_Class:
         self.Vyx = Vyx
         self.Mx = Mx
         self.My = My
-    def Print_Properties(self):
+    def Escrever_Propriadades(self):
         print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}")
         
 
@@ -85,5 +85,4 @@ Laminado_Lista = [
 ]
 
 Laminado = Obter_Laminado(Laminado_Lista)
-print(Laminado)
-Laminado.Print_Properties()
+Laminado.Escrever_Propriadades()
