@@ -1,7 +1,8 @@
 from Constantes import *
 
-Massas_De_Inercia = {"M1": {"Mass": 250, "Pos": 0.6}, "M2": {
-    "Mass": 250, "Pos": 2.2}, "M3": {"Mass": 150, "Pos": COMPRIMENTO_FUSELAGEM}}
+Massas_De_Inercia = {"M1": {"Mass": 250, "Pos": 0.6}, 
+                     "M2": {"Mass": 250, "Pos": 2.2}, 
+                     "M3": {"Mass": 150, "Pos": COMPRIMENTO_FUSELAGEM}}
 
 
 def Obter_Momento_Aerodinamico():
@@ -23,6 +24,13 @@ def Distancia_Ca_para_Raiz():
     return 0.5
 
 
+def Obter_Forca_De_Inercia():
+    ### F = n * w
+    Forca_Inercia_1 = 9.81*Fator_de_Carga
+    
+    return Forca_Inercia_1
+    
+
 def Obter_Carga_de_Balanceamento():
 
     M_Ca = Obter_Momento_Aerodinamico()
@@ -34,5 +42,12 @@ def Obter_Carga_de_Balanceamento():
     Fz_t = (M_Ca - Fator_de_Carga * Peso * x_w)/(Ca_para_Ponta)
     return Fz_t
 
+#####
+# Distribuiçao de Forças
 
-Obter_Carga_de_Balanceamento()
+# Distribuiçao de Momentos
+
+
+
+
+# Obter_Carga_de_Balanceamento()
