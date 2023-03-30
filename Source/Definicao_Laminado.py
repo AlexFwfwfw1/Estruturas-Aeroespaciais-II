@@ -77,7 +77,7 @@ def Obter_Laminado(Laminado_Lista):
         Matriz_K_Camada = Obter_Matriz_K_Barra(Camada["Material"], Camada["Angulo_Graus"])
         Matriz_A = Matriz_A + Matriz_K_Camada
         
-    Matriz_A = np.array( Matriz_K_Camada * Matriz_A)
+    Matriz_A = Espessura_Camada * np.array( Matriz_A)
     
     Matriz_A_Inversa = np.linalg.inv(Matriz_A)
         
@@ -86,10 +86,12 @@ def Obter_Laminado(Laminado_Lista):
     return Laminado_Objeto
     
 Laminado_Lista = [
-    {"Material": MATERIAL_CFRP_HS, "Angulo_Graus": 0}
+    {"Material": MATERIAL_CFRP_HS, "Angulo_Graus": 0},
+    {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 1},
+    {"Material": MATERIAL_GFRP, "Angulo_Graus": 2}
 ]
-
-print(Obter_Matriz_K_Barra(MATERIAL_CFRP_HS,0))
 
 Laminado = Obter_Laminado(Laminado_Lista)
 Laminado.Escrever_Propriadades()
+
+## JA DA RESULTADOS CORRETOS
