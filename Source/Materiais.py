@@ -10,3 +10,5 @@ class Material_Composito:
 MATERIAL_CFRP_HS = Material_Composito(rho = 1600, E1 = 140E9, E2 = 10E9, G12 = 5E9, v12 = 0.3 ) 
 MATERIAL_CFRP_HM = Material_Composito(rho = 1600, E1 = 180E9, E2 = 8E9 , G12 = 5E9, v12 = 0.3 ) 
 MATERIAL_GFRP =    Material_Composito(rho = 1900, E1 = 40E9 , E2 = 8E9 , G12 = 4E9, v12 = 0.25)
+
+print("Materiais Inicializados")
