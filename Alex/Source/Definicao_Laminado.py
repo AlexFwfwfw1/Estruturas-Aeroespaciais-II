@@ -5,7 +5,7 @@ import math
 import numpy as np
 
 class Laminado_Class:
-    def __init__(self, Ex, Ey, Gxy, Vxy, Vyx, Mx, My):
+    def __init__(self, Ex, Ey, Gxy, Vxy, Vyx, Mx, My, Espessura_Total):
         self.Ex = Ex
         self.Ey = Ey
         self.Gxy = Gxy
@@ -13,8 +13,9 @@ class Laminado_Class:
         self.Vyx = Vyx
         self.Mx = Mx
         self.My = My
+        self.Espessura = Espessura_Total
     def Escrever_Propriadades(self):
-        print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}")
+        print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}\nt_total : {self.t_total}")
         
 
 def Obter_Matriz_K_Barra(Material, angulo):
@@ -63,7 +64,7 @@ def Obter_Propriadades_Equivalentes_Lamindado(Matriz_A, Espessura_Total):
     Mx = -Matriz_A[0][2]/Matriz_A[0][0]
     My = - Matriz_A[1][2]/Matriz_A[1][1]
     
-    return Laminado_Class(Ex, Ey, Gxy, Vxy, Vyx, Mx, My)
+    return Laminado_Class(Ex, Ey, Gxy, Vxy, Vyx, Mx, My, Espessura_Total)
 
 def Obter_Laminado(Laminado_Lista):
 
@@ -85,13 +86,8 @@ def Obter_Laminado(Laminado_Lista):
     
     return Laminado_Objeto
     
-Laminado_Lista = [
-    {"Material": MATERIAL_CFRP_HS, "Angulo_Graus": 0},
-    {"Material": MATERIAL_CFRP_HM, "Angulo_Graus": 1},
-    {"Material": MATERIAL_GFRP, "Angulo_Graus": 2}
-]
-
-Laminado = Obter_Laminado(Laminado_Lista)
-Laminado.Escrever_Propriadades()
 
 ## JA DA RESULTADOS CORRETOS
+
+print("Laminados Incializados")
+

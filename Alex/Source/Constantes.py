@@ -15,3 +15,4 @@ DENSIDADE = 1.225
 
 ESPESSURA_CAMADA = 0.05E-3
 
+print("Constantes Incializadas")
