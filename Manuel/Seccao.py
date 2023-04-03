@@ -1,17 +1,17 @@
 from Constantes import *
 import math
 
-n_1 = 2
-n_2 = 3
-n_3 = 2
-b = 0.05
+def Momentos_Area(z, Laminado_1, Laminado_2, Laminado_3, b):
 
-Espessura_laminado1 = ESPESSURA_CAMADA * n_1
-Espessura_laminado2 = ESPESSURA_CAMADA * n_2
-Espessura_laminado3 = ESPESSURA_CAMADA * n_3
-Area_lamindado3 = Espessura_laminado3 * b
+    Espessura_laminado1 = Laminado_1.Espessura
+    Espessura_laminado2 = Laminado_2.Espessura
+    Espessura_laminado3 = Laminado_3.Espessura
+    Area_laminado3 = b * Laminado_3.Espessura
 
-def Momentos_Area(z, Laminado_1, Laminado_2, Lamindado_3):
+    Ez_1 = Laminado_1.Ex
+    Ez_2 = Laminado_2.Ex
+    Ez_3 = Laminado_3.Ex
+
     h_altura_i = 0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM)
     w_diametro_i = 1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM)
     h_altura_ii = h_altura_i - Espessura_laminado2/2
@@ -20,7 +20,7 @@ def Momentos_Area(z, Laminado_1, Laminado_2, Lamindado_3):
     A_semicircuf_i = math.pi/8*(w_diametro_i**2-(w_diametro_i - 2*Espessura_laminado1 )**2)
     A_horizontal_i = (w_diametro_i - 2*Espessura_laminado1)*Espessura_laminado2
     A_vertical_i = 2*(h_altura_i*Espessura_laminado1)
-    A_tensores_i = 4*Area_lamindado3
+    A_tensores_i = 4*Area_laminado3
     A_total_i = A_semicircuf_i + A_tensores_i + A_vertical_i + A_tensores_i
 
     y_semicircuf_i = w_diametro_ii/math.pi
@@ -64,10 +64,7 @@ def Momentos_Area(z, Laminado_1, Laminado_2, Lamindado_3):
     Ixy_tensores_i = 0
     Ixy_total_i = 0
 
-    return Ixx_total_i , Iyy_total_i , Ixy_total_i
-
-
-
+    return Ixx_total_i , Iyy_total_i , Ixy_total_i , y_CG , x_CG , h_altura_ii , w_diametro_ii
 
 
     
