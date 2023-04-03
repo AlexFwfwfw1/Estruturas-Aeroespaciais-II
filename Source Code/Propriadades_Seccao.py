@@ -63,14 +63,11 @@ def Momentos_Area(z, Laminado_1, Laminado_2, Laminado_3, b):
     Ixy_horizontal_i = 0
     Ixy_tensores_i = 0
     Ixy_total_i = 0
-
-    return Ixx_total_i , Iyy_total_i , Ixy_total_i , y_CG , x_CG , h_altura_ii , w_diametro_ii
-
-
     
+    Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
+    Centroide = (x_CG, y_CG)
+    Geometria_Media = (h_altura_ii , w_diametro_ii)
 
-
-
-
+    return Segundo_Momentos_De_Area , Centroide , Geometria_Media
 
 

@@ -15,6 +15,6 @@ Laminado_Lista_2 = [
 ]
 
 Laminado_Lista_3 = [
-    {"Material": Materiais.MATERIAL_CFRP_HF, "Angulo_Graus": 0},
-    {"Material": Materiais.MATERIAL_CFRP_HF, "Angulo_Graus": 0},
+    {"Material": Materiais.MATERIAL_CFRP_HM, "Angulo_Graus": 0},
+    {"Material": Materiais.MATERIAL_CFRP_HM, "Angulo_Graus": 0},
 ]

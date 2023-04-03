@@ -2,6 +2,7 @@ from Constantes import *
 import Propriadades
 import Definicao_Laminado
 import Carregamento
+import Afilamento
 
 import math
 import numpy as np
@@ -25,7 +26,9 @@ def Analise_Tensao_Direta(z, Laminado_1, Laminado_2, Laminado_3):
 
     Forca_X, Forca_Y = Carregamento.Obter_Forcas(z)
     Momento_X, Momento_Y = Carregamento.Obter_Momentos(z)
-
+    
+    Lista_Px,Lista_Py = Afilamento.Obter_Forcas_Afilamento(z) 
+    
     # Analise comeca no meio da barra horizontal.
 
     Constante_Em_X = (Momento_Y / I_yy)
