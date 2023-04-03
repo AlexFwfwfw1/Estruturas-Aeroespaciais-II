@@ -38,13 +38,35 @@ def Momentos_Area(z, Laminado_1, Laminado_2, Lamindado_3):
     distancia_y_semicircuf_i = y_semicircuf_i - y_CG
     distancia_y_horizontal_i = y_horizontal_i - y_CG
     distancia_y_vertical_i = y_vertical_i - y_CG
-    distancia_y_tensoresUp_i = -Espessura_laminado3/2 - y_CG
-    distancia_y_tensoresDown_i = abs(y_horizontal_i+Espessura_laminado2/2+Espessura_laminado3/2-y_CG)
+    distancia_y_tensoresUp_i = -y_CG
+    distancia_y_tensoresDown_i = y_horizontal_i - y_CG
 
     distancia_x_semicircuf_i = 0 
     distancia_x_horizontal_i = 0
     distancia_x_vertical_i = w_diametro_ii/2
-    distancia_x_tensores_i = w_diametro_ii/2-b/2
+    distancia_x_tensores_i = w_diametro_ii/2
+
+    Ixx_semicircuf_i = Ez_1 * math.pi/128 * (w_diametro_i**4 - (w_diametro_i - Espessura_laminado1)**4) - A_semicircuf_i * y_semicircuf_i**2 + A_semicircuf_i * (distancia_y_semicircuf_i)**2
+    Ixx_vertical_i = Ez_1 * 2 * ((Espessura_laminado1 * h_altura_i**3)/12 + Espessura_laminado1 * h_altura_i * distancia_x_vertical_i**2)
+    Ixx_horizontal_i = Ez_2 * (w_diametro_ii - Espessura_laminado1) * Espessura_laminado2 * distancia_y_horizontal_i**2
+    Ixx_tensores_i = Ez_3 * 2 * (Espessura_laminado3 * b) * (distancia_y_tensoresUp_i**2 + distancia_y_tensoresDown_i**2)
+    Ixx_total_i = Ixx_semicircuf_i + Ixx_vertical_i + Ixx_horizontal_i + Ixx_tensores_i
+
+    Iyy_semicircuf_i = Ez_1 * math.pi/128 * (w_diametro_i**4 - (w_diametro_i - Espessura_laminado1)**4)
+    Iyy_vertical_i = Ez_1 * 2 * h_altura_i * Espessura_laminado1 * distancia_x_vertical_i
+    Iyy_horizontal_i = Ez_2 * (Espessura_laminado2 * (w_diametro_ii - Espessura_laminado1)**3) /12
+    Iyy_tensores_i = Ez_3 * 4 * (Espessura_laminado3 * b * distancia_x_tensores_i**2)
+    Iyy_total_i = Iyy_semicircuf_i + Iyy_vertical_i + Iyy_horizontal_i + Iyy_tensores_i
+
+    Ixy_semicircuf_i = 0
+    Ixy_vertical_i = 0
+    Ixy_horizontal_i = 0
+    Ixy_tensores_i = 0
+    Ixy_total_i = 0
+
+    
+
+
 
 
 
