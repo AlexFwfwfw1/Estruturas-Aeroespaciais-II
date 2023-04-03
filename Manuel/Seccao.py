@@ -64,8 +64,7 @@ def Momentos_Area(z, Laminado_1, Laminado_2, Lamindado_3):
     Ixy_tensores_i = 0
     Ixy_total_i = 0
 
-    
-
+    return Ixx_total_i , Iyy_total_i , Ixy_total_i
 
 
 
