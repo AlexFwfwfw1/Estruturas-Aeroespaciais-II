@@ -1,16 +1,23 @@
 from Constantes import *
 import math
 
-def Momentos_Area(z, Laminado_1, Laminado_2, Laminado_3, b):
+class Propriadades_Seccao:
+    def __init__(self,Segundo_Momentos_De_Area , Centroide , Geometria_Media ):
+        self.Segundo_Momentos_De_Area = Segundo_Momentos_De_Area
+        self.Centroide = Centroide 
+        self.Geometria_Media = Geometria_Media
 
-    Espessura_laminado1 = Laminado_1.Espessura
-    Espessura_laminado2 = Laminado_2.Espessura
-    Espessura_laminado3 = Laminado_3.Espessura
-    Area_laminado3 = b * Laminado_3.Espessura
 
-    Ez_1 = Laminado_1.Ex
-    Ez_2 = Laminado_2.Ex
-    Ez_3 = Laminado_3.Ex
+def Definir_Propriadades(z,Laminados, b):
+
+    Espessura_laminado1 = Laminados[0].Espessura
+    Espessura_laminado2 = Laminados[1].Espessura
+    Espessura_laminado3 = Laminados[2].Espessura
+    Area_laminado3 = b * Laminados[2].Espessura
+
+    Ez_1 = Laminados[0].Ex
+    Ez_2 = Laminados[1].Ex
+    Ez_3 = Laminados[2].Ex
 
     h_altura_i = 0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM)
     w_diametro_i = 1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM)
@@ -58,16 +65,20 @@ def Momentos_Area(z, Laminado_1, Laminado_2, Laminado_3, b):
     Iyy_tensores_i = Ez_3 * 4 * (Espessura_laminado3 * b * distancia_x_tensores_i**2)
     Iyy_total_i = Iyy_semicircuf_i + Iyy_vertical_i + Iyy_horizontal_i + Iyy_tensores_i
 
-    Ixy_semicircuf_i = 0
-    Ixy_vertical_i = 0
-    Ixy_horizontal_i = 0
-    Ixy_tensores_i = 0
+    # Ixy_semicircuf_i = 0
+    # Ixy_vertical_i = 0
+    # Ixy_horizontal_i = 0
+    # Ixy_tensores_i = 0
     Ixy_total_i = 0
     
     Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
     Centroide = (x_CG, y_CG)
     Geometria_Media = (h_altura_ii , w_diametro_ii)
+    
+    Seccao = Propriadades_Seccao(Segundo_Momentos_De_Area , Centroide , Geometria_Media)
 
     return Segundo_Momentos_De_Area , Centroide , Geometria_Media
+
+
 
 

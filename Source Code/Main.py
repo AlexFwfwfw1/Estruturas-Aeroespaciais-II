@@ -1,21 +1,40 @@
 from Constantes import *
 import Definicao_Laminado
-
-import qs_0
+import Propriadades_Seccao
+import Carregamento
+import Analise_Estrutural
 
 import Condicoes_Iniciais
 
+import numpy as np
+from alive_progress import alive_bar
+
+NUMERO_DE_SECCOES = 100
+            
 def Main():
+
+    Espessura_Tensor= 0.001
     
     # Obter Laminado
-    
-    Seccao_Z = 0
-    b = 0.001
-    
     Laminado_1 = Definicao_Laminado.Obter_Laminado(Condicoes_Iniciais.Laminado_Lista_1)
     Laminado_2 = Definicao_Laminado.Obter_Laminado(Condicoes_Iniciais.Laminado_Lista_2)
     Laminado_3 = Definicao_Laminado.Obter_Laminado(Condicoes_Iniciais.Laminado_Lista_3)
-    
-    Q = qs_0.qs_0(Seccao_Z, Laminado_1, Laminado_2, Laminado_3, b)
+
+    Laminados = (Laminado_1,Laminado_2,Laminado_3)
+    with alive_bar(total=NUMERO_DE_SECCOES) as bar:
+        for Seccao_Z in np.linspace(0,COMPRIMENTO_FUSELAGEM,NUMERO_DE_SECCOES):
+            # Propriadades da Seccao
+            Segundo_Momentos_De_Area, Centroide, Geometria_Media = Propriadades_Seccao.Definir_Propriadades(
+                Seccao_Z, Laminados, Espessura_Tensor)
+            
+            # Carregamento
+            Forcas, Momentos = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z)
+            
+            #Tensoes Diretas
+            Tensoes_Diretasd = Analise_Estrutural.Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos, Laminados)
+            
+            #Tensoes De Corte
+            
+            bar()
     
 Main()

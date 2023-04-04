@@ -10,7 +10,7 @@ Forca_2 = MASSA_INERCIA_2*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 Forca_3 = MASSA_INERCIA_3*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 
 
-def Obter_Forcas(z):
+def Obter_Forcas_e_Momentos(z):
         
     #Edge Case
     if 0 > z or z > COMPRIMENTO_FUSELAGEM:  
@@ -38,4 +38,4 @@ def Obter_Forcas(z):
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
         MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(5.18-z)
 
-    return ForcaX,ForcaY,MomentoX,MomentoY
+    return (ForcaX,ForcaY),(MomentoX,MomentoY)
