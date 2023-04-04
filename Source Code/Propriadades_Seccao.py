@@ -71,13 +71,25 @@ def Definir_Propriadades(z,Laminados, b):
     # Ixy_tensores_i = 0
     Ixy_total_i = 0
     
+    x_1 = distancia_x_vertical_i
+    x_2 = x_1
+    x_3 = - x_1
+    x_4 = x_3
+    y_1 = - y_CG
+    y_2 = distancia_y_horizontal_i
+    y_3 = y_2
+    y_4 = y_1
+
+    
     Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
     Centroide = (x_CG, y_CG)
     Geometria_Media = (h_altura_ii , w_diametro_ii)
+    Coordenadas_X = (x_1 , x_2 , x_3 , x_4)
+    Coordenadas_Y = (y_1 , y_2 , y_3 , y_4)
     
     Seccao = Propriadades_Seccao(Segundo_Momentos_De_Area , Centroide , Geometria_Media)
 
-    return Segundo_Momentos_De_Area , Centroide , Geometria_Media
+    return Segundo_Momentos_De_Area , Centroide , Geometria_Media, Coordenadas_X, Coordenadas_Y
 
 
 

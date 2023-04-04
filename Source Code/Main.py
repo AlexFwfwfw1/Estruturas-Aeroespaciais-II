@@ -24,15 +24,18 @@ def Main():
     with alive_bar(total=NUMERO_DE_SECCOES) as bar:
         for Seccao_Z in np.linspace(0,COMPRIMENTO_FUSELAGEM,NUMERO_DE_SECCOES):
             # Propriadades da Seccao
-            Segundo_Momentos_De_Area, Centroide, Geometria_Media = Propriadades_Seccao.Definir_Propriadades(
+            Segundo_Momentos_De_Area, Centroide, Geometria_Media, Coordenadas_X, Coordenadas_Y = Propriadades_Seccao.Definir_Propriadades(
                 Seccao_Z, Laminados, Espessura_Tensor)
             
             # Carregamento
             Forcas, Momentos = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z)
+
+            #Forcas de Corte dado o Afilamento
+            #Forcas
             
             #Tensoes Diretas
-            Tensoes_Diretasd = Analise_Estrutural.Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos, Laminados)
-            
+            Tensoes_Diretas = Analise_Estrutural.Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos, Laminados)
+            print(Tensoes_Diretas)
             #Tensoes De Corte
             
             bar()
