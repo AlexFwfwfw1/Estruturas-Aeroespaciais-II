@@ -12,14 +12,12 @@ def qs_0(z, Laminado_1, Laminado_2, Laminado_3, b):
     #valores a retirar do alex
     A_i = 12
     B_i = 12
-    q1 = 1
-    q2 = 2
-    q3 = 3
-    q4 = 4
+    q1, q2, q3, q4 = 1, 2, 3 , 4
 
     #valores a retirar do filipe
     Px_1, Px_2, Px_3, Px_4 = 12, 12, 12, 12
     Py_1, Py_2, Py_3, Py_4 = 12, 12, 12, 12
+    Sx = 76
     
 
     Segundo_Momentos_De_Area , Centroide , Geometria_Media , Coordenadas_x , Coordenadas_y = Propriadades_Seccao.Momentos_Area(
@@ -45,8 +43,11 @@ def qs_0(z, Laminado_1, Laminado_2, Laminado_3, b):
     #integração sentido horário
     I_total = - h_linha * I_C3 - w_linha * I_34 - w_linha * I_41 - w_linha * I_12 - h_linha * I_2C
 
-    qs_0_i = () / (2 * A_total_i)
+    PxBraço_1, PxBraço_2, PxBraço_3, PxBraço_4 = Px_1 * 0, Px_2 * h_linha , Px_3 * h_linha  , Px_4 * 0
+    PyBraço_1, PyBraço_2, PyBraço_3, PyBraço_4 = Py_1 * w_linha, Py_2 * w_linha , Py_3 * (- w_linha)  , Py_4 * (- w_linha)
+    Soma_PxB = PxBraço_1 + PxBraço_2 + PxBraço_3 + PxBraço_4
+    Soma_PyB = PyBraço_1 + PyBraço_2 + PyBraço_3 + PyBraço_4
 
+    qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_total_i)
 
-
-    print(Segundo_Momentos_De_Area)
+    return qs_0_i
