@@ -79,8 +79,10 @@ def Definir_Propriadades(z,Laminados, b):
     y_2 = distancia_y_horizontal_i
     y_3 = y_2
     y_4 = y_1
-
     
+    Elasticidades = (Ez_1,Ez_2,Ez_3)
+    Espessuras = (Espessura_laminado1,Espessura_laminado2,Area_laminado3)
+
     Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
     Centroide = (x_CG, y_CG)
     Geometria_Media = (h_altura_ii , w_diametro_ii)
@@ -89,7 +91,7 @@ def Definir_Propriadades(z,Laminados, b):
     
     Seccao = Propriadades_Seccao(Segundo_Momentos_De_Area , Centroide , Geometria_Media)
 
-    return Segundo_Momentos_De_Area , Centroide , Geometria_Media, Coordenadas_X, Coordenadas_Y
+    return Segundo_Momentos_De_Area , Centroide , Geometria_Media, Coordenadas_X, Coordenadas_Y, Espessuras,Elasticidades
 
 
 
