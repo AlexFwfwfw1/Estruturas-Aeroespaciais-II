@@ -17,6 +17,11 @@ def qs_0(z, Laminado_1, Laminado_2, Laminado_3, b):
     q3 = 3
     q4 = 4
 
+    #valores a retirar do filipe
+    Px_1, Px_2, Px_3, Px_4 = 12, 12, 12, 12
+    Py_1, Py_2, Py_3, Py_4 = 12, 12, 12, 12
+    
+
     Segundo_Momentos_De_Area , Centroide , Geometria_Media , Coordenadas_x , Coordenadas_y = Propriadades_Seccao.Momentos_Area(
         z, Laminado_1, Laminado_2, Laminado_3, b)
 
@@ -25,14 +30,8 @@ def qs_0(z, Laminado_1, Laminado_2, Laminado_3, b):
     Espessura_laminado3 = Laminado_3.Espessura
     Area_laminado3 = b * Laminado_3.Espessura
 
-    x_1 = Coordenadas_x[0]
-    x_2 = Coordenadas_x[1]
-    x_3 = Coordenadas_x[2]
-    x_4 = Coordenadas_x[3]
-    y_1 = Coordenadas_x[0]
-    y_2 = Coordenadas_x[1]
-    y_3 = Coordenadas_x[2]
-    y_4 = Coordenadas_x[3]
+    x_1, x_2, x_3, x_4 = Coordenadas_x
+    y_1, y_2, y_3, y_4 = Coordenadas_y
     w_linha = Geometria_Media[1]/2
     h_linha = Geometria_Media[0]
     A_total_i = Geometria_Media[2]
