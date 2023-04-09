@@ -18,3 +18,6 @@ Laminado_Lista_3 = [
     {"Material": Materiais.MATERIAL_CFRP_HM, "Angulo_Graus": 0},
     {"Material": Materiais.MATERIAL_CFRP_HM, "Angulo_Graus": 0},
 ]
+
+
+Espessura_Tensor = 0
