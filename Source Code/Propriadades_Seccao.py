@@ -85,7 +85,7 @@ def Definir_Propriadades(z,Laminados, b):
 
     Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
     Centroide = (x_CG, y_CG)
-    Geometria_Media = (h_altura_ii , w_diametro_ii/2)
+    Geometria_Media = (h_altura_ii , w_diametro_ii, A_total_i)
     Coordenadas_X = (x_1 , x_2 , x_3 , x_4)
     Coordenadas_Y = (y_1 , y_2 , y_3 , y_4)
     
