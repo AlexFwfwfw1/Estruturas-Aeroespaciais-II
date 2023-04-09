@@ -9,12 +9,15 @@ NUMERO_DE_PONTOS = 15
 
 def Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos, Elasticidades):
 
-    Altura_Media, Raio_Medio = Geometria_Media
+    Altura_Media, Diametro_Medio = Geometria_Media
     Centroide_X, Centroide_Y = Centroide
     I_xx, I_yy, Ixy_ = Segundo_Momentos_De_Area
     Ex_1,Ex_2,Ex_3 = Elasticidades
     
     Momento_X, Momento_Y = Momentos
+    
+    
+    Raio_Medio = Diametro_Medio/2
     
     # Analise comeca no meio da barra horizontal.
 
@@ -57,11 +60,13 @@ def Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos
     return Tensoes_Diretas
 
 def Tensao_de_Corte(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_Afilamento, Elasticidades, Espessuras, Coordenadas_Y, Coordenadas_X):
-    Altura_Media, Raio_Medio = Geometria_Media
+    Altura_Media, Diametro_Medio = Geometria_Media
     Centroide_X, Centroide_Y = Centroide
     I_xx, I_yy, Ixy = Segundo_Momentos_De_Area
     Ex_1,Ex_2,Ex_3 = Elasticidades
     T1,T2,A3 = Espessuras
+    
+    Raio_Medio = Diametro_Medio/2
     
     X1,X2,X3,X4 = Coordenadas_X
     Y1,Y2,Y3,Y4 = Coordenadas_Y
