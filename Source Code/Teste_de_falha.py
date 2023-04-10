@@ -1,5 +1,6 @@
 from Constantes import *
 
+
 #falta importar o ficheiro das tensões nos eixos do laminado
 
 # Módulos de Resistência   CFRP-HS | CFRP-HM | GFRP

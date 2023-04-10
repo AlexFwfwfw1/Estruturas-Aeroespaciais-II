@@ -78,7 +78,7 @@ def Obter_Laminado(Laminado_Lista):
         Matriz_K_Camada = Obter_Matriz_K_Barra(Camada["Material"], Camada["Angulo_Graus"])
         Matriz_A = Matriz_A + Matriz_K_Camada
         
-    Matriz_A = Espessura_Camada * np.array( Matriz_A)
+    Matriz_A = Espessura_Camada * np.array(Matriz_A)
     
     Matriz_A_Inversa = np.linalg.inv(Matriz_A)
         
@@ -87,7 +87,4 @@ def Obter_Laminado(Laminado_Lista):
     return Laminado_Objeto
     
 
-## JA DA RESULTADOS CORRETOS
-
-print("Laminados Incializados")
 

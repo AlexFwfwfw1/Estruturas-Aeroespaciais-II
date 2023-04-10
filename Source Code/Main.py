@@ -9,11 +9,11 @@ import Condicoes_Iniciais
 import numpy as np
 from alive_progress import alive_bar
 
-NUMERO_DE_SECCOES = 100
+NUMERO_DE_SECCOES = 20
             
 def Main():
 
-    Espessura_Tensor= 0
+    Espessura_Tensor = Condicoes_Iniciais.Espessura_Tensor
     
     # Obter Laminado
     Laminado_1 = Definicao_Laminado.Obter_Laminado(Condicoes_Iniciais.Laminado_Lista_1)
