@@ -9,6 +9,8 @@ import Condicoes_Iniciais
 import numpy as np
 from alive_progress import alive_bar
 
+from timeit import default_timer as timer
+
 NUMERO_DE_SECCOES = 20
             
 def Main():
@@ -40,7 +42,13 @@ def Main():
             
             #Tensoes De Corte
             Tensoes_Corte = Analise_Estrutural.Tensao_de_Corte(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_SW, Elasticidades, Espessuras, Coordenadas_Y, Coordenadas_X)
+            
             bar()
+    
     print(f"{NUMERO_DE_SECCOES} seccoes analisadas." )
     
-Main()
+if __name__ == "__main__":
+    start = timer()
+    Main()
+    end = timer()
+    print(end-start)

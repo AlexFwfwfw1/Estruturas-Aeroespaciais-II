@@ -16,9 +16,9 @@ S                   =        70,       120,      50
 def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, i):
     
     if Tensao_1 > 0:
-        Esforco_1 = "Tração longitudinal"
-        if Tensao_1/Xt[i] >= 1:
-            falho_1 = 1
+        Esforco_1 = "Tração longitudinal"  #Pode ser retirado por razoes de performace. Deixa-se em Comentario
+        if Tensao_1/Xt[i] >= 1:            # Em vez de dividir que pode ser caro computacionalmente, (nao é muito mas pronto)
+            falho_1 = 1                    # Pode se simplesmente comparar se um é maior que o outro.
         else : falho_1 = 0
     else: 
         Esforco_1 = "Compressão longitudinal"
@@ -32,7 +32,7 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, i):
             falho_2 = 1
         else : falho_2 = 0
     else: 
-        Esforco_2 = "Compressão transversal"
+        Esforco_2 = "Compressão transversal" 
         if Tensao_2/Yc[i] <= -1:
             falho_2 = 1
         else : falho_2 = 0

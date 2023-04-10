@@ -1,4 +1,5 @@
 from Constantes import *
+import Teste_de_falha
 
 import math
 import numpy as np
@@ -15,7 +16,6 @@ def Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos
     Ex_1,Ex_2,Ex_3 = Elasticidades
     
     Momento_X, Momento_Y = Momentos
-    
     
     Raio_Medio = Diametro_Medio/2
     
@@ -128,5 +128,5 @@ def Tensao_de_Corte(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas
         Tensoes_Corte.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_de_Corte})
     QbC = Fluxo_Corte
     
-    print(Qb1, Qb2, Qb3, Qb4, QbC)    
+    #print(Qb1, Qb2, Qb3, Qb4, QbC)    
     return Fluxos_Corte
