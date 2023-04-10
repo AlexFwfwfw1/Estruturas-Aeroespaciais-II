@@ -33,6 +33,8 @@ def qs_0(z, Laminado_1, Laminado_2, Laminado_3, b):
     w_linha = Geometria_Media[1]/2
     h_linha = Geometria_Media[0]
     A_total_i = Geometria_Media[2]
+    
+    #Analise é feita no centro do semicirculo.
 
     I_C3 = A_i/2 *  y_2 * w_linha**2 - B_i /6* w_linha**3
     I_34 = A_i * (Espessura_laminado1 * y_3 * h_linha**2 /2 + Espessura_laminado1 * h_linha**3 /6 + Area_laminado3 * y_3 * h_linha) + B_i * (Espessura_laminado1 * x_3 * h_linha**2 /2 + Area_laminado3 * x_3 * h_linha) + q3 * h_linha 
@@ -48,6 +50,6 @@ def qs_0(z, Laminado_1, Laminado_2, Laminado_3, b):
     Soma_PxB = PxBraço_1 + PxBraço_2 + PxBraço_3 + PxBraço_4
     Soma_PyB = PyBraço_1 + PyBraço_2 + PyBraço_3 + PyBraço_4
 
-    qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_total_i)
+    qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_total_i) #Area Errada, esta area nao é a area da seccao mas é a area interior á seccao media. Nao alterei manel. Altera Tu.
 
     return qs_0_i
