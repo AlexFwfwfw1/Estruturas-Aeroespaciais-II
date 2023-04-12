@@ -8,58 +8,7 @@ NUMERO_DE_PONTOS = 15
 
 # TEM DE SER UM FUNCAO AO CENTROIDE
 
-def Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos, Elasticidades):
-
-    Altura_Media, Diametro_Medio, Area_Total = Geometria_Media
-    Centroide_X, Centroide_Y = Centroide
-    I_xx, I_yy, Ixy_ = Segundo_Momentos_De_Area
-    Ex_1,Ex_2,Ex_3 = Elasticidades
-    
-    Momento_X, Momento_Y = Momentos
-    
-    Raio_Medio = Diametro_Medio/2
-    
-    # Analise comeca no meio da barra horizontal.
-
-    Constante_A = (Momento_Y / I_yy)
-    Constante_B = (Momento_X / I_xx)
-
-    Tensoes_Diretas = []
-    
-    #VIGA HORIZONTAL, MEIO ATE PONTA
-    for Ponto_S in np.linspace(0, Raio_Medio , NUMERO_DE_PONTOS):
-        Coordenada_X = Ponto_S - Centroide_X
-        Coordenada_Y = -Altura_Media - Centroide_Y
-        Tensao_Direta = Ex_2 * (Constante_A*Coordenada_X + Constante_B*Coordenada_Y)
-        Tensoes_Diretas.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_Direta})
-    #VIGA VERTICAL ESQUERDA    
-    for Ponto_S in np.linspace(0, Altura_Media , NUMERO_DE_PONTOS):
-        Coordenada_X = -Raio_Medio - Centroide_X
-        Coordenada_Y = - Altura_Media + Ponto_S - Centroide_Y
-        Tensao_Direta = Ex_1 * (Constante_A*Coordenada_X + Constante_B*Coordenada_Y)
-        Tensoes_Diretas.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_Direta})
-    #VIGA SEMICIRCULO 
-    for Ponto_S in np.linspace(0, math.pi , NUMERO_DE_PONTOS):
-        Coordenada_X = -Raio_Medio*math.cos(Ponto_S) - Centroide_X
-        Coordenada_Y = -Raio_Medio*math.sin(Ponto_S) - Centroide_Y
-        Tensao_Direta = Ex_1 * (Constante_A*Coordenada_X + Constante_B*Coordenada_Y)
-        Tensoes_Diretas.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_Direta})
-    #VIGA VERTICAL DIREITA
-    for Ponto_S in np.linspace(0, Altura_Media , NUMERO_DE_PONTOS):
-        Coordenada_X = Raio_Medio - Centroide_X
-        Coordenada_Y = - Ponto_S - Centroide_Y
-        Tensao_Direta = Ex_1 * (Constante_A*Coordenada_X + Constante_B*Coordenada_Y)
-        Tensoes_Diretas.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_Direta})
-    #VIGA HORIZONTAL DA PONTA ATE O MEIO
-    for Ponto_S in np.linspace(0, Raio_Medio , NUMERO_DE_PONTOS):
-        Coordenada_X = Ponto_S - Raio_Medio - Centroide_X
-        Coordenada_Y = - Altura_Media - Centroide_Y
-        Tensao_Direta = Ex_2 * (Constante_A*Coordenada_X + Constante_B*Coordenada_Y)
-        Tensoes_Diretas.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_Direta})
-        
-    return Tensoes_Diretas
-
-def Tensao_de_Corte(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_Afilamento, Elasticidades, Espessuras, Coordenadas_Y, Coordenadas_X):
+def Analise_Total(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_Afilamento, Momentos, Elasticidades, Espessuras, Coordenadas_Y, Coordenadas_X):
     Altura_Media, Diametro_Medio, Area_Total = Geometria_Media
     Centroide_X, Centroide_Y = Centroide
     I_xx, I_yy, Ixy = Segundo_Momentos_De_Area
@@ -72,61 +21,119 @@ def Tensao_de_Corte(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas
     Y1,Y2,Y3,Y4 = Coordenadas_Y
 
     Forca_SX_W, Forca_SY_W = Forcas_Afilamento
+    Momento_X, Momento_Y = Momentos
     
-    Constante_A = -(Forca_SY_W / I_yy)
-    Constante_B = -(Forca_SX_W / I_xx)
+    Constante_A_Direta = (Momento_Y / I_yy)
+    Constante_B_Direta = (Momento_X / I_xx)
     
-    Fluxos_Corte = []
-    Tensoes_Corte = []
+    Constante_A_Corte = -(Forca_SY_W / I_yy)
+    Constante_B_Corte = -(Forca_SX_W / I_xx)
+
+    Qb3 = Ex_2 * (Constante_A_Corte*Raio_Medio*Y2*T2 + Constante_B_Corte*T2*(-0.5*Raio_Medio**2))
+    Qb4 = Ex_1 * (Constante_A_Corte*(Altura_Media*Y3*T1 + T1*0.5*Altura_Media**2 + A3*Y3) + Constante_B_Corte*(T1*X3*Altura_Media+A3*X3)) + Qb3
+    Qb1 = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*math.pi + T1*(Raio_Medio**2)*(1-math.cos(math.pi)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(math.pi)+A3*X4)) + Qb4
+    Qb2 = Ex_1 * (Constante_A_Corte*(T1*(Y1*Altura_Media - 0.5*Altura_Media**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Altura_Media + A3*X1)) + Qb1
+    QbC = Ex_2 * (Constante_A_Corte*(T2*Y2*Raio_Medio + A3*Y2) + Constante_B_Corte*(T2*(X2*Raio_Medio - 0.5*Raio_Medio**2) + A3*X2)) + Qb2
+    
+    # #valores a retirar do filipe
+    # Px_1, Px_2, Px_3, Px_4 = 12, 12, 12, 12
+    # Py_1, Py_2, Py_3, Py_4 = 12, 12, 12, 12
+    # Sx = 76
+    
+    # A_Varrida = Altura_Media * Raio_Medio + math.pi/2* Raio_Medio**2
+
+    # I_C3 = Constante_A_Corte/2 *  Y2 * Raio_Medio**2 - Constante_B_Corte /6* Raio_Medio**3
+    # I_34 = Constante_A_Corte * (T1 * Y3 * Altura_Media**2 /2 + T1 * Altura_Media**3 /6 + A3 * Y3 * Altura_Media) + Constante_B_Corte * (T1 * X3 * Altura_Media**2 /2 + A3 * X3 * Altura_Media) + Qb3 * Altura_Media 
+    # I_41 = Constante_A_Corte * (T1 * Raio_Medio**2 * Y1 * math.pi**2 /2 + T1 * Raio_Medio**3 * math.pi + A3 * Y4 * Raio_Medio * math.pi) + Constante_B_Corte * (-2* T1 * Raio_Medio**3 + A3 * X4 * Raio_Medio * math.pi) + Qb4 * math.pi * Raio_Medio
+    # I_12 = Constante_A_Corte * (T1 * Y1 * Altura_Media**2 /2 - T1 * Altura_Media**3 /6 + Y1 * A3 * Altura_Media) + Constante_B_Corte * (T1 * X1 * Altura_Media**2 /2 + Constante_B_Corte * X1 * Altura_Media) + Qb1 * Altura_Media
+    # I_2C = Constante_A_Corte * (T2 * Y2 * Raio_Medio**2 /2 + A3 * Y2 * Raio_Medio) + Constante_B_Corte * (T2 * X2 * Raio_Medio**2 /2 - T2 * Raio_Medio**3 /6 + A3 * X2 * Raio_Medio) + Qb2 * Raio_Medio
+
+    # #integração sentido horário
+    # I_total = - Altura_Media * I_C3 - Raio_Medio * I_34 - Raio_Medio * I_41 - Raio_Medio * I_12 - Altura_Media * I_2C
+
+    # PxBraço_1, PxBraço_2, PxBraço_3, PxBraço_4 = Px_1 * 0, Px_2 * Altura_Media , Px_3 * Altura_Media  , Px_4 * 0
+    # PyBraço_1, PyBraço_2, PyBraço_3, PyBraço_4 = Py_1 * Raio_Medio, Py_2 * Raio_Medio , Py_3 * (- Raio_Medio)  , Py_4 * (- Raio_Medio)
+    # Soma_PxB = PxBraço_1 + PxBraço_2 + PxBraço_3 + PxBraço_4
+    # Soma_PyB = PyBraço_1 + PyBraço_2 + PyBraço_3 + PyBraço_4
+
+    # qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_Varrida) #Area Errada, esta area nao é a area da seccao mas é a area interior á seccao media. Nao alterei manel. Altera Tu.
+
     
     Qb1, Qb2, Qb3, Qb4, QbC = 0,0,0,0,0
     
     #VIGA HORIZONTAL, MEIO ATE PONTA
     for Ponto_S in np.linspace(0, Raio_Medio , NUMERO_DE_PONTOS):
-        Fluxo_Corte = Ex_2 * (Constante_A*Ponto_S*Y2*T2 + Constante_B*T2*(-0.5*Ponto_S**2))
-        Tensao_de_Corte = Fluxo_Corte/T2
         Coordenada_X = Ponto_S - Centroide_X
         Coordenada_Y = -Altura_Media - Centroide_Y
-        Fluxos_Corte.append({"Coords" : (1,Ponto_S), "Tensao" : Fluxo_Corte})
-        Tensoes_Corte.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_de_Corte})
+        Tensao_Direta = Ex_2 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
+        Fluxo_Corte = Ex_2 * (Constante_A_Corte*Ponto_S*Y2*T2 + Constante_B_Corte*T2*(-0.5*Ponto_S**2))
+        
+        Tensao_de_Corte = Fluxo_Corte/T2
+        
+        
+        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
+        # if FS_Falha > 1:
+            # return FS_Falha
+        
     Qb3 = Fluxo_Corte
 
     #VIGA VERTICAL ESQUERDA    
     for Ponto_S in np.linspace(0, Altura_Media , NUMERO_DE_PONTOS):
-        Fluxo_Corte = Ex_1 * (Constante_A*(Ponto_S*Y3*T1 + T1*0.5*Ponto_S**2 + A3*Y3) + Constante_B*(T1*X3*Ponto_S+A3*X3)) + Qb3
-        Tensao_de_Corte = Fluxo_Corte/T1
         Coordenada_X = -Raio_Medio - Centroide_X
         Coordenada_Y = - Altura_Media + Ponto_S - Centroide_Y
-        Fluxos_Corte.append({"Coords" : (2,Ponto_S), "Tensao" : Fluxo_Corte})
-        Tensoes_Corte.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_de_Corte})
+        Tensao_Direta = Ex_1 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
+        Fluxo_Corte = Ex_1 * (Constante_A_Corte*(Ponto_S*Y3*T1 + T1*0.5*Ponto_S**2 + A3*Y3) + Constante_B_Corte*(T1*X3*Ponto_S+A3*X3)) + Qb3
+        Tensao_de_Corte = Fluxo_Corte/T1
+        
+        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
+        # if FS_Falha > 1:
+            # return FS_Falha
+        
     Qb4 = Fluxo_Corte
     #VIGA SEMICIRCULO 
     for Ponto_S in np.linspace(0, math.pi , NUMERO_DE_PONTOS):
-        Fluxo_Corte = Ex_1 * (Constante_A*(T1*Raio_Medio*Y1*Ponto_S + T1*(Raio_Medio**2)*(1-math.cos(Ponto_S)) + A3*Y4) + Constante_B*(-T1*(Raio_Medio**2)*math.sin(Ponto_S)+A3*X4)) + Qb4
-        Tensao_de_Corte = Fluxo_Corte/T1
         Coordenada_X = -Raio_Medio*math.cos(Ponto_S) - Centroide_X
         Coordenada_Y = -Raio_Medio*math.sin(Ponto_S) - Centroide_Y
-        Fluxos_Corte.append({"Coords" : (3,Ponto_S), "Tensao" : Fluxo_Corte})
-        Tensoes_Corte.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_de_Corte})
+        Tensao_Direta = Ex_1 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
+        
+        Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*Ponto_S + T1*(Raio_Medio**2)*(1-math.cos(Ponto_S)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(Ponto_S)+A3*X4)) + Qb4
+        Tensao_de_Corte = Fluxo_Corte/T1
+        
+        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
+        # if FS_Falha > 1:
+            # return FS_Falha
+        
     Qb1 = Fluxo_Corte
     #VIGA VERTICAL DIREITA
     for Ponto_S in np.linspace(0, Altura_Media , NUMERO_DE_PONTOS):
-        Fluxo_Corte = Ex_1 * (Constante_A*(T1*(Y1*Ponto_S - 0.5*Ponto_S**2) + Y1*A3) + Constante_B*(T1*X1*Ponto_S + A3*X1)) + Qb1
-        Tensao_de_Corte = Fluxo_Corte/T1
         Coordenada_X = Raio_Medio - Centroide_X
         Coordenada_Y = - Ponto_S - Centroide_Y
-        Fluxos_Corte.append({"Coords" : (4,Ponto_S), "Tensao" : Fluxo_Corte})
-        Tensoes_Corte.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_de_Corte})
+        Tensao_Direta = Ex_1 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
+        
+        Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*(Y1*Ponto_S - 0.5*Ponto_S**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Ponto_S + A3*X1)) + Qb1
+        Tensao_de_Corte = Fluxo_Corte/T1
+        
+        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
+        # if FS_Falha > 1:
+            # return FS_Falha
+        
     Qb2 = Fluxo_Corte
     #VIGA HORIZONTAL DA PONTA ATE O MEIO
     for Ponto_S in np.linspace(0, Raio_Medio , NUMERO_DE_PONTOS):
-        Fluxo_Corte = Ex_2 * (Constante_A*(T2*Y2*Ponto_S + A3*Y2) + Constante_B*(T2*(X2*Ponto_S - 0.5*Ponto_S**2) + A3*X2)) + Qb2
-        Tensao_de_Corte = Fluxo_Corte/T2
         Coordenada_X = Ponto_S - Raio_Medio - Centroide_X
         Coordenada_Y = - Altura_Media - Centroide_Y
-        Fluxos_Corte.append({"Coords" : (5,Ponto_S), "Tensao" : Fluxo_Corte})
-        Tensoes_Corte.append({"Coords" : (Coordenada_X, Coordenada_Y), "Tensao" : Tensao_de_Corte})
+        Tensao_Direta = Ex_2 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
+        
+        Fluxo_Corte = Ex_2 * (Constante_A_Corte*(T2*Y2*Ponto_S + A3*Y2) + Constante_B_Corte*(T2*(X2*Ponto_S - 0.5*Ponto_S**2) + A3*X2)) + Qb2
+        Tensao_de_Corte = Fluxo_Corte/T2
+        
+        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
+        # if FS_Falha > 1:
+            # return FS_Falha
+        
     QbC = Fluxo_Corte
+    print(Qb1,Qb2,Qb3,Qb4,QbC)
     
-    #print(Qb1, Qb2, Qb3, Qb4, QbC)    
-    return Fluxos_Corte
+    # return FS_Falha
+    
+
