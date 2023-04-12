@@ -114,11 +114,3 @@ def Falhos(Tensao_maxima, Esforco ,falho_TH, falho_Hoff):
         print("Falho por Hoffman")
 
 
-
-    
-
-
-
-
-
-
