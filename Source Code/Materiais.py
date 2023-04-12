@@ -1,5 +1,5 @@
 class Material_Composito:
-    def __init__(self, rho, E1, E2, G12, v12, Xt, Xc, Yt, Yc, S):
+    def __init__(self, rho, E1, E2, G12, v12, Xt, Xc, Yt, Yc, S, Cost):
         self.Densidade = rho
         self.E1  = E1
         self.E2  = E2
@@ -11,6 +11,7 @@ class Material_Composito:
         self.Yt  = Yt
         self.Yc  = Yc
         self.S   = S
+        self.Cost = Cost
 
 
 MATERIAL_CFRP_HS = Material_Composito(
