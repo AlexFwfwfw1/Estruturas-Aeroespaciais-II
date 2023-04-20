@@ -10,9 +10,9 @@ from multiprocessing import Pool, cpu_count
 
 from alive_progress import alive_bar
 
-Laminado_1_Limits = {"N_Min": 2, "N_Max": 10}
+Laminado_1_Limits = {"N_Min": 2, "N_Max": 8}
 Laminado_2_Limits = Laminado_1_Limits
-Laminado_3_Limits = {"N_Min": 2, "N_Max": 10}
+Laminado_3_Limits = {"N_Min": 2, "N_Max": 8}
 Espessura_B_Limits = {"b_min": 0.001, "b_max": 0.01, "divisions": 10}
 
 FATOR_SEGURANCA_FALHA = 1.5
@@ -197,7 +197,7 @@ def Estudo_Paramétrico(Espessura):
     #with open("Output.txt", "w") as file:
     Minimo = 10E100
     for a in range(len(Laminado1_Lista)):
-        bar(Gap)
+        #bar(Gap)
         #print("New Minimum Found!")
         for b in range(len(Laminado2_Lista)):
             for c in range(len(Laminado3_Lista)):
@@ -215,8 +215,8 @@ def Estudo_Paramétrico(Espessura):
                 #         file.write(Laminado1, Laminado2, Laminado3, Espessura, Falha, Deflexao)
                 #         Combinacao_Minimo = Laminado1, Laminado2, Laminado3, Espessura
 
-    print("Minimo Encontrado")
-    print(Combinacao_Minimo)
+    #print("Minimo Encontrado")
+    #print(Combinacao_Minimo)
 
 
 
@@ -226,9 +226,11 @@ Espessuras_B_Possiveis = np.linspace(
 
 if __name__ == '__main__':
     with Pool(12) as p:
-        Possibilities_Number = 10000000000000
-        with alive_bar(total = Possibilities_Number) as bar:
-            p.map(Estudo_Paramétrico, Espessuras_B_Possiveis)
+        #Possibilities_Number = 10000000000000
+        #with alive_bar(total = Possibilities_Number) as bar:
+        p.map(Estudo_Paramétrico, Espessuras_B_Possiveis)
+
+    print("acabou")
         
 
 
