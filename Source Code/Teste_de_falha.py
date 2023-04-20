@@ -9,22 +9,17 @@ Lista = 1
 n = 3
 
 def Tensoes_Eixos_Laminado (Tensao_x, Tensao_y, Tensao_xy):
-    
+    Matriz_A_Inversa_t = Matriz_A_Inversa * n * ESPESSURA_CAMADA
     for Camada in Lista :
-        Theta = np.rad2deg()
+        Theta = np.deg2rad()
         Matriz_Theta = np.matrix([
         [np.cos(Theta)**2,               np.sin(Theta)**2,          2*np.sin(Theta)*np.cos(Theta)],
         [np.sin(Theta)**2,               np.cos(Theta)**2,          -2*np.sin(Theta)*np.cos(Theta)],
         [-np.sin(Theta)*np.cos(Theta),   np.sin(Theta)*np.cos(Theta),  np.cos(Theta)-np.sin(Theta)]
         ])
-
-        Matriz_A_Inversa_t = Matriz_A_Inversa * n * ESPESSURA_CAMADA   
-        Matriz_K_Barra = Definicao_Laminado.Obter_Matriz_K_Barra
-        Matriz_Tensoes_Laminado = np.matrix([
-        [Tensao_x],
-        [Tensao_y],
-        [Tensao_xy]
-        ])
+  
+        Matriz_K_Barra = Definicao_Laminado.Obter_Matriz_K_Barra(Material, Angulo)
+        Matriz_Tensoes_Laminado = np.array(Tensao_x, Tensao_y, Tensao_xy)
 
         Matriz_Theta_K_Barra = np.dot(Matriz_Theta, Matriz_K_Barra)
         Matriz_K_Barra_A_Inversa_t = np.dot(Matriz_A_Inversa_t, Matriz_Tensoes_Laminado)
@@ -33,7 +28,7 @@ def Tensoes_Eixos_Laminado (Tensao_x, Tensao_y, Tensao_xy):
         return Matriz_Tensoes_Camada
 
 
-# na função acima tem de se definir melhor a lista (l13), o número de camadas (l21) e a orientação em graus da camada (l14)
+# na função acima tem de se definir melhor a lista (l13), o número de camadas (l21) e a orientação em graus da camada (l14), material e angulo (l21)
 
 
 #falta importar o ficheiro das tensões nos eixos do laminado
