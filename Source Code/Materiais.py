@@ -29,4 +29,3 @@ MATERIAL_GFRP    = Material_Composito(
     v12=0.25, Xt=1000E6, Xc=600E6, Yt=30E6,
     Yc =110E6 , S =50E6, Cost=50)
 
-print("Materiais Definidos")
