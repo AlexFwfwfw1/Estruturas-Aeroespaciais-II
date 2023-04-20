@@ -6,6 +6,8 @@ import itertools
 
 import Massa_E_Custo
 
+from multiprocessing import Pool, cpu_count
+
 from alive_progress import alive_bar
 
 Laminado_1_Limits = {"N_Min": 2, "N_Max": 8}
@@ -19,7 +21,7 @@ FATOR_SEGURANCA_DEFLEXAO = 1.0
 FAZER_IMPAR = False
 
 
-def Estudo_Paramétrico():
+def Estudo_Paramétrico(Espessura):
 
     # Estudo Paramétrico tem em conta certos possibilidades de ângulos.
 
@@ -32,8 +34,6 @@ def Estudo_Paramétrico():
                            Materiais.MATERIAL_CFRP_HM, Materiais.MATERIAL_GFRP)
     j_Materiais_Possiveis = len(Materiais_Possiveis)
 
-    Espessuras_B_Possiveis = np.linspace(
-        Espessura_B_Limits["b_min"], Espessura_B_Limits["b_max"], Espessura_B_Limits["divisions"])
 
     # Combinacoes tem de ser simetricas. Repete-se a ordem
     # Nao faz sentido estar a simular seccoes repetidas, logo podemos abstrair da ordem de camadas.
@@ -182,41 +182,55 @@ def Estudo_Paramétrico():
 
         Combinacoes_Laminado_3 = tuple(Combinacoes_Laminado_3)
 
-        return Combinacoes_Laminado_1_2, Combinacoes_Laminado_1_2, Combinacoes_Laminado_3, Espessuras_B_Possiveis
+        return Combinacoes_Laminado_1_2, Combinacoes_Laminado_1_2, Combinacoes_Laminado_3, 
 
-    Laminado1_Lista, Laminado2_Lista, Laminado3_Lista, Espesuras_Lista = Obter_Combinacoes()
+    Laminado1_Lista, Laminado2_Lista, Laminado3_Lista = Obter_Combinacoes()
 
     Possibilities_Number = len(
-        Laminado1_Lista)*len(Laminado2_Lista)*len(Laminado3_Lista)*len(Espesuras_Lista)
-    Gap = len(Laminado3_Lista)*len(Espesuras_Lista)*len(Laminado2_Lista)
+        Laminado1_Lista)*len(Laminado2_Lista)*len(Laminado3_Lista)
+    Gap = len(Laminado3_Lista)*len(Laminado2_Lista)
     print(f"Numero de Possbilidades: {Possibilities_Number}")
     Combinacao_Minimo = 0
     Massa_laminado1, Massa_laminado2, Massa_laminado3, Custo_laminado1, Custo_laminado2, Custo_laminado3 = Massa_E_Custo.Precalcular_Funcao_Minimo(
         Laminado1_Lista, Laminado2_Lista, Laminado3_Lista)
-    with alive_bar(total = Possibilities_Number) as bar:
-        with open("Output.txt", "w") as file:
-            Minimo = 10E100
-            for a in range(len(Laminado1_Lista)):
-                bar(Gap)
-                #print("New Minimum Found!")
-                for b in range(len(Laminado2_Lista)):
-                    for c in range(len(Laminado3_Lista)):
-                        for Espessura in Espesuras_Lista:
+    #with alive_bar(total = Possibilities_Number) as bar:
+    #with open("Output.txt", "w") as file:
+    Minimo = 10E100
+    for a in range(len(Laminado1_Lista)):
+        #bar(Gap)
+        #print("New Minimum Found!")
+        for b in range(len(Laminado2_Lista)):
+            for c in range(len(Laminado3_Lista)):
+            
 
-                            #Funcao_Minimizacao = Main.Pre_Simulacao(Laminado1, Laminado2, Laminado3, Espessura)
+                #Funcao_Minimizacao = Main.Pre_Simulacao(Laminado1, Laminado2, Laminado3, Espessura)
 
-                            Funcao_Minimizacao = Massa_E_Custo.Massa(
-                                Massa_laminado1[a], Massa_laminado2[b], Massa_laminado3[c], Custo_laminado1[a], Custo_laminado2[b], Custo_laminado3[c], Espessura)
-                            
-                            # if Funcao_Minimizacao < Minimo:
-                            #     Falha, Deflexao = Main.Simulacao(Laminado1, Laminado2, Laminado3, Espessura)
-                            #     if Falha > FATOR_SEGURANCA_FALHA and Deflexao > FATOR_SEGURANCA_DEFLEXAO:
-                            #         Minimo = Funcao_Minimizacao
-                            #         file.write(Laminado1, Laminado2, Laminado3, Espessura, Falha, Deflexao)
-                            #         Combinacao_Minimo = Laminado1, Laminado2, Laminado3, Espessura
+                Funcao_Minimizacao = Massa_E_Custo.Massa(
+                    Massa_laminado1[a], Massa_laminado2[b], Massa_laminado3[c], Custo_laminado1[a], Custo_laminado2[b], Custo_laminado3[c], Espessura)
+                
+                # if Funcao_Minimizacao < Minimo:
+                #     Falha, Deflexao = Main.Simulacao(Laminado1, Laminado2, Laminado3, Espessura)
+                #     if Falha > FATOR_SEGURANCA_FALHA and Deflexao > FATOR_SEGURANCA_DEFLEXAO:
+                #         Minimo = Funcao_Minimizacao
+                #         file.write(Laminado1, Laminado2, Laminado3, Espessura, Falha, Deflexao)
+                #         Combinacao_Minimo = Laminado1, Laminado2, Laminado3, Espessura
 
-    print("Minimo Encontrado")
-    print(Combinacao_Minimo)
+    #print("Minimo Encontrado")
+    #print(Combinacao_Minimo)
 
 
-Estudo_Paramétrico()
+
+
+Espessuras_B_Possiveis = np.linspace(
+        Espessura_B_Limits["b_min"], Espessura_B_Limits["b_max"], Espessura_B_Limits["divisions"])
+
+if __name__ == '__main__':
+    with Pool(12) as p:
+        #Possibilities_Number = 10000000000000
+        #with alive_bar(total = Possibilities_Number) as bar:
+        p.map(Estudo_Paramétrico, Espessuras_B_Possiveis)
+
+    print("acabou")
+        
+
+
