@@ -8,9 +8,9 @@ import Massa_E_Custo
 
 from alive_progress import alive_bar
 
-Laminado_1_Limits = {"N_Min": 2, "N_Max": 10}
+Laminado_1_Limits = {"N_Min": 2, "N_Max": 8}
 Laminado_2_Limits = Laminado_1_Limits
-Laminado_3_Limits = {"N_Min": 2, "N_Max": 10}
+Laminado_3_Limits = {"N_Min": 2, "N_Max": 8}
 Espessura_B_Limits = {"b_min": 0.001, "b_max": 0.01, "divisions": 10}
 
 FATOR_SEGURANCA_FALHA = 1.5

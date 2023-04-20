@@ -6,6 +6,7 @@ class Propriadades_Seccao:
         self.Segundo_Momentos_De_Area = Segundo_Momentos_De_Area
         self.Centroide = Centroide 
         self.Geometria_Media = Geometria_Media
+        
 
 
 def Definir_Propriadades(z,Laminados, b):
@@ -80,12 +81,14 @@ def Definir_Propriadades(z,Laminados, b):
     y_3 = y_2
     y_4 = y_1
     
+    A_Varrida = h_altura_ii * w_diametro_ii + math.pi/2* w_diametro_ii**2
+    
     Elasticidades = (Ez_1,Ez_2,Ez_3)
     Espessuras = (Espessura_laminado1,Espessura_laminado2,Area_laminado3)
 
     Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
     Centroide = (x_CG, y_CG)
-    Geometria_Media = (h_altura_ii , w_diametro_ii, A_total_i)
+    Geometria_Media = (h_altura_ii , w_diametro_ii, A_total_i, A_Varrida)
     Coordenadas_X = (x_1 , x_2 , x_3 , x_4)
     Coordenadas_Y = (y_1 , y_2 , y_3 , y_4)
     
