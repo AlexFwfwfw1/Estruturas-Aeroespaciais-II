@@ -127,7 +127,7 @@ def Estudo_Paramétrico(Espessura):
                 Combinacoes_Laminado_1_2 = np.append(
                     Combinacoes_Laminado_1_2, Combinacoes_N_Par, axis=0)
 
-                print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+                #print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
             elif FAZER_IMPAR:
 
                 try:
@@ -143,7 +143,7 @@ def Estudo_Paramétrico(Espessura):
                 Combinacoes_Laminado_1_2 = np.append(
                     Combinacoes_Laminado_1_2, Combinacoes_N_Impar, axis=0)
 
-                print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+                #print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
 
         # Agora é necessario obter todas as combinacoes possiveis entre os dois laminados.
 
@@ -163,7 +163,7 @@ def Estudo_Paramétrico(Espessura):
                 Combinacoes_Laminado_3 = np.append(
                     Combinacoes_Laminado_3, Combinacoes_N_Par, axis=0)
 
-                print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+                #print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
             elif FAZER_IMPAR:
                 try:
                     Combinacoes_N_Impar = laminado_simetrico_impar(
@@ -178,7 +178,7 @@ def Estudo_Paramétrico(Espessura):
                 Combinacoes_Laminado_3 = np.append(
                     Combinacoes_Laminado_3, Combinacoes_N_Impar, axis=0)
 
-                print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+                #print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
 
         Combinacoes_Laminado_3 = tuple(Combinacoes_Laminado_3)
 

@@ -36,11 +36,9 @@ def Main():
         # Forcas_SW = Afilamento.Obter_Forcas(Forcas, ... )  
         Forcas_SW = Forcas  #TEMPORARIO, ISTO ESTA ERRADo
         
-        #Tensoes Diretas
-        Tensoes_Diretas = Analise_Estrutural.Tensao_Direta(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Momentos, Elasticidades)
+        #Analise_Estrutural Tensoes Diretas, Corte e Qs0 é feito em parelo de forma a poupar memoria e tempo de calculo
+        FS_Falha = Analise_Estrutural.Analise_Total(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas, Momentos, Elasticidades, Espessuras, Coordenadas_Y, Coordenadas_X)
         
-        #Tensoes De Corte
-        Tensoes_Corte = Analise_Estrutural.Tensao_de_Corte(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_SW, Elasticidades, Espessuras, Coordenadas_Y, Coordenadas_X)
         
     
     print(f"{NUMERO_DE_SECCOES} seccoes analisadas." )
