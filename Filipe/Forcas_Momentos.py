@@ -11,11 +11,10 @@ FORCA_1 = MASSA_INERCIA_1*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 FORCA_2 = MASSA_INERCIA_2*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 FORCA_3 = MASSA_INERCIA_3*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 
-#Forcas em X
-if 0 <= z <= COMPRIMENTO_FUSELAGEM:
-    forcaX = FORCA_HORIZONTAL
-
 def Obter_Forcas(z):
+    #Forcas em X
+    if 0 <= z <= COMPRIMENTO_FUSELAGEM:
+        forcaX = FORCA_HORIZONTAL
 
     #Forcas em Y
     if 0 <= z < 0.6:
@@ -37,6 +36,6 @@ def Obter_Forcas(z):
     if 0 <= z < 0.6:
         momentoY = FORCA_HORIZONTAL
 
-    return forcaY,momentoX
+    return forcaX,forcaY,momentoX,momentoY
 
 print(Obter_Forcas(6))
