@@ -12,10 +12,12 @@ def Tensoes_Eixos_Laminado (Tensao_x, Tensao_y, Tensao_xy):
     Matriz_A_Inversa_t = Matriz_A_Inversa * n * ESPESSURA_CAMADA
     for Camada in Lista :
         Theta = np.deg2rad()
+        m = np.cos(Theta)
+        n = np.sin(Theta)
         Matriz_Theta = np.matrix([
-        [np.cos(Theta)**2,               np.sin(Theta)**2,          2*np.sin(Theta)*np.cos(Theta)],
-        [np.sin(Theta)**2,               np.cos(Theta)**2,          -2*np.sin(Theta)*np.cos(Theta)],
-        [-np.sin(Theta)*np.cos(Theta),   np.sin(Theta)*np.cos(Theta),  np.cos(Theta)-np.sin(Theta)]
+        [m**2,               n**2,              2*n*m],
+        [n**2,               m**2,              -2*n*m],
+        [-n*m,               n*m,               m-n]
         ])
   
         Matriz_K_Barra = Definicao_Laminado.Obter_Matriz_K_Barra(Material, Angulo)
