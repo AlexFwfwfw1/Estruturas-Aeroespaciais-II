@@ -4,30 +4,23 @@ import Definicao_Laminado
 import numpy as np
 
 # Matriz [A]inversa (laminado)
-Matriz_A_Inversa = Definicao_Laminado.Obter_Laminado[0]
+#Matriz_A_Inversa = Definicao_Laminado.Obter_Laminado[0]
 Lista = 1
 n = 3
 
-def Tensoes_Eixos_Laminado (Tensao_x, Tensao_y, Tensao_xy):
-    Matriz_A_Inversa_t = Matriz_A_Inversa * n * ESPESSURA_CAMADA
-    for Camada in Lista :
-        Theta = np.deg2rad()
-        m = np.cos(Theta)
-        n = np.sin(Theta)
-        Matriz_Theta = np.matrix([
-        [m**2,               n**2,              2*n*m],
-        [n**2,               m**2,              -2*n*m],
-        [-n*m,               n*m,               m-n]
-        ])
-  
-        Matriz_K_Barra = Definicao_Laminado.Obter_Matriz_K_Barra(Material, Angulo)
-        Matriz_Tensoes_Laminado = np.array(Tensao_x, Tensao_y, Tensao_xy)
-
-        Matriz_Theta_K_Barra = np.dot(Matriz_Theta, Matriz_K_Barra)
-        Matriz_K_Barra_A_Inversa_t = np.dot(Matriz_A_Inversa_t, Matriz_Tensoes_Laminado)
-        Matriz_Tensoes_Camada = np.dot(Matriz_Theta_K_Barra, Matriz_K_Barra_A_Inversa_t)
-
-        return Matriz_Tensoes_Camada
+def Tensoes_Eixos_Laminado(Tensao_x, Tensao_y, Tensao_xy, Laminado):
+    #Esta Matriz Tensao tem todas as 
+    Matriz_Tensao = Laminado.Matriz_Stress
+    Array_Stress = np.array([Tensao_x, Tensao_y, Tensao_xy])
+    for i in range(np.shape(Matriz_Tensao)[0]):
+        for j in range(np.shape(Matriz_Tensao)[1]):
+            #Obter Tensoes nos Eixos
+            Stress_Nos_Eixos = np.matmul(Matriz_Tensao[i,j],Array_Stress) 
+            Sigma_1 ,Sigma_2, Sigma_12 = tuple(Stress_Nos_Eixos) 
+            #Criterio de Falha
+            if Tensao_Max(Sigma_1 ,Sigma_2, Sigma_12) >= 1 or Tsai_Hill(Sigma_1 ,Sigma_2, Sigma_12) >= 1 or Hoffman(Sigma_1 ,Sigma_2, Sigma_12) >= 1:
+                return 1  #FALHOU!
+    return 0
 
 
 # na função acima tem de se definir melhor a lista (l13), o número de camadas (l21) e a orientação em graus da camada (l14), material e angulo (l21)
@@ -44,6 +37,8 @@ S                   =        70E6,       120E6,      50E6
 
 # Critérios NÃO INTERATIVOS
 # Tensão Máxima (o i representa o material, de 0 a 2 consoante a tabela!)
+
+##FALTA IMPLEMENTAR FATOR DE SEGURANÇA
 
 def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, i):
     

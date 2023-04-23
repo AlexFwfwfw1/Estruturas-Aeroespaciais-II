@@ -1,6 +1,6 @@
 class Material_Composito:
     def __init__(self, rho, E1, E2, G12, v12, Xt, Xc, Yt, Yc, S, Cost):
-        self.Densidade = rho
+        self.rho = rho
         self.E1  = E1
         self.E2  = E2
         self.G12 = G12
