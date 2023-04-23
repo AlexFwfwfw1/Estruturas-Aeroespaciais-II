@@ -19,7 +19,7 @@ Espessura_B_Limits = {"b_min": 0.001, "b_max": 0.01, "divisions": 10}
 FATOR_SEGURANCA_FALHA = 1.5
 FATOR_SEGURANCA_DEFLEXAO = 1.0
 
-FAZER_IMPAR = False
+FAZER_IMPAR = True
 
 
 # Estudo Paramétrico tem em conta certos possibilidades de ângulos.
