@@ -222,8 +222,6 @@ Possibilities_Number = (
 
 def temp_f(bm):
     Espessura, Lam_3 = bm
-    bar_possib = len(Laminado1_Lista)*len(Laminado2_Lista)
-    bar_gap = len(Laminado1_Lista)  
     Min = 10e100
     for Lam_1 in range(len(Laminado1_Lista)):
         for Lam_2 in range(len(Laminado2_Lista)):
@@ -250,6 +248,7 @@ if __name__ == "__main__":
     freeze_support()
     Minimo = 10e100
     Gap_Number = len(Laminado3_Lista)* Espessura_B_Limits["divisions"]
+    Total = len(Laminado1_Lista)*len(Laminado2_Lista)
     Core_List_Arguments = []
          
     for Espessura in Espessuras_B_Possiveis:
@@ -258,10 +257,9 @@ if __name__ == "__main__":
 
     Results = []
     with Pool(processes=cpu_count()) as Multi_Core_Process:
-        for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments), total=len(Core_List_Arguments)):
+        for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments),colour="blue",unit = " Simulacoes", dynamic_ncols = True,unit_scale = Total, total= Gap_Number, desc = "Estudo Paramétrico"):
             Results.append(result)
-            
         
         # Resultados = Multi_Core_Process.starmap(temp_f, Core_List_Arguments )
-        
+    print("Estudo Paramétrico: Simulacao Completa.")
     print(Results)

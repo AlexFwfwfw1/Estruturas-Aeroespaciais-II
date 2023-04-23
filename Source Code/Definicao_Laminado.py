@@ -14,6 +14,8 @@ class Laminado_Class:
         self.Mx = Mx
         self.My = My
         self.Espessura = Espessura_Total
+
+    
     def Escrever_Propriadades(self):
         print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}\nt_total : {self.t_total}")
         
