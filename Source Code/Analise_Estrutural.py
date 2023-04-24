@@ -56,7 +56,7 @@ def Analise_Total(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_A
     # Soma_PxB = PxBraço_1 + PxBraço_2 + PxBraço_3 + PxBraço_4
     # Soma_PyB = PyBraço_1 + PyBraço_2 + PyBraço_3 + PyBraço_4
 
-    # qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_Varrida) #Area Errada, esta area nao é a area da seccao mas é a area interior á seccao media. Nao alterei manel. Altera Tu.
+    # qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_Varrida) 
 
     
     Qb1, Qb2, Qb3, Qb4, QbC = 0,0,0,0,0
@@ -133,6 +133,14 @@ def Analise_Total(Geometria_Media, Centroide, Segundo_Momentos_De_Area, Forcas_A
         
     QbC = Fluxo_Corte
     print(Qb1,Qb2,Qb3,Qb4,QbC)
+
+    # TORSÃO E DEFLEXÃO
+
+    # Torção 
+    Taxa_Torcao = (I_C3 + I_2C) / T2 + (I_34 + I_41 + I_12) / T1 + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / T1 + (2 * Raio_Medio) / T2)
+
+    # Deflexão
+    
     
     # return FS_Falha
     
