@@ -3,7 +3,7 @@ from math import pi
 
 import numpy as np
 
-NUMERO_DE_SECCOES = 20
+NUMERO_DE_SECCOES = 200
 
 h_altura = [0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM) for z in np.linspace(0, COMPRIMENTO_FUSELAGEM, NUMERO_DE_SECCOES)]
 w_diametro = [1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM) for z in np.linspace(0, COMPRIMENTO_FUSELAGEM, NUMERO_DE_SECCOES)]

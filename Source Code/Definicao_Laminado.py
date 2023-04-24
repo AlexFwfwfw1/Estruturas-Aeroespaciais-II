@@ -5,21 +5,56 @@ import math
 import numpy as np
 
 class Laminado_Class:
-    def __init__(self, Ex, Ey, Gxy, Vxy, Vyx, Mx, My, Espessura_Total):
-        self.Ex = Ex
-        self.Ey = Ey
-        self.Gxy = Gxy
-        self.Vxy = Vxy
-        self.Vyx = Vyx
-        self.Mx = Mx
-        self.My = My
-        self.Espessura = Espessura_Total
-
-    
+    def __init__(self,Matriz_Laminado, Matriz_K_Possibilities, Matriz_Theta_Possibilidades):
+        self.Matriz_Laminado = Matriz_Laminado
+        self.Obter_Laminado(Matriz_K_Possibilities,Matriz_Theta_Possibilidades)
+        self.Propriadades()      
+        
+    def Propriadades(self):
+        self.Ex = 1/(self.Espessura_Total*self.Matriz_A_Inversa[0][0])
+        self.Ey = 1/(self.Espessura_Total*self.Matriz_A_Inversa[1][1])
+        self.Gxy = 1/(self.Espessura_Total*self.Matriz_A_Inversa[2][2])
+        self.Vxy = -self.Matriz_A_Inversa[0][1]/self.Matriz_A_Inversa[0][0]
+        self.Vyx= -self.Matriz_A_Inversa[0][1]/self.Matriz_A_Inversa[1][1]
+        self.Mx = -self.Matriz_A_Inversa[0][2]/self.Matriz_A_Inversa[0][0]
+        self.My = - self.Matriz_A_Inversa[1][2]/self.Matriz_A_Inversa[1][1]
+        
     def Escrever_Propriadades(self):
         print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}\nt_total : {self.t_total}")
         
+    def Obter_Laminado(self,Matriz_K_Possibilities,Matriz_Theta_Possibilidades):
 
+        Espessura_Camada = ESPESSURA_CAMADA
+        self.Num_Camadas = np.sum(self.Matriz_Laminado)
+        
+        self.Espessura_Total = Espessura_Camada*self.Num_Camadas
+        self.Matriz_K_Laminado = np.zeros(np.shape(self.Matriz_Laminado))
+        self.Matriz_Stress = np.zeros(np.shape(self.Matriz_Laminado))
+        
+        for i in range(np.shape(self.Matriz_Laminado)[0]):
+            for j in range(np.shape(self.Matriz_Laminado)[1]):
+                if self.Matriz_Laminado[i,j] == 0:
+                    self.Matriz_Stress[i,j] = 0
+                else:
+                    self.Matriz_Stress[i,j] = np.matmul(Matriz_K_Possibilities[i,j], self.Matriz_A_Inversa)
+                    self.Matriz_Stress[i,j] = self.Espessura_Total*np.matmul(Matriz_Theta_Possibilidades[i,j], self.Matriz_Stress[i,j])
+                    
+                self.Matriz_K_Laminado[i,j] = Matriz_K_Possibilities[i,j]*self.Matriz_Laminado[i,j]
+        print(self.Matriz_K_Laminado)
+        print(np.shape(self.Matriz_K_Laminado))
+        self.Matriz_A = np.sum(self.Matriz_K_Laminado, axis = 3)
+        self.Matriz_A = Espessura_Camada * np.array(self.Matriz_A)
+        
+        self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
+        
+    def Obter_Matrizes_For_Teste(self, Matriz_Theta_Possibilidades):
+        for i in range(np.shape(self.Matriz_Laminado)[0]):
+            for j in range(np.shape(self.Matriz_Laminado)[1]):
+                if self.Matriz_K_Laminado[i,j] == 0:
+                    self.Matriz_Stress[i,j] = 0
+                self.Matriz_Stress[i,j] = self.Espessura_Total*np.matmul(self.Matriz_A_Inversa, self.Matriz_K_Laminado[i,j])
+                self.Matriz_Stress[i,j] = np.matmul(self.Matriz_Stress[i,j], Matriz_Theta_Possibilidades[i,j])
+                
 def Obter_Matriz_K_Barra(Material, angulo):
     
     angulo = math.radians(angulo)
@@ -51,42 +86,30 @@ def Obter_Matriz_K_Barra(Material, angulo):
         [m*n, -m*n, m**2-n**2]
     ])
     
+    Matriz_Theta = np.matrix([
+                [m**2,               n**2,              2*n*m],
+                [n**2,               m**2,              -2*n*m],
+                [-n*m,               n*m,               m-n]
+                ]) 
+    
+    #Matriz_Theta será necessaria nos calculos para o stress.
+    
     Matriz_Tensoes_12 =  np.matmul(Matriz_Rotacao_Inversa,Matriz_K)
     Matriz_K_Barra = np.matmul(Matriz_Tensoes_12, Matriz_Rotacao)
     
-    return Matriz_K_Barra
+    return Matriz_K_Barra,Matriz_Theta
+    
+    
+def Obter_Matriz_K_Possibilities(Possible_Angles, Possible_Materials):
 
-def Obter_Propriadades_Equivalentes_Lamindado(Matriz_A, Espessura_Total):
+    Matriz_K_Possibilities = np.zeros((len(Possible_Angles),len(Possible_Materials)))
+    Matriz_Theta_Possibilidades = np.zeros((len(Possible_Angles),len(Possible_Materials)))
     
-    Ex = 1/(Espessura_Total*Matriz_A[0][0])
-    Ey = 1/(Espessura_Total*Matriz_A[1][1])
-    Gxy = 1/(Espessura_Total*Matriz_A[2][2])
-    Vxy = -Matriz_A[0][1]/Matriz_A[0][0]
-    Vyx= -Matriz_A[0][1]/Matriz_A[1][1]
-    Mx = -Matriz_A[0][2]/Matriz_A[0][0]
-    My = - Matriz_A[1][2]/Matriz_A[1][1]
+    for Angle in range(0,len(Possible_Angles)):
+        for Material in range(0,len(Possible_Materials)):
+            Matriz_K_Camada,Matriz_Theta = Obter_Matriz_K_Barra(Possible_Angles[Angle], Possible_Materials[Material])
+            Matriz_K_Possibilities[Angle,Material] = Matriz_K_Camada
+            Matriz_Theta_Possibilidades[Angle,Material] = Matriz_Theta
     
-    return Laminado_Class(Ex, Ey, Gxy, Vxy, Vyx, Mx, My, Espessura_Total)
-
-def Obter_Laminado(Laminado_Lista):
-
-    Espessura_Camada = ESPESSURA_CAMADA
-    Matriz_A = np.zeros((3,3))
-    Espessura_Total = Espessura_Camada*len(Laminado_Lista)
-    
-    ### CONSEGUIR MATRIZ A
-    
-    for Camada in Laminado_Lista:
-        Matriz_K_Camada = Obter_Matriz_K_Barra(Camada["Material"], Camada["Angulo_Graus"])
-        Matriz_A = Matriz_A + Matriz_K_Camada
-        
-    Matriz_A = Espessura_Camada * np.array(Matriz_A)
-    
-    Matriz_A_Inversa = np.linalg.inv(Matriz_A)
-        
-    Laminado_Objeto = Obter_Propriadades_Equivalentes_Lamindado(Matriz_A_Inversa, Espessura_Total)
-    
-    return Laminado_Objeto
-    
-
+    return Matriz_K_Possibilities,Matriz_Theta_Possibilidades
 

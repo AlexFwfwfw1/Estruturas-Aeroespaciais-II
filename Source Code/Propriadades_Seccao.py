@@ -1,13 +1,17 @@
 from Constantes import *
 import math
 
-class Propriadades_Seccao:
-    def __init__(self,Segundo_Momentos_De_Area , Centroide , Geometria_Media ):
+class Propriadades_Seccao_Objeto:
+    def __init__(self,Segundo_Momentos_De_Area , Centroide , Geometria_Media, Areas , Elasticidades, Espessuras,  Coordenadas_X,Coordenadas_Y):
         self.Segundo_Momentos_De_Area = Segundo_Momentos_De_Area
         self.Centroide = Centroide 
         self.Geometria_Media = Geometria_Media
+        self.Areas = Areas
+        self.Elasticidades = Elasticidades
+        self.Espessuras = Espessuras
+        self.Coordenadas_X = Coordenadas_X
+        self.Coordenadas_Y = Coordenadas_Y
         
-
 
 def Definir_Propriadades(z,Laminados, b):
 
@@ -19,6 +23,10 @@ def Definir_Propriadades(z,Laminados, b):
     Ez_1 = Laminados[0].Ex
     Ez_2 = Laminados[1].Ex
     Ez_3 = Laminados[2].Ex
+    
+    rho_1 = Laminados[0].rho
+    rho_2 = Laminados[1].rho
+    rho_3 = Laminados[2].rho
 
     h_altura_i = 0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM)
     w_diametro_i = 1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM)
@@ -29,19 +37,22 @@ def Definir_Propriadades(z,Laminados, b):
     A_horizontal_i = (w_diametro_i - 2*Espessura_laminado1)*Espessura_laminado2
     A_vertical_i = 2*(h_altura_i*Espessura_laminado1)
     A_tensores_i = 4*Area_laminado3
-    A_total_i = A_semicircuf_i + A_horizontal_i + A_vertical_i + A_tensores_i  #ESTAVA AQUI UM ERRO
+    A_total_i = A_semicircuf_i + A_horizontal_i + A_vertical_i + A_tensores_i  
+    A_total_with_rho = A_semicircuf_i*rho_1 + A_horizontal_i*rho_2 + A_vertical_i*rho_1 + A_tensores_i*rho_3
 
     y_semicircuf_i = w_diametro_ii/math.pi
     y_horizontal_i = (-h_altura_ii)
     y_vertical_i = (-h_altura_i/2)
     y_tensores_i = (-h_altura_ii/2)
-    y_CG = (A_semicircuf_i*y_semicircuf_i+A_horizontal_i*y_horizontal_i+A_vertical_i*y_vertical_i+A_tensores_i*y_tensores_i)/A_total_i
+    y_CG= (A_semicircuf_i*y_semicircuf_i + A_horizontal_i*y_horizontal_i + A_vertical_i*y_vertical_i + A_tensores_i*y_tensores_i)/A_total_i
+    #y_CG = (rho_1*A_semicircuf_i*y_semicircuf_i + rho_2*A_horizontal_i*y_horizontal_i + rho_1*A_vertical_i*y_vertical_i + rho_3*A_tensores_i*y_tensores_i)/A_total_with_rho
     
     x_semicircuf_i = 0
     x_horizontal_i = 0
     x_vertical_i = 0
     x_tensores_i = 0
     x_CG = (A_semicircuf_i*x_semicircuf_i + A_horizontal_i*x_horizontal_i + A_vertical_i*x_vertical_i + A_tensores_i*x_tensores_i)/A_total_i
+    #x_CG = (rho_1*A_semicircuf_i*x_semicircuf_i + rho_2*A_horizontal_i*x_horizontal_i + rho_1*A_vertical_i*x_vertical_i + rho_3*A_tensores_i*x_tensores_i)/A_total_with_rho
 
     distancia_y_semicircuf_i = y_semicircuf_i - y_CG
     distancia_y_horizontal_i = y_horizontal_i - y_CG
@@ -88,11 +99,12 @@ def Definir_Propriadades(z,Laminados, b):
 
     Segundo_Momentos_De_Area = (Ixx_total_i , Iyy_total_i , Ixy_total_i)
     Centroide = (x_CG, y_CG)
-    Geometria_Media = (h_altura_ii , w_diametro_ii, A_total_i, A_Varrida)
+    Geometria_Media = (h_altura_ii , w_diametro_ii)
+    Areas = (A_total_i, A_Varrida)
     Coordenadas_X = (x_1 , x_2 , x_3 , x_4)
     Coordenadas_Y = (y_1 , y_2 , y_3 , y_4)
     
-    Seccao = Propriadades_Seccao(Segundo_Momentos_De_Area , Centroide , Geometria_Media)
+    Seccao = Propriadades_Seccao_Objeto(Segundo_Momentos_De_Area , Centroide , Geometria_Media, Areas , Elasticidades, Espessuras,  Coordenadas_X,Coordenadas_Y)
 
-    return Segundo_Momentos_De_Area , Centroide , Geometria_Media, Coordenadas_X, Coordenadas_Y, Espessuras,Elasticidades
+    return Seccao
 

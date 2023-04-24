@@ -1,5 +1,6 @@
 import Main
 import Materiais
+import Definicao_Laminado
 
 import numpy as np
 import itertools
@@ -11,15 +12,17 @@ from multiprocessing import Pool, cpu_count, freeze_support
 from tqdm import tqdm
 
 
-Laminado_1_Limits = {"N_Min": 2, "N_Max": 8}
+Laminado_1_Limits = {"N_Min": 1, "N_Max": 8}
 Laminado_2_Limits = Laminado_1_Limits
-Laminado_3_Limits = {"N_Min": 2, "N_Max": 8}
+Laminado_3_Limits = {"N_Min": 1, "N_Max": 8}
 Espessura_B_Limits = {"b_min": 0.001, "b_max": 0.01, "divisions": 10}
 
 FATOR_SEGURANCA_FALHA = 1.5
 FATOR_SEGURANCA_DEFLEXAO = 1.0
 
-FAZER_IMPAR = False
+FAZER_IMPAR = True
+
+Print_Possibilies = False
 
 
 # Estudo Paramétrico tem em conta certos possibilidades de ângulos.
@@ -42,6 +45,8 @@ Espessuras_B_Possiveis = np.linspace(
         Espessura_B_Limits["b_max"],
         Espessura_B_Limits["divisions"],
     )
+
+Matriz_K_Possbilities,Matriz_Theta_Possibilidades = Definicao_Laminado.Obter_Matriz_K_Possibilities(Angulos_Possiveis, Materiais_Possiveis)
 
 def laminado_simetrico(n, i, j):
 
@@ -136,26 +141,23 @@ def Obter_Combinacoes():
             Combinacoes_Laminado_1_2 = np.append(
                 Combinacoes_Laminado_1_2, Combinacoes_N_Par, axis=0
             )
-
-            # print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+            if Print_Possibilies:
+                print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
         elif FAZER_IMPAR:
-            try:
-                Combinacoes_N_Impar = laminado_simetrico_impar(
-                    Combinacoes_N_Par, i_Angulos_Possiveis, j_Materiais_Possiveis
-                )
-            except TypeError:
-                Combinacoes_N_Par = laminado_simetrico(
-                    int((n - 1) / 2), i_Angulos_Possiveis, j_Materiais_Possiveis
-                )
-                Combinacoes_N_Impar = laminado_simetrico_impar(
-                    Combinacoes_N_Par, i_Angulos_Possiveis, j_Materiais_Possiveis
-                )
-
+            if n == 1:
+                temp = laminado_simetrico(1, i_Angulos_Possiveis, j_Materiais_Possiveis)*0.5
+                Combinacoes_N_Impar = temp.astype(int)
+            else:
+                Combinacoes_N_Impar = laminado_simetrico_impar(Combinacoes_N_Par, i_Angulos_Possiveis, j_Materiais_Possiveis)
+                
+        
             Size = len(Combinacoes_N_Impar)
             Combinacoes_Laminado_1_2 = np.append(
                 Combinacoes_Laminado_1_2, Combinacoes_N_Impar, axis=0
             )
-            # print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+            if Print_Possibilies:
+                print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+        
 
     # Agora é necessario obter todas as combinacoes possiveis entre os dois laminados.
 
@@ -173,16 +175,13 @@ def Obter_Combinacoes():
             Combinacoes_Laminado_3 = np.append(
                 Combinacoes_Laminado_3, Combinacoes_N_Par, axis=0
             )
-            # print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+            if Print_Possibilies:
+                print(f"Calculated N = {n}, Size = {Size}, Laminado : 3")
         elif FAZER_IMPAR:
-            try:
-                Combinacoes_N_Impar = laminado_simetrico_impar(
-                    Combinacoes_N_Par, 1, j_Materiais_Possiveis
-                )
-            except TypeError:
-                Combinacoes_N_Par = laminado_simetrico(
-                    int((n - 1) / 2), 1, j_Materiais_Possiveis
-                )
+            if n == 1:
+                temp = laminado_simetrico(1, 1, j_Materiais_Possiveis)*0.5
+                Combinacoes_N_Impar = temp.astype(int)
+            else:
                 Combinacoes_N_Impar = laminado_simetrico_impar(
                     Combinacoes_N_Par, 1, j_Materiais_Possiveis
                 )
@@ -191,7 +190,8 @@ def Obter_Combinacoes():
             Combinacoes_Laminado_3 = np.append(
                 Combinacoes_Laminado_3, Combinacoes_N_Impar, axis=0
             )
-            # print(f"Calculated N = {n}, Size = {Size}, Laminado : 1")
+            if Print_Possibilies:
+                print(f"Calculated N = {n}, Size = {Size}, Laminado : 3")
 
     Combinacoes_Laminado_3 = tuple(Combinacoes_Laminado_3)
     return (
@@ -245,6 +245,7 @@ def temp_f(bm):
                  
 
 if __name__ == "__main__":
+    
     freeze_support()
     Minimo = 10e100
     Gap_Number = len(Laminado3_Lista)* Espessura_B_Limits["divisions"]
