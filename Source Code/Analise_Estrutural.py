@@ -10,12 +10,14 @@ NUMERO_DE_PONTOS = 50
 Plotting = True
 import matplotlib.pyplot as plt
 
-def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
+def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos, Laminados):
     Altura_Media, Diametro_Medio = Propriadades_Seccao.Geometria_Media
     Centroide_X, Centroide_Y = Propriadades_Seccao.Centroide
     I_xx, I_yy, Ixy = Propriadades_Seccao.Segundo_Momentos_De_Area
     Ex_1,Ex_2,Ex_3 = Propriadades_Seccao.Elasticidades
     T1,T2,A3 = Propriadades_Seccao.Espessuras
+
+    Laminado_1,Laminado_2,Laminado_3 = Laminados 
     
     Raio_Medio = Diametro_Medio/2
     
@@ -74,9 +76,9 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         
         Tensao_de_Corte = Fluxo_Corte/T2
         
-        # FS_Falha = (Tensao_Direta, 0, Tensao_de_Corte)
-        # if FS_Falha > 1:
-            # return FS_Falha
+        FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
+        if FS_Falha == 1:
+            return 1
         
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -93,9 +95,9 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(Ponto_S*Y3*T1 + T1*0.5*Ponto_S**2 + A3*Y3) + Constante_B_Corte*(T1*X3*Ponto_S+A3*X3)) + Qb3
         Tensao_de_Corte = Fluxo_Corte/T1
         
-        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
-        # if FS_Falha > 1:
-            # return FS_Falha
+        FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+        if FS_Falha == 1:
+            return 1
             
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -112,9 +114,9 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*Ponto_S + T1*(Raio_Medio**2)*(1-math.cos(Ponto_S)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(Ponto_S)+A3*X4)) + Qb4
         Tensao_de_Corte = Fluxo_Corte/T1
         
-        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
-        # if FS_Falha > 1:
-            # return FS_Falha
+        FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+        if FS_Falha == 1:
+            return 1
             
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -131,9 +133,9 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*(Y1*Ponto_S - 0.5*Ponto_S**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Ponto_S + A3*X1)) + Qb1
         Tensao_de_Corte = Fluxo_Corte/T1
         
-        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
-        # if FS_Falha > 1:
-            # return FS_Falha
+        FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+        if FS_Falha == 1:
+            return 1
             
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -150,9 +152,9 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         Fluxo_Corte = Ex_2 * (Constante_A_Corte*(T2*Y2*Ponto_S + A3*Y2) + Constante_B_Corte*(T2*(X2*Ponto_S - 0.5*Ponto_S**2) + A3*X2)) + Qb2
         Tensao_de_Corte = Fluxo_Corte/T2
         
-        # FS_Falha = Teste_de_falha.Falha(Tensao_Direta, 0, Tensao_de_Corte)
-        # if FS_Falha > 1:
-            # return FS_Falha
+        FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
+        if FS_Falha == 1:
+            return 1
             
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -161,6 +163,14 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         
     QbC = Fluxo_Corte
     print(Qb1,Qb2,Qb3,Qb4,QbC)
+
+    # TORSÃO E DEFLEXÃO
+
+    # Torção 
+    Taxa_Torcao = (I_C3 + I_2C) / T2 + (I_34 + I_41 + I_12) / T1 + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / T1 + (2 * Raio_Medio) / T2)
+
+    # Deflexão
+    
     
     # return FS_Falha
     
@@ -174,3 +184,5 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
         ax.set_proj_type("ortho")
 
         plt.show()
+
+    return 0, Taxa_Torcao, Taxa_Deflecao

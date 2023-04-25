@@ -38,22 +38,26 @@ def Definir_Propriadades(z,Laminados, b):
     A_vertical_i = 2*(h_altura_i*Espessura_laminado1)
     A_tensores_i = 4*Area_laminado3
     A_total_i = A_semicircuf_i + A_horizontal_i + A_vertical_i + A_tensores_i  
-    A_total_with_rho = A_semicircuf_i*rho_1 + A_horizontal_i*rho_2 + A_vertical_i*rho_1 + A_tensores_i*rho_3
+    #A_total_with_rho = A_semicircuf_i*rho_1 + A_horizontal_i*rho_2 + A_vertical_i*rho_1 + A_tensores_i*rho_3
+    A_total_with_Ez = A_semicircuf_i*Ez_1 + A_horizontal_i*Ez_2 + A_vertical_i*Ez_1 + A_tensores_i*Ez_3
+    
 
     y_semicircuf_i = w_diametro_ii/math.pi
     y_horizontal_i = (-h_altura_ii)
     y_vertical_i = (-h_altura_i/2)
     y_tensores_i = (-h_altura_ii/2)
     y_CG= (A_semicircuf_i*y_semicircuf_i + A_horizontal_i*y_horizontal_i + A_vertical_i*y_vertical_i + A_tensores_i*y_tensores_i)/A_total_i
-    #y_CG = (rho_1*A_semicircuf_i*y_semicircuf_i + rho_2*A_horizontal_i*y_horizontal_i + rho_1*A_vertical_i*y_vertical_i + rho_3*A_tensores_i*y_tensores_i)/A_total_with_rho
-    
+    y_CG_with_Ez = (Ez_1*A_semicircuf_i*y_semicircuf_i + Ez_2*A_horizontal_i*y_horizontal_i + Ez_1*A_vertical_i*y_vertical_i + Ez_3*A_tensores_i*y_tensores_i)/A_total_with_Ez
+    y_CG = y_CG_with_Ez
+
     x_semicircuf_i = 0
     x_horizontal_i = 0
     x_vertical_i = 0
     x_tensores_i = 0
     x_CG = (A_semicircuf_i*x_semicircuf_i + A_horizontal_i*x_horizontal_i + A_vertical_i*x_vertical_i + A_tensores_i*x_tensores_i)/A_total_i
-    #x_CG = (rho_1*A_semicircuf_i*x_semicircuf_i + rho_2*A_horizontal_i*x_horizontal_i + rho_1*A_vertical_i*x_vertical_i + rho_3*A_tensores_i*x_tensores_i)/A_total_with_rho
-
+    x_CG_with_Ez = (Ez_1*A_semicircuf_i*x_semicircuf_i + Ez_2*A_horizontal_i*x_horizontal_i + Ez_1*A_vertical_i*x_vertical_i + Ez_3*A_tensores_i*x_tensores_i)/A_total_with_Ez
+    x_CG = x_CG_with_Ez
+    
     distancia_y_semicircuf_i = y_semicircuf_i - y_CG
     distancia_y_horizontal_i = y_horizontal_i - y_CG
     distancia_y_vertical_i = y_vertical_i - y_CG

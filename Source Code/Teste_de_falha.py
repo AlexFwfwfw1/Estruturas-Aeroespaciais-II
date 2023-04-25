@@ -8,17 +8,19 @@ import numpy as np
 Lista = 1
 n = 3
 
-def Tensoes_Eixos_Laminado(Tensao_x, Tensao_y, Tensao_xy, Laminado):
+FS = 1.5 #com Fator de Segurança
+
+def Tensoes_Eixos_Camada(Tensao_x, Tensao_y, Tensao_xy, Laminado):
     #Esta Matriz Tensao tem todas as 
     Matriz_Tensao = Laminado.Matriz_Stress
-    Array_Stress = np.array([Tensao_x, Tensao_y, Tensao_xy])
+    Array_Tensao = np.array([Tensao_x, Tensao_y, Tensao_xy])
     for i in range(np.shape(Matriz_Tensao)[0]):
         for j in range(np.shape(Matriz_Tensao)[1]):
             #Obter Tensoes nos Eixos
-            Stress_Nos_Eixos = np.matmul(Matriz_Tensao[i,j],Array_Stress) 
-            Sigma_1 ,Sigma_2, Sigma_12 = tuple(Stress_Nos_Eixos) 
+            Tensao_Nos_Eixos = FS * np.matmul(Matriz_Tensao[i,j],Array_Tensao) 
+            Tensao_1 ,Tensao_2, Tensao_12 = tuple(Tensao_Nos_Eixos) 
             #Criterio de Falha
-            if Tensao_Max(Sigma_1 ,Sigma_2, Sigma_12) >= 1 or Tsai_Hill(Sigma_1 ,Sigma_2, Sigma_12) >= 1 or Hoffman(Sigma_1 ,Sigma_2, Sigma_12) >= 1:
+            if Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12) == 1 or Hoffman(Tensao_1 ,Tensao_2, Tensao_12) == 1 or Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12) == 1 :
                 return 1  #FALHOU!
     return 0
 
@@ -71,7 +73,7 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, i):
         else: falho_12 = 0
 
     # Esforco = Esforco_1, Esforco_2, Esforco_12
-    Tensao_maxima = falho_1, falho_2, falho_12
+    Tensao_maxima = max(falho_1, falho_2, falho_12)
 
     return Tensao_maxima
 
