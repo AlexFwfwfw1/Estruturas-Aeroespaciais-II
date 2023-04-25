@@ -25,9 +25,6 @@ def Analise_Total(Propriadades_Seccao, Forcas_Afilamento, Momentos):
     Forca_SX_W, Forca_SY_W = Forcas_Afilamento
     Momento_X, Momento_Y = Momentos
     
-    Forca_SX_W = 0
-    Ex_1 = Ex_2
-    
     Constante_A_Direta = (Momento_Y / I_yy)
     Constante_B_Direta = (Momento_X / I_xx)
     
