@@ -17,7 +17,7 @@ from tqdm import tqdm
 Laminado_1_Limits = {"N_Min": 1, "N_Max": 8}
 Laminado_2_Limits = Laminado_1_Limits
 Laminado_3_Limits = {"N_Min": 1, "N_Max": 8}
-Espessura_B_Limits = {"b_min": 0.001, "b_max": 0.01, "divisions": 10}
+Espessura_B_Limits = {"b_min": 0, "b_max": 0.01, "divisions": 10}
 
 FAZER_IMPAR = False
 
