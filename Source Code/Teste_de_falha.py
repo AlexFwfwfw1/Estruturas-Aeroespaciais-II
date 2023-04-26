@@ -13,6 +13,7 @@ def Tensoes_Eixos_Camada(Tensao_x, Tensao_y, Tensao_xy, Laminado):
         Matriz_Tensao,Material = Camada
         Tensao_Nos_Eixos = FS * np.matmul(Matriz_Tensao,Array_Tensao) 
         Tensao_1 ,Tensao_2, Tensao_12 = tuple(Tensao_Nos_Eixos) 
+
         
         #Criterio de Falha
         if Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material) == 1 or Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material) == 1 or Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material) == 1 :
