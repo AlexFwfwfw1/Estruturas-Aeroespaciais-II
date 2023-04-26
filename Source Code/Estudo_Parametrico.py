@@ -7,7 +7,8 @@ import itertools
 
 import Massa_E_Custo
 
-from multiprocessing import Pool, cpu_count, freeze_support
+from multiprocessing import Pool, cpu_count, freeze_support, shared_memory
+from multiprocessing.managers import SharedMemoryManager
 from alive_progress import alive_bar
 
 from tqdm import tqdm
@@ -216,9 +217,17 @@ Possibilities_Number = (
 ) = Massa_E_Custo.Precalcular_Funcao_Minimo(Laminado1_Lista, Laminado2_Lista, Laminado3_Lista)
 
 
+
 def temp_f(bm):
-    Espessura, Lam_3 = bm
-    Min = 10e100
+    
+    Espessura, Lam_3, Shared_Memory = bm
+    if Multiprocessing:
+        existing_shm = shared_memory.ShareableList(name=Shared_Memory)
+        Min = existing_shm[0]
+        print(Min)
+        
+    Sim_Started = 0
+    Combinacao_Minimo = None
     for Lam_1 in range(len(Laminado1_Lista)):
         for Lam_2 in range(len(Laminado2_Lista)):
             
@@ -231,19 +240,21 @@ def temp_f(bm):
                 Custo_3[Lam_3],
                 Espessura,
             )
-            # print(Funcao_Minimizacao)
+            
             if Funcao_Minimizacao < Min:
+                Sim_Started += 1
                 Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
-                if Falha == 1:
+                if Falha == 0:
                     Min = Funcao_Minimizacao
                     Combinacao_Minimo = Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura
-               
-    return Min, Combinacao_Minimo
+        
+    if Multiprocessing:
+        existing_shm[0] = float(Min)
+    return Min, Combinacao_Minimo, Sim_Started 
                  
 
 if __name__ == "__main__":
     
-    Minimo = 10e100
     Gap_Number = len(Laminado3_Lista)* Espessura_B_Limits["divisions"]
     Total = len(Laminado1_Lista)*len(Laminado2_Lista)
     
@@ -255,11 +266,21 @@ if __name__ == "__main__":
             
     if Multiprocessing:
         freeze_support()
+        with SharedMemoryManager() as smm:
+            Minimo = smm.ShareableList([10e100])
+            Name = Minimo.shm.name
+            print(Name)
+            
+            Core_List_Arguments = []
+            for Espessura in Espessuras_B_Possiveis:
+                for Lam_3 in range(len(Laminado3_Lista)):
+                    Core_List_Arguments.append((Espessura, Lam_3, Name))
+       
     
-        Results = []
-        with Pool(processes=cpu_count()) as Multi_Core_Process:
-            for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments),colour="blue",unit = " Simulacoes", dynamic_ncols = True,unit_scale = Total, total= Gap_Number, desc = "Estudo Paramétrico"):
-                Results.append(result)
+            Results = []
+            with Pool(processes=cpu_count()) as Multi_Core_Process:
+                for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments),colour="blue",unit = " Simulacoes", dynamic_ncols = True,unit_scale = Total, total= Gap_Number, desc = "Estudo Paramétrico"):
+                    Results.append(result)
     else:
         Results = []
         with alive_bar(total = Total*Gap_Number) as bar:
@@ -269,6 +290,7 @@ if __name__ == "__main__":
                 
     Best_Simulation = sorted(Results,key=lambda x: x[0])[0]
     Lam1_R,Lam2_R,Lam3_R, Espessura = Best_Simulation[1]
+    Sim_Started = sum([pair[2] for pair in Results])
         
     print("Estudo Paramétrico: Simulacao Completa.")
     print(f"Mass/Cost Function: {Best_Simulation[0]}")
@@ -279,8 +301,9 @@ if __name__ == "__main__":
     print(Lam2_R)
     print(f"Laminado 3: ")
     print(Lam3_R)
-    print(f"Espessura B: ")
-    print(Espessura)
+    print(f"Espessura B: {Espessura}")
+    
+    print(f"Ammount of Simulations Calculated: {Sim_Started} from {Total*Gap_Number} Combinations")
     
     
     

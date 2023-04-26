@@ -55,11 +55,10 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material):
             falho_2 = 1
         else : falho_2 = 0
 
-    if Tensao_12 != 0 :
-        # Esforco_12 = "Corte"
-        if abs(Tensao_12)/Material.S >=1:
-            falho_12 = 1
-        else: falho_12 = 0
+    # Esforco_12 = "Corte"
+    if abs(Tensao_12)/Material.S >=1:
+        falho_12 = 1
+    else: falho_12 = 0
 
     # Esforco = Esforco_1, Esforco_2, Esforco_12
     Tensao_maxima = max(falho_1, falho_2, falho_12)

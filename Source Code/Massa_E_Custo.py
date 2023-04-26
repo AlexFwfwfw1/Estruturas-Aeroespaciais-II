@@ -3,25 +3,23 @@ from math import pi
 
 import numpy as np
 
-NUMERO_DE_SECCOES = 10
+NUMERO_DE_SECCOES = 200
 
 h_altura = [0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM) for z in np.linspace(0, COMPRIMENTO_FUSELAGEM, NUMERO_DE_SECCOES)]
 w_diametro = [1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM) for z in np.linspace(0, COMPRIMENTO_FUSELAGEM, NUMERO_DE_SECCOES)]
 
-A_semicircuf_i = sum([w_diametro_i for w_diametro_i in  w_diametro])
+W_Diametro_Sum = sum([w_diametro_i for w_diametro_i in  w_diametro])
 #A_horizontal_i = A_semicircuf_i
-A_vertical_i = sum([h_altura_i for h_altura_i in  h_altura])
+H_Altura_Sum = sum([h_altura_i for h_altura_i in  h_altura])
 
 # h_altura = array(h_altura)
 # w_diametro = array(w_diametro)
 
 Pace_Z = COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES
 
-K = 4* COMPRIMENTO_FUSELAGEM
-K2 =-K
-K3 = pi*0.5*A_semicircuf_i* Pace_Z
-K4 = 2*A_semicircuf_i* Pace_Z
-K5= 2*A_vertical_i* Pace_Z
+K1 = ESPESSURA_CAMADA*Pace_Z*H_Altura_Sum + ESPESSURA_CAMADA*Pace_Z*pi*0.5*W_Diametro_Sum
+K2 = ESPESSURA_CAMADA*Pace_Z*W_Diametro_Sum
+K3 = ESPESSURA_CAMADA*COMPRIMENTO_FUSELAGEM
 
 rho_Hs = 1600
 rho_Hf = 1600
@@ -43,8 +41,8 @@ def Precalcular_Funcao_Minimo(Laminado1, Laminado2, Laminado3):
     return Massa_laminado1, Massa_laminado2, Massa_laminado3, Custo_laminado1, Custo_laminado2, Custo_laminado3
     
 def Massa(Massa_laminado1, Massa_laminado2, Massa_laminado3, Custo_laminado1, Custo_laminado2, Custo_laminado3, Espessura):
-    M_Total = Massa_laminado1*K3 + Massa_laminado2*K2*Massa_laminado1 + Massa_laminado2*K4 + K5*Massa_laminado1 + Massa_laminado3*Espessura*K
-    C_Total = Custo_laminado1*K3 + Custo_laminado2*K2*Custo_laminado1 + Custo_laminado2*K4 + K5*Custo_laminado1 + Custo_laminado3*Espessura*K
+    M_Total = Massa_laminado1*K1 + Massa_laminado2*K2+ Massa_laminado3*Espessura*K3
+    C_Total = Custo_laminado1*K1 + Custo_laminado2*K2+ Custo_laminado3*Espessura*K3
     
     return M_Total*0.6 + 0.004*C_Total
     
