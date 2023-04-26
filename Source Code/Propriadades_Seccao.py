@@ -14,19 +14,16 @@ class Propriadades_Seccao_Objeto:
         
 
 def Definir_Propriadades(z,Laminados, b):
-
-    Espessura_laminado1 = Laminados[0].Espessura
-    Espessura_laminado2 = Laminados[1].Espessura
-    Espessura_laminado3 = Laminados[2].Espessura
-    Area_laminado3 = b * Laminados[2].Espessura
-
-    Ez_1 = Laminados[0].Ex
-    Ez_2 = Laminados[1].Ex
-    Ez_3 = Laminados[2].Ex
     
-    rho_1 = Laminados[0].rho
-    rho_2 = Laminados[1].rho
-    rho_3 = Laminados[2].rho
+    Laminado_1,Laminado_2,Laminado_3 = Laminados 
+
+    Espessura_laminado1 = Laminado_1.Espessura_Total
+    Espessura_laminado2 = Laminado_2.Espessura_Total
+    Area_laminado3 = Laminado_3.Espessura_Total*b
+
+    Ez_1 = Laminado_1.Ex
+    Ez_2 = Laminado_2.Ex
+    Ez_3 = Laminado_3.Ex
 
     h_altura_i = 0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM)
     w_diametro_i = 1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM)
@@ -72,13 +69,13 @@ def Definir_Propriadades(z,Laminados, b):
     Ixx_semicircuf_i = Ez_1 * math.pi/128 * (w_diametro_i**4 - (w_diametro_i - 2*Espessura_laminado1)**4) - A_semicircuf_i * y_semicircuf_i**2 + A_semicircuf_i * (distancia_y_semicircuf_i)**2
     Ixx_vertical_i =   Ez_1 * 2 * ((Espessura_laminado1 * h_altura_i**3)/12 + Espessura_laminado1 * h_altura_i * distancia_y_vertical_i**2) ## TAMBEM TINHA ERRO
     Ixx_horizontal_i = Ez_2 *  (w_diametro_ii - Espessura_laminado1) * Espessura_laminado2 * distancia_y_horizontal_i**2
-    Ixx_tensores_i =   Ez_3 * 2 * (Espessura_laminado3 * b) * (distancia_y_tensoresUp_i**2 + distancia_y_tensoresDown_i**2)
+    Ixx_tensores_i =   Ez_3 * 2 * (Area_laminado3) * (distancia_y_tensoresUp_i**2 + distancia_y_tensoresDown_i**2)
     Ixx_total_i = Ixx_semicircuf_i + Ixx_vertical_i + Ixx_horizontal_i + Ixx_tensores_i
 
     Iyy_semicircuf_i = Ez_1 * math.pi/128 * (w_diametro_i**4 - (w_diametro_i - 2*Espessura_laminado1)**4)
     Iyy_vertical_i =   Ez_1 * 2 * h_altura_i * Espessura_laminado1 * distancia_x_vertical_i**2
     Iyy_horizontal_i = Ez_2 * (Espessura_laminado2 * (w_diametro_ii - Espessura_laminado1)**3) /12
-    Iyy_tensores_i =   Ez_3 * 4 * (Espessura_laminado3 * b * distancia_x_tensores_i**2)
+    Iyy_tensores_i =   Ez_3 * 4 * (Area_laminado3 * distancia_x_tensores_i**2)
     Iyy_total_i = Iyy_semicircuf_i + Iyy_vertical_i + Iyy_horizontal_i + Iyy_tensores_i
 
     # Ixy_semicircuf_i = 0

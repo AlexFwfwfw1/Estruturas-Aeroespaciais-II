@@ -3,7 +3,7 @@ from math import pi
 
 import numpy as np
 
-NUMERO_DE_SECCOES = 200
+NUMERO_DE_SECCOES = 10
 
 h_altura = [0.9*(1-0.5*z/COMPRIMENTO_FUSELAGEM) for z in np.linspace(0, COMPRIMENTO_FUSELAGEM, NUMERO_DE_SECCOES)]
 w_diametro = [1.5*(1-0.7*z/COMPRIMENTO_FUSELAGEM) for z in np.linspace(0, COMPRIMENTO_FUSELAGEM, NUMERO_DE_SECCOES)]
@@ -17,8 +17,8 @@ A_vertical_i = sum([h_altura_i for h_altura_i in  h_altura])
 
 Pace_Z = COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES
 
-K = NUMERO_DE_SECCOES*4* Pace_Z
-K2 =-4*NUMERO_DE_SECCOES* Pace_Z
+K = 4* COMPRIMENTO_FUSELAGEM
+K2 =-K
 K3 = pi*0.5*A_semicircuf_i* Pace_Z
 K4 = 2*A_semicircuf_i* Pace_Z
 K5= 2*A_vertical_i* Pace_Z

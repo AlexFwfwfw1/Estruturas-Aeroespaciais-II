@@ -8,6 +8,7 @@ import itertools
 import Massa_E_Custo
 
 from multiprocessing import Pool, cpu_count, freeze_support
+from alive_progress import alive_bar
 
 from tqdm import tqdm
 
@@ -17,11 +18,9 @@ Laminado_2_Limits = Laminado_1_Limits
 Laminado_3_Limits = {"N_Min": 1, "N_Max": 8}
 Espessura_B_Limits = {"b_min": 0.001, "b_max": 0.01, "divisions": 10}
 
-FATOR_SEGURANCA_FALHA = 1.5
-FATOR_SEGURANCA_DEFLEXAO = 1.0
+FAZER_IMPAR = False
 
-FAZER_IMPAR = True
-
+Multiprocessing = True
 Print_Possibilies = False
 
 
@@ -32,11 +31,7 @@ i_Angulos_Possiveis = len(Angulos_Possiveis)
 
 # Tem em conta materiais
 
-Materiais_Possiveis = (
-    Materiais.MATERIAL_CFRP_HS,
-    Materiais.MATERIAL_CFRP_HM,
-    Materiais.MATERIAL_GFRP,
-)
+Materiais_Possiveis = Materiais.Materials_List
 
 j_Materiais_Possiveis = len(Materiais_Possiveis)
 
@@ -47,7 +42,7 @@ Espessuras_B_Possiveis = np.linspace(
     )
 
 Matriz_K_Possbilities,Matriz_Theta_Possibilidades = Definicao_Laminado.Obter_Matriz_K_Possibilities(Angulos_Possiveis, Materiais_Possiveis)
-
+Dados_Precomputados = (Matriz_K_Possbilities,Matriz_Theta_Possibilidades)
 def laminado_simetrico(n, i, j):
 
     Matriz_A_List = []
@@ -102,6 +97,7 @@ def laminado_simetrico(n, i, j):
 
     # Com isto podemos multiplicar por dois para obter o laminado simetrico.
     Combinacoes_Soma_N_Unica_Simetrica = Combinacoes_Soma_N_Unica * 2
+    # print(np.shape(Combinacoes_Soma_N))
     return Combinacoes_Soma_N_Unica_Simetrica
 
 
@@ -130,7 +126,7 @@ def Obter_Combinacoes():
 
     # LAMINADO 1 E 2. Tem as mesmas possibilidades.
     Combinacoes_N_Par = None
-    Combinacoes_Laminado_1_2 = np.zeros((1, i_Angulos_Possiveis, j_Materiais_Possiveis))
+    Combinacoes_Laminado_1_2 = np.zeros((0, i_Angulos_Possiveis, j_Materiais_Possiveis))
     for n in range(Laminado_1_Limits["N_Min"], Laminado_1_Limits["N_Max"]):
         if n % 2 == 0:
             Combinacoes_N_Par = laminado_simetrico(
@@ -165,7 +161,7 @@ def Obter_Combinacoes():
 
     # LAMINADO 3
     # Aqui os angulos possiveis é apenas 1. O a zero graus.
-    Combinacoes_Laminado_3 = np.zeros((1, 1, j_Materiais_Possiveis))
+    Combinacoes_Laminado_3 = np.zeros((0, 1, j_Materiais_Possiveis))
     for n in range(Laminado_3_Limits["N_Min"], Laminado_3_Limits["N_Max"]):
 
         if n % 2 == 0:
@@ -225,6 +221,7 @@ def temp_f(bm):
     Min = 10e100
     for Lam_1 in range(len(Laminado1_Lista)):
         for Lam_2 in range(len(Laminado2_Lista)):
+            
             Funcao_Minimizacao = Massa_E_Custo.Massa(
                 Massa_1[Lam_1],
                 Massa_2[Lam_2],
@@ -234,33 +231,56 @@ def temp_f(bm):
                 Custo_3[Lam_3],
                 Espessura,
             )
-            # if Funcao_Minimizacao < Minimo:
-            #     Falha, Deflexao = Main.Simulacao(Laminado1, Laminado2, Laminado3, Espessura)
-            #     if Falha > FATOR_SEGURANCA_FALHA and Deflexao > FATOR_SEGURANCA_DEFLEXAO:
-            #         Minimo = Funcao_Minimizacao
-            #         file.write(Laminado1, Laminado2, Laminado3, Espessura, Falha, Deflexao)
-            #         Combinacao_Minimo = Laminado1, Laminado2, Laminado3, Espessura
+            # print(Funcao_Minimizacao)
+            if Funcao_Minimizacao < Min:
+                Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
+                if Falha == 1:
+                    Min = Funcao_Minimizacao
+                    Combinacao_Minimo = Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura
                
-    return Min
+    return Min, Combinacao_Minimo
                  
 
 if __name__ == "__main__":
     
-    freeze_support()
     Minimo = 10e100
     Gap_Number = len(Laminado3_Lista)* Espessura_B_Limits["divisions"]
     Total = len(Laminado1_Lista)*len(Laminado2_Lista)
+    
     Core_List_Arguments = []
-         
+        
     for Espessura in Espessuras_B_Possiveis:
         for Lam_3 in range(len(Laminado3_Lista)):
             Core_List_Arguments.append((Espessura, Lam_3))
-
-    Results = []
-    with Pool(processes=cpu_count()) as Multi_Core_Process:
-        for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments),colour="blue",unit = " Simulacoes", dynamic_ncols = True,unit_scale = Total, total= Gap_Number, desc = "Estudo Paramétrico"):
-            Results.append(result)
+            
+    if Multiprocessing:
+        freeze_support()
+    
+        Results = []
+        with Pool(processes=cpu_count()) as Multi_Core_Process:
+            for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments),colour="blue",unit = " Simulacoes", dynamic_ncols = True,unit_scale = Total, total= Gap_Number, desc = "Estudo Paramétrico"):
+                Results.append(result)
+    else:
+        Results = []
+        with alive_bar(total = Total*Gap_Number) as bar:
+            for Core in Core_List_Arguments:
+                Results.append(temp_f(Core))
+                bar(Total)
+                
+    Best_Simulation = sorted(Results,key=lambda x: x[0])[0]
+    Lam1_R,Lam2_R,Lam3_R, Espessura = Best_Simulation[1]
         
-        # Resultados = Multi_Core_Process.starmap(temp_f, Core_List_Arguments )
     print("Estudo Paramétrico: Simulacao Completa.")
-    print(Results)
+    print(f"Mass/Cost Function: {Best_Simulation[0]}")
+    
+    print(f"Laminado 1: ")
+    print(Lam1_R)
+    print(f"Laminado 2: ")
+    print(Lam2_R)
+    print(f"Laminado 3: ")
+    print(Lam3_R)
+    print(f"Espessura B: ")
+    print(Espessura)
+    
+    
+    

@@ -28,27 +28,23 @@ class Laminado_Class:
         self.Num_Camadas = np.sum(self.Matriz_Laminado)
         
         self.Espessura_Total = Espessura_Camada*self.Num_Camadas
-        self.Matriz_K_Laminado = np.zeros(np.shape(self.Matriz_Laminado))
-        self.Matriz_Stress = np.zeros(np.shape(self.Matriz_Laminado))
+        Shape_Lam = np.shape(self.Matriz_Laminado)
+        self.Matriz_K_Laminado = np.zeros((Shape_Lam[0],Shape_Lam[1],3,3))
         
-        for i in range(np.shape(self.Matriz_Laminado)[0]):
-            for j in range(np.shape(self.Matriz_Laminado)[1]):
-                self.Matriz_K_Laminado[i,j] = Matriz_K_Possibilities[i,j]*self.Matriz_Laminado[i,j]
-
-        print(self.Matriz_K_Laminado)
-        print(np.shape(self.Matriz_K_Laminado))
-        self.Matriz_A = np.sum(self.Matriz_K_Laminado, axis = 3)
+        for i in range(Shape_Lam[0]):
+            for j in range(Shape_Lam[1]):
+                self.Matriz_K_Laminado[i,j] = Matriz_K_Possibilities[i,j]* self.Matriz_Laminado[i,j]
+        self.Matriz_A = np.sum(np.sum(self.Matriz_K_Laminado, axis = 0),axis = 0)
         self.Matriz_A = Espessura_Camada * np.array(self.Matriz_A)
         
         self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
 
-        for i in range(np.shape(self.Matriz_Laminado)[0]):
-            for j in range(np.shape(self.Matriz_Laminado)[1]):
+        self.List_Matriz_Stress = []
+        for i in range(Shape_Lam[0]):
+            for j in range(Shape_Lam[1]):
                 if self.Matriz_Laminado[i,j] == 0:
-                    self.Matriz_Stress[i,j] = 0
-                else:
-                    self.Matriz_Stress[i,j] = np.matmul(Matriz_K_Possibilities[i,j], self.Matriz_A_Inversa)
-                    self.Matriz_Stress[i,j] = self.Espessura_Total*np.matmul(Matriz_Theta_Possibilidades[i,j], self.Matriz_Stress[i,j])
+                    continue
+                self.List_Matriz_Stress.append((self.Espessura_Total*np.matmul(Matriz_Theta_Possibilidades[i,j], np.matmul(Matriz_K_Possibilities[i,j], self.Matriz_A_Inversa)), Materials_List[j]))
                 
 
 def Obter_Matriz_K_Barra(Material, angulo):
@@ -98,12 +94,12 @@ def Obter_Matriz_K_Barra(Material, angulo):
     
 def Obter_Matriz_K_Possibilities(Possible_Angles, Possible_Materials):
 
-    Matriz_K_Possibilities = np.zeros((len(Possible_Angles),len(Possible_Materials)))
-    Matriz_Theta_Possibilidades = np.zeros((len(Possible_Angles),len(Possible_Materials)))
+    Matriz_K_Possibilities = np.zeros((len(Possible_Angles),len(Possible_Materials), 3, 3))
+    Matriz_Theta_Possibilidades = np.zeros((len(Possible_Angles),len(Possible_Materials), 3, 3))
     
     for Angle in range(0,len(Possible_Angles)):
         for Material in range(0,len(Possible_Materials)):
-            Matriz_K_Camada,Matriz_Theta = Obter_Matriz_K_Barra(Possible_Angles[Angle], Possible_Materials[Material])
+            Matriz_K_Camada,Matriz_Theta = Obter_Matriz_K_Barra(Possible_Materials[Material], Possible_Angles[Angle])
             Matriz_K_Possibilities[Angle,Material] = Matriz_K_Camada
             Matriz_Theta_Possibilidades[Angle,Material] = Matriz_Theta
     
