@@ -7,7 +7,7 @@ import numpy as np
 NUMERO_DE_PONTOS = 50
 
 # TEM DE SER UM FUNCAO AO CENTROIDE
-Plotting = False
+Plotting = True
 Falha = True
 import matplotlib.pyplot as plt
 
@@ -75,7 +75,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Tensao_Direta = Ex_2 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
         Fluxo_Corte = Ex_2 * (Constante_A_Corte*Ponto_S*Y2*T2 + Constante_B_Corte*T2*(-0.5*Ponto_S**2))
         
-        Tensao_de_Corte = Fluxo_Corte/T2
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
+        
         if Falha:
             FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
             if FS_Falha == 1:
@@ -94,7 +95,9 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Coordenada_Y = - Altura_Media + Ponto_S - Centroide_Y
         Tensao_Direta = Ex_1 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(Ponto_S*Y3*T1 + T1*0.5*Ponto_S**2 + A3*Y3) + Constante_B_Corte*(T1*X3*Ponto_S+A3*X3)) + Qb3
-        Tensao_de_Corte = Fluxo_Corte/T1
+       
+        
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
             FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
             if FS_Falha == 1:
@@ -113,7 +116,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Tensao_Direta = Ex_1 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
         
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*Ponto_S + T1*(Raio_Medio**2)*(1-math.cos(Ponto_S)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(Ponto_S)+A3*X4)) + Qb4
-        Tensao_de_Corte = Fluxo_Corte/T1
+        
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
             FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
             if FS_Falha == 1:
@@ -132,7 +136,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Tensao_Direta = Ex_1 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
         
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*(Y1*Ponto_S - 0.5*Ponto_S**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Ponto_S + A3*X1)) + Qb1
-        Tensao_de_Corte = Fluxo_Corte/T1
+        
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
             FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
             if FS_Falha == 1:
@@ -151,7 +156,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Tensao_Direta = Ex_2 * (Constante_A_Direta*Coordenada_X + Constante_B_Direta*Coordenada_Y)
         
         Fluxo_Corte = Ex_2 * (Constante_A_Corte*(T2*Y2*Ponto_S + A3*Y2) + Constante_B_Corte*(T2*(X2*Ponto_S - 0.5*Ponto_S**2) + A3*X2)) + Qb2
-        Tensao_de_Corte = Fluxo_Corte/T2
+        
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
             FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
             if FS_Falha == 1:

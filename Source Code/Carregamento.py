@@ -19,8 +19,6 @@ def Obter_Forcas_e_Momentos(z):
     #Forcas em X
     #ForcaX = FORCA_HORIZONTAL
     ForcaX = FORCA_HORIZONTAL
-    #^^^^^^
-    #######ERRRRRRRADO###########
         
     #Momentos em Y
     MomentoY = FORCA_HORIZONTAL*(5.18 - z)

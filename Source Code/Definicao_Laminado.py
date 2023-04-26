@@ -4,6 +4,7 @@ import math
 
 import numpy as np
 
+
 class Laminado_Class:
     def __init__(self,Matriz_Laminado, Matriz_K_Possibilities, Matriz_Theta_Possibilidades):
         self.Matriz_Laminado = Matriz_Laminado
@@ -11,13 +12,13 @@ class Laminado_Class:
         self.Propriadades()      
         
     def Propriadades(self):
-        self.Ex = 1/(self.Espessura_Total*self.Matriz_A_Inversa[0][0])
-        self.Ey = 1/(self.Espessura_Total*self.Matriz_A_Inversa[1][1])
-        self.Gxy = 1/(self.Espessura_Total*self.Matriz_A_Inversa[2][2])
-        self.Vxy = -self.Matriz_A_Inversa[0][1]/self.Matriz_A_Inversa[0][0]
-        self.Vyx= -self.Matriz_A_Inversa[0][1]/self.Matriz_A_Inversa[1][1]
-        self.Mx = -self.Matriz_A_Inversa[0][2]/self.Matriz_A_Inversa[0][0]
-        self.My = - self.Matriz_A_Inversa[1][2]/self.Matriz_A_Inversa[1][1]
+        self.Ex = 1/(self.Espessura_Total*self.Matriz_A_Inversa[0,0])
+        self.Ey = 1/(self.Espessura_Total*self.Matriz_A_Inversa[1,1])
+        self.Gxy = 1/(self.Espessura_Total*self.Matriz_A_Inversa[2,2])
+        self.Vxy = -self.Matriz_A_Inversa[0,1]/self.Matriz_A_Inversa[0,0]
+        self.Vyx= -self.Matriz_A_Inversa[0,1]/self.Matriz_A_Inversa[1,1]
+        self.Mx = -self.Matriz_A_Inversa[0,2]/self.Matriz_A_Inversa[0,0]
+        self.My = - self.Matriz_A_Inversa[1,2]/self.Matriz_A_Inversa[1,1]
         
     def Escrever_Propriadades(self):
         print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}\nt_total : {self.t_total}")
