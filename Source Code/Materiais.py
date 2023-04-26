@@ -22,11 +22,11 @@ MATERIAL_CFRP_HS = Material_Composito(
 MATERIAL_CFRP_HM = Material_Composito(
     rho=1600, E1=180E9, E2=8E9, G12=5E9, 
     v12=0.3,  Xt=1000E6, Xc=850E6, Yt=40E6,
-    Yc =200E6,  S =120E6, Cost=120)
+    Yc =200E6,  S =60E6, Cost=120)
 
 MATERIAL_GFRP    = Material_Composito(
     rho=1900, E1=40E9, E2=8E9, G12=4E9,
     v12=0.25, Xt=1000E6, Xc=600E6, Yt=30E6,
-    Yc =110E6 , S =50E6, Cost=50)
+    Yc =110E6 , S =40E6, Cost=50)
 
 Materials_List = (MATERIAL_CFRP_HS,MATERIAL_CFRP_HM,MATERIAL_GFRP)

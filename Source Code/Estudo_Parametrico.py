@@ -304,6 +304,5 @@ if __name__ == "__main__":
     print(f"Espessura B: {Espessura}")
     
     print(f"Ammount of Simulations Calculated: {Sim_Started} from {Total*Gap_Number} Combinations")
-    
-    
+
     
