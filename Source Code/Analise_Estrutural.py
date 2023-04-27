@@ -171,16 +171,18 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     QbC = Fluxo_Corte
 
     # TORSÃO E DEFLEXÃO
-
     # Torção 
-    Taxa_Torcao = (I_C3 + I_2C) / T2 + (I_34 + I_41 + I_12) / T1 + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / T1 + (2 * Raio_Medio) / T2)
+    #G1 , G2 = Laminado_1.G12 , Laminado_2.G12
+    #Integral = 2 * (Raio_Medio / (G2 * T2) + Altura_Media / (G1 * T1)) + math.pi * Raio_Medio / (G1 * T1)
+    #GJ = 4 * A_Varrida**2 / Integral
+    #Taxa_Torcao = T / GJ
+    # Taxa_Torcao = (I_C3 + I_2C) / T2 + (I_34 + I_41 + I_12) / T1 + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / T1 + (2 * Raio_Medio) / T2)
 
     # Deflexão
     
     Taxa_Deflecao = 0 ##TEMP
     
     # return FS_Falha
-    
 
     if Plotting:
         Coords_X, Coords_Y, Coords_Z = np.array(Coords_X),np.array(Coords_Y),np.array(Coords_Z)
