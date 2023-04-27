@@ -170,17 +170,13 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
     QbC = Fluxo_Corte
 
-    # TORSÃO E DEFLEXÃO
+    # TORSÃO E DEFLEXÃO 
     # Torção 
-    #G1 , G2 = Laminado_1.G12 , Laminado_2.G12
-    #Integral = 2 * (Raio_Medio / (G2 * T2) + Altura_Media / (G1 * T1)) + math.pi * Raio_Medio / (G1 * T1)
-    #GJ = 4 * A_Varrida**2 / Integral
-    #Taxa_Torcao = T / GJ
-    # Taxa_Torcao = (I_C3 + I_2C) / T2 + (I_34 + I_41 + I_12) / T1 + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / T1 + (2 * Raio_Medio) / T2)
+    G1 , G2 = Laminado_Class.self.Gxy, Laminado_2.G12
+    Taxa_Torcao = (I_C3 + I_2C) / (G2 * T2) + (I_34 + I_41 + I_12) / (G1 * T1)  + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / (G1 * T1) + (2 * Raio_Medio) / (G2 * T2))
 
     # Deflexão
-    
-    Taxa_Deflecao = 0 ##TEMP
+    Taxa_Deflexao = Momento_X / Definir_Propriadades.Seccao[0][0]
     
     # return FS_Falha
 
