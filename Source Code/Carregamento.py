@@ -17,7 +17,6 @@ def Obter_Forcas_e_Momentos(z):
         raise ValueError(f"Lamento. A Seccao em z = {z} está fora dos limites da fuselagem.")  
         
     #Forcas em X
-    #ForcaX = FORCA_HORIZONTAL
     ForcaX = FORCA_HORIZONTAL
         
     #Momentos em Y
