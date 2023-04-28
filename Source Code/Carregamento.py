@@ -21,7 +21,7 @@ def Obter_Forcas_e_Momentos(z):
     ForcaX = FORCA_HORIZONTAL
         
     #Momentos em Y
-    MomentoY = FORCA_HORIZONTAL*(5.18 - z)
+    MomentoY = FORCA_HORIZONTAL*(COMPRIMENTO_FUSELAGEM - z)
 
     #Forcas em Y
     if 0 <= z < 0.6:
@@ -33,10 +33,10 @@ def Obter_Forcas_e_Momentos(z):
 
     #Momentos em X
     if 0 <= z < 0.6:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(5.18-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-0.6)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1)*(0.6-z)
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-0.6)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1)*(0.6-z)
     if 0.6 <= z < 2.2:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(5.18-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-z)
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-z)
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(5.18-z)
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-z)
 
     return (ForcaX,ForcaY),(MomentoX,MomentoY)

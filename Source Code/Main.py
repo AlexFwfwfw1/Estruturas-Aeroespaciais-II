@@ -8,15 +8,16 @@ import Afilamento
 import Condicoes_Iniciais
 
 import numpy as np
-
+from Configuration import NUMERO_DE_SECCOES, Debug
 from timeit import default_timer as timer
-
-NUMERO_DE_SECCOES = 20
 
 TORCAO_MAX = np.deg2rad(0.5)
 DEFLECAO_MAX = np.deg2rad(0.5)
             
 def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomputados):
+    
+    if Debug:
+        Metodo_Min = []
     
     Matriz_K_Possbilities, Matriz_Theta_Possibilidades = Dados_Precomputados
     
@@ -41,8 +42,10 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         
         #Analise_Estrutural Tensoes Diretas, Corte e Qs0 é feito em parelo de forma a poupar memoria e tempo de calculo
         Fs_Falha, Taxa_Torcao, Taxa_Deflecao = Analise_Estrutural.Analise_Total(Seccao, Forcas, Momentos, Laminados, Forcas_Afilamento)
-        if Fs_Falha == 1:
-            return 1
+        if Debug:
+            Metodo_Min.append(Fs_Falha) 
+        elif Fs_Falha == 1:
+            return 1, "Rotura"
         
         if Seccao_Z == 0 or Seccao_Z == COMPRIMENTO_FUSELAGEM:
             Torcao /= 2
@@ -50,8 +53,13 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         Torcao += Taxa_Torcao
         Deflecao += Taxa_Deflecao
     
-    if Torcao >= TORCAO_MAX or Deflecao >= DEFLECAO_MAX:
-        return 1
+    if Torcao >= TORCAO_MAX:
+        return 1, "Torcao"
+    if Deflecao >= DEFLECAO_MAX:
+        return 1, "Deflecao"
+    
+    if Debug:
+        return sorted(Metodo_Min,key=lambda x: x[0])[0], TORCAO_MAX/Torcao, DEFLECAO_MAX/Deflecao
     return 0
         
     
@@ -68,6 +76,8 @@ if __name__ == "__main__":
     Laminado_3 = Condicoes_Iniciais.Laminado_Lista_3
 
     start = timer()
-    Simulacao(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor, Dados_Precomputados)
+    Falha, Torcao, Deflecao = Simulacao(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor, Dados_Precomputados)
+    print(f"Ponto critico: {Falha[1]}, F.S : {Falha[0]} ")
+    print(f"Torcao F.S: {Torcao}, Deflecao F.S : {Deflecao} ")
     end = timer()
     print(f"Time Elapsed: {round((end-start)*1000, 5)} ms")

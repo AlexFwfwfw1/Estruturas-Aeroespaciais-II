@@ -80,15 +80,14 @@ def Obter_Matriz_K_Barra(Material, angulo):
     ])
     
     Matriz_Theta = np.matrix([
-                [m**2,               n**2,              2*n*m],
-                [n**2,               m**2,              -2*n*m],
-                [-n*m,               n*m,               m-n]
+                [m**2, n**2, 2*n*m],
+                [n**2, m**2, -2*n*m],
+                [-n*m, n*m , m-n]
                 ]) 
     
     #Matriz_Theta será necessaria nos calculos para o stress.
     
-    Matriz_Tensoes_12 =  np.matmul(Matriz_Rotacao_Inversa,Matriz_K)
-    Matriz_K_Barra = np.matmul(Matriz_Tensoes_12, Matriz_Rotacao)
+    Matriz_K_Barra = np.matmul(Matriz_Rotacao_Inversa, np.matmul(Matriz_K,Matriz_Rotacao))
     
     return Matriz_K_Barra,Matriz_Theta
     

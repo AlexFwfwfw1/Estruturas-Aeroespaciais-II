@@ -4,11 +4,8 @@ import Teste_de_falha
 import math
 import numpy as np
 
-NUMERO_DE_PONTOS = 50
+from Configuration import NUMERO_DE_PONTOS, Plotting, Falha, Debug
 
-# TEM DE SER UM FUNCAO AO CENTROIDE
-Plotting = True
-Falha = True
 import matplotlib.pyplot as plt
 
 def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afilamento):
@@ -35,6 +32,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     Py_1, Py_2, Py_3, Py_4 = Py 
     Momento_X, Momento_Y = Momentos
     
+    Forca_SX_W = 0
+    
     Constante_A_Direta = (Momento_Y / I_yy)
     Constante_B_Direta = (Momento_X / I_xx)
     
@@ -43,18 +42,18 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
 
     Coords_X,Coords_Y,Coords_Z = [],[],[]
 
-    Qb3 = Ex_1 * (Constante_A_Corte*Raio_Medio*Y2*T2 + Constante_B_Corte*T2*(-0.5*Raio_Medio**2))
+    Qb3 = Ex_2 * (Constante_A_Corte*Raio_Medio*Y2*T2 + Constante_B_Corte*T2*(-0.5*Raio_Medio**2))
     Qb4 = Ex_1 * (Constante_A_Corte*(Altura_Media*Y3*T1 + T1*0.5*Altura_Media**2 + A3*Y3) + Constante_B_Corte*(T1*X3*Altura_Media+A3*X3)) +Qb3
     Qb1 = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*math.pi + T1*(Raio_Medio**2)*(1-math.cos(math.pi)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(math.pi)+A3*X4)) +Qb4
     #Qbm = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*math.pi/2 + T1*(Raio_Medio**2)*(1-math.cos(math.pi/2)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(math.pi/2)+A3*X4)) +Qb4
     Qb2 = Ex_1 * (Constante_A_Corte*(T1*(Y1*Altura_Media - 0.5*Altura_Media**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Altura_Media + A3*X1)) + Qb1
-    QbC = Ex_1 * (Constante_A_Corte*(T2*Y2*Raio_Medio + A3*Y2) + Constante_B_Corte*(T2*(X2*Raio_Medio - 0.5*Raio_Medio**2) + A3*X2)) +Qb2 
+    QbC = Ex_2 * (Constante_A_Corte*(T2*Y2*Raio_Medio + A3*Y2) + Constante_B_Corte*(T2*(X2*Raio_Medio - 0.5*Raio_Medio**2) + A3*X2)) +Qb2 
 
-    I_C3 = Constante_A_Corte/2 *  Y2 * Raio_Medio**2 - Constante_B_Corte /6* Raio_Medio**3
-    I_34 = Constante_A_Corte * (T1 * Y3 * Altura_Media**2 /2 + T1 * Altura_Media**3 /6 + A3 * Y3 * Altura_Media) + Constante_B_Corte * (T1 * X3 * Altura_Media**2 /2 + A3 * X3 * Altura_Media) + Qb3 * Altura_Media 
-    I_41 = Constante_A_Corte * (T1 * Raio_Medio**2 * Y1 * math.pi**2 /2 + T1 * Raio_Medio**3 * math.pi + A3 * Y4 * Raio_Medio * math.pi) + Constante_B_Corte * (-2* T1 * Raio_Medio**3 + A3 * X4 * Raio_Medio * math.pi) + Qb4 * math.pi * Raio_Medio
-    I_12 = Constante_A_Corte * (T1 * Y1 * Altura_Media**2 /2 - T1 * Altura_Media**3 /6 + Y1 * A3 * Altura_Media) + Constante_B_Corte * (T1 * X1 * Altura_Media**2 /2 + Constante_B_Corte * X1 * Altura_Media) + Qb1 * Altura_Media
-    I_2C = Constante_A_Corte * (T2 * Y2 * Raio_Medio**2 /2 + A3 * Y2 * Raio_Medio) + Constante_B_Corte * (T2 * X2 * Raio_Medio**2 /2 - T2 * Raio_Medio**3 /6 + A3 * X2 * Raio_Medio) + Qb2 * Raio_Medio
+    I_C3 = Ex_2* (Constante_A_Corte * 0.5 * Y2 * Raio_Medio**2 - Constante_B_Corte*(1/6) * Raio_Medio**3)
+    I_34 = Ex_1* (Constante_A_Corte * (T1 * Y3 * Altura_Media**2 * 0.5 + (1/6) * T1 * Altura_Media**3  + A3 * Y3 * Altura_Media) + Constante_B_Corte * (T1 * X3 * 0.5 * Altura_Media**2  + A3 * X3 * Altura_Media)) + Qb3 * Altura_Media 
+    I_41 = Ex_1* (Constante_A_Corte * (T1 * 0.5 * Raio_Medio**2 * Y1 * math.pi**2  + T1 * Raio_Medio**3 * math.pi + A3 * Y4 * Raio_Medio * math.pi) + Constante_B_Corte * (-2* T1 * Raio_Medio**3 + A3 * X4 * Raio_Medio * math.pi)) + Qb4 * math.pi * Raio_Medio
+    I_12 = Ex_1* (Constante_A_Corte * (T1 * 0.5 * Y1 * Altura_Media**2  - (1/6) * T1 * Altura_Media**3  + Y1 * A3 * Altura_Media) + Constante_B_Corte * (0.5 * T1 * X1 * Altura_Media**2  + Constante_B_Corte * X1 * Altura_Media)) + Qb1 * Altura_Media
+    I_2C = Ex_2* (Constante_A_Corte * (T2 * 0.5 * Y2 * Raio_Medio**2  + A3 * Y2 * Raio_Medio) + Constante_B_Corte * (0.5 * T2 * X2 * Raio_Medio**2  - (1/6) * T2 * Raio_Medio**3  + A3 * X2 * Raio_Medio)) + Qb2 * Raio_Medio
 
     #integração sentido horário
     I_total = - Altura_Media * I_C3 - Raio_Medio * I_34 - Raio_Medio * I_41 - Raio_Medio * I_12 - Altura_Media * I_2C
@@ -65,9 +64,11 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     Soma_PyB = PyBraço_1 + PyBraço_2 + PyBraço_3 + PyBraço_4
 
     qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_Varrida) #Area Errada, esta area nao é a area da seccao mas é a area interior á seccao media. Nao alterei manel. Altera Tu.
- 
-    Qb1, Qb2, Qb3, Qb4, QbC = 0,0,0,0,0
     
+    Qb1, Qb2, Qb3, Qb4, QbC = 0,0,0,0,0
+    if Debug:
+        Coords_X_,Coords_Y_,Coords_Z_, Metodos = [],[],[],[]
+        
     #VIGA HORIZONTAL, MEIO ATE PONTA
     for Ponto_S in np.linspace(0, Raio_Medio , NUMERO_DE_PONTOS):
         Coordenada_X =  - Ponto_S
@@ -78,14 +79,22 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         
         if Falha:
-            FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
-            if FS_Falha == 1:
-                return 1, 0, 0
+            if Debug:
+                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
+                Coords_X_.append(Coordenada_X)
+                Coords_Y_.append(Coordenada_Y)
+                Coords_Z_.append(FS_Falha)
+                Metodos.append(Metodo)
+                
+            else:
+                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
+                if FS_Falha == 1:
+                    return 1, 0, 0
         
         if Plotting:
             Coords_X.append(Coordenada_X)
             Coords_Y.append(Coordenada_Y)
-            Coords_Z.append(Fluxo_Corte)
+            Coords_Z.append(Tensao_de_Corte)
         
     Qb3 = Fluxo_Corte
 
@@ -99,14 +108,21 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
-            FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-            if FS_Falha == 1:
-                return 1, 0, 0
+            if Debug:
+                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+                Coords_X_.append(Coordenada_X)
+                Coords_Y_.append(Coordenada_Y)
+                Coords_Z_.append(FS_Falha)
+                Metodos.append(Metodo)
+            else:
+                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+                if FS_Falha == 1:
+                    return 1, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
             Coords_Y.append(Coordenada_Y)
-            Coords_Z.append(Fluxo_Corte)
+            Coords_Z.append(Tensao_de_Corte)
         
     Qb4 = Fluxo_Corte
     #VIGA SEMICIRCULO 
@@ -119,14 +135,21 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
-            FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-            if FS_Falha == 1:
-                return 1, 0, 0
+            if Debug:
+                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+                Coords_X_.append(Coordenada_X)
+                Coords_Y_.append(Coordenada_Y)
+                Coords_Z_.append(FS_Falha)
+                Metodos.append(Metodo)
+            else:
+                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+                if FS_Falha == 1:
+                    return 1, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
             Coords_Y.append(Coordenada_Y)
-            Coords_Z.append(Fluxo_Corte)
+            Coords_Z.append(Tensao_de_Corte)
         
     Qb1 = Fluxo_Corte
     #VIGA VERTICAL DIREITA
@@ -139,14 +162,21 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
-            FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-            if FS_Falha == 1:
-                return 1, 0, 0
+            if Debug:
+                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+                Coords_X_.append(Coordenada_X)
+                Coords_Y_.append(Coordenada_Y)
+                Coords_Z_.append(FS_Falha)
+                Metodos.append(Metodo)
+            else:
+                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
+                if FS_Falha == 1:
+                    return 1, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
             Coords_Y.append(Coordenada_Y)
-            Coords_Z.append(Fluxo_Corte)
+            Coords_Z.append(Tensao_de_Corte)
         
     Qb2 = Fluxo_Corte
     #VIGA HORIZONTAL DA PONTA ATE O MEIO
@@ -159,14 +189,21 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         if Falha:
-            FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
-            if FS_Falha == 1:
-                return 1, 0, 0
+            if Debug:
+                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
+                Coords_X_.append(Coordenada_X)
+                Coords_Y_.append(Coordenada_Y)
+                Coords_Z_.append(FS_Falha)
+                Metodos.append(Metodo)
+            else:
+                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
+                if FS_Falha == 1:
+                    return 1, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
             Coords_Y.append(Coordenada_Y)
-            Coords_Z.append(Fluxo_Corte)
+            Coords_Z.append(Tensao_de_Corte)
         
     QbC = Fluxo_Corte
 
@@ -191,5 +228,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         ax.set_proj_type("ortho")
 
         plt.show()
-
+        
+    if Debug:
+        temp = list(zip(Coords_Z_, Metodos))
+        return sorted(temp,key=lambda x: x[0])[0], Taxa_Torcao, Taxa_Deflecao
     return 0, Taxa_Torcao, Taxa_Deflecao
