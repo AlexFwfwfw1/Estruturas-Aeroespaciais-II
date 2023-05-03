@@ -12,8 +12,8 @@ from Configuration import NUMERO_DE_SECCOES
 from timeit import default_timer as timer
 import Debug
 
-TORCAO_MAX = np.deg2rad(0.5)
-DEFLECAO_MAX = np.deg2rad(0.5)
+TORCAO_MAX = np.deg2rad(50)
+DEFLECAO_MAX = np.deg2rad(50)
             
 def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomputados):
     

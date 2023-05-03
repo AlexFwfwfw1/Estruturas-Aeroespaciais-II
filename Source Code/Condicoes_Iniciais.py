@@ -10,7 +10,7 @@ j_Materiais_Possiveis = len(Materiais_Possiveis)
 Matriz_K_Possbilities,Matriz_Theta_Possibilidades = Definicao_Laminado.Obter_Matriz_K_Possibilities(Angulos_Possiveis, Materiais_Possiveis)
 
 Laminado_Lista_1 = np.array([
-    [0,0,0],
+    [50,0,0],
     [0,0,0],
     [0,0,0],
     [0,0,0],
