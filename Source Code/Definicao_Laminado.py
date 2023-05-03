@@ -6,8 +6,9 @@ import numpy as np
 
 
 class Laminado_Class:
-    def __init__(self,Matriz_Laminado, Matriz_K_Possibilities, Matriz_Theta_Possibilidades):
+    def __init__(self,Matriz_Laminado, Matriz_K_Possibilities, Matriz_Theta_Possibilidades, Name):
         self.Matriz_Laminado = Matriz_Laminado
+        self.Name = Name
         self.Obter_Laminado(Matriz_K_Possibilities,Matriz_Theta_Possibilidades)
         self.Propriadades()      
         
@@ -30,12 +31,11 @@ class Laminado_Class:
         
         self.Espessura_Total = Espessura_Camada*self.Num_Camadas
         Shape_Lam = np.shape(self.Matriz_Laminado)
-        self.Matriz_K_Laminado = np.zeros((Shape_Lam[0],Shape_Lam[1],3,3))
+        self.Matriz_A = np.zeros((3,3))
         
         for i in range(Shape_Lam[0]):
             for j in range(Shape_Lam[1]):
-                self.Matriz_K_Laminado[i,j] = Matriz_K_Possibilities[i,j]* self.Matriz_Laminado[i,j]
-        self.Matriz_A = np.sum(np.sum(self.Matriz_K_Laminado, axis = 0),axis = 0)
+                self.Matriz_A += Matriz_K_Possibilities[i,j] * self.Matriz_Laminado[i,j]
         self.Matriz_A = Espessura_Camada * np.array(self.Matriz_A)
         
         self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
@@ -45,7 +45,7 @@ class Laminado_Class:
             for j in range(Shape_Lam[1]):
                 if self.Matriz_Laminado[i,j] == 0:
                     continue
-                self.List_Matriz_Stress.append((self.Espessura_Total*np.matmul(Matriz_Theta_Possibilidades[i,j], np.matmul(Matriz_K_Possibilities[i,j], self.Matriz_A_Inversa)), Materials_List[j]))
+                self.List_Matriz_Stress.append((self.Espessura_Total * Matriz_Theta_Possibilidades[i,j] @ Matriz_K_Possibilities[i,j] @ self.Matriz_A_Inversa, Materials_List[j]))
                 
 
 def Obter_Matriz_K_Barra(Material, angulo):
@@ -87,7 +87,7 @@ def Obter_Matriz_K_Barra(Material, angulo):
     
     #Matriz_Theta será necessaria nos calculos para o stress.
     
-    Matriz_K_Barra = np.matmul(Matriz_Rotacao_Inversa, np.matmul(Matriz_K,Matriz_Rotacao))
+    Matriz_K_Barra = Matriz_Rotacao_Inversa @ Matriz_K @ Matriz_Rotacao
     
     return Matriz_K_Barra,Matriz_Theta
     

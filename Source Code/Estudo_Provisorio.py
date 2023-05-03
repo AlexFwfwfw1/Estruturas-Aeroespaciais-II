@@ -14,10 +14,10 @@ from alive_progress import alive_bar
 from tqdm import tqdm
 
 
-Laminado_1_Limits = {"N_Min": 1, "N_Max": 10}
+Laminado_1_Limits = {"N_Min": 50, "N_Max": 51}
 Laminado_2_Limits = Laminado_1_Limits
 Laminado_3_Limits = {"N_Min": 1, "N_Max": 10}
-Espessura_B_Limits = {"b_min": 0, "b_max": 0.1, "divisions": 1}
+Espessura_B_Limits = {"b_min": 0, "b_max": 0, "divisions": 1}
 
 FAZER_IMPAR = False
 
@@ -47,13 +47,24 @@ Dados_Precomputados = (Matriz_K_Possbilities,Matriz_Theta_Possibilidades)
 def laminado_simetrico(n, i, j):
 
     Matriz_A_List = []
-
-    for Rows in range(i):
+    if i == 1:
         for Columns in range(j):
             Possibilidade_A = np.zeros((i, j))
-            Possibilidade_A[Rows, Columns] = 1
+            Possibilidade_A[0,Columns] = 1
             Matriz_A_List.append(Possibilidade_A)
-
+        
+    else:
+        for Columns in range(j):
+            Possibilidade_A = np.zeros((i, j))
+            Possibilidade_A[1,Columns] = 1
+            Possibilidade_A[2,Columns] = 1
+            Matriz_A_List.append(Possibilidade_A)
+        for Columns in range(j):
+            Possibilidade_A = np.zeros((i, j))
+            Possibilidade_A[0,Columns] = 1
+            Possibilidade_A[3,Columns] = 1
+            Matriz_A_List.append(Possibilidade_A)
+    
     # Combinacoes tem de ser simetricas. Repete-se a ordem
     # Nao faz sentido estar a simular seccoes repetidas, logo podemos abstrair da ordem de camadas.
 
@@ -108,10 +119,10 @@ def laminado_simetrico_impar(combinacoes, i, j):
     Matriz_A_List = []
 
     for Rows in range(i):
-        for Columns in range(j):
-            Possibilidade_A = np.zeros((i, j))
-            Possibilidade_A[Rows, Columns] = 1
-            Matriz_A_List.append(Possibilidade_A)
+        Possibilidade_A = np.zeros((i, j))
+        Possibilidade_A[Rows, 1] = 1
+        Possibilidade_A[Rows, 2] = 1
+        Matriz_A_List.append(Possibilidade_A)
 
     combinacoes = tuple(combinacoes)
 
@@ -216,8 +227,9 @@ Possibilities_Number = (
 
 
 def temp_f(bm):
-    
-    Espessura, Lam_3, Shared_Memory = bm
+    Espessura = 0
+    Lam_1, Shared_Memory = bm
+    Lam_3 = 0
     if Multiprocessing:
         existing_shm = shared_memory.ShareableList(name=Shared_Memory)
         Min = existing_shm[0]
@@ -225,25 +237,25 @@ def temp_f(bm):
         
     Sim_Started = 0
     Combinacao_Minimo = None
-    for Lam_1 in range(len(Laminado1_Lista)):
-        for Lam_2 in range(len(Laminado2_Lista)):
-            
-            Funcao_Minimizacao = Massa_E_Custo.Funcao_Minimizante(
-                Massa_1[Lam_1],
-                Massa_2[Lam_2],
-                Massa_3[Lam_3],
-                Custo_1[Lam_1],
-                Custo_2[Lam_2],
-                Custo_3[Lam_3],
-                Espessura,
-            )
-            
-            if Funcao_Minimizacao < Min:
-                Sim_Started += 1
-                Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
-                if Falha == 0:
-                    Min = Funcao_Minimizacao
-                    Combinacao_Minimo = Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura
+    for Lam_2 in range(len(Laminado2_Lista)):
+        print("AAA",Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2],  Laminado3_Lista[Lam_3], Espessura)
+        raise TypeError
+        Funcao_Minimizacao = Massa_E_Custo.Funcao_Minimizante(
+            Massa_1[Lam_1],
+            Massa_2[Lam_2],
+            Massa_3[Lam_3],
+            Custo_1[Lam_1],
+            Custo_2[Lam_2],
+            Custo_3[Lam_3],
+            Espessura,
+        )
+        
+        if Funcao_Minimizacao < Min:
+            Sim_Started += 1
+            Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
+            if not Falha:
+                Min = Funcao_Minimizacao
+                Combinacao_Minimo = Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura
         
     if Multiprocessing:
         existing_shm[0] = float(Min)
@@ -252,14 +264,10 @@ def temp_f(bm):
 
 if __name__ == "__main__":
     
-    Gap_Number = len(Laminado3_Lista)* Espessura_B_Limits["divisions"]
-    Total = len(Laminado1_Lista)*len(Laminado2_Lista)
+    Gap_Number = len(Laminado2_Lista)
+    Total = len(Laminado1_Lista)
     
-    Core_List_Arguments = []
-        
-    for Espessura in Espessuras_B_Possiveis:
-        for Lam_3 in range(len(Laminado3_Lista)):
-            Core_List_Arguments.append((Espessura, Lam_3))
+    Core_List_Arguments = range(Gap_Number)
             
     if Multiprocessing:
         freeze_support()
@@ -269,9 +277,8 @@ if __name__ == "__main__":
             print(Name)
             
             Core_List_Arguments = []
-            for Espessura in Espessuras_B_Possiveis:
-                for Lam_3 in range(len(Laminado3_Lista)):
-                    Core_List_Arguments.append((Espessura, Lam_3, Name))
+            for i in range(Gap_Number):
+                Core_List_Arguments.append((i, Name))
        
     
             Results = []
@@ -284,8 +291,9 @@ if __name__ == "__main__":
             for Core in Core_List_Arguments:
                 Results.append(temp_f(Core))
                 bar(Total)
-                
+    print(Results)   
     Best_Simulation = sorted(Results,key=lambda x: x[0])[0]
+    
     Lam1_R,Lam2_R,Lam3_R, Espessura = Best_Simulation[1]
     Sim_Started = sum([pair[2] for pair in Results])
         

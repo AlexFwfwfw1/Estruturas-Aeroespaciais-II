@@ -1,4 +1,9 @@
 from Constantes import *
+import Teste_de_falha
+
+from Configuration import Falha
+
+import Debug
 
 #Dimensoes da cauda na raiz e na ponta
 w_raiz = 1.5*(1-0.7*0/COMPRIMENTO_FUSELAGEM)
@@ -6,9 +11,8 @@ w_ponta = 1.5*(1-0.7*COMPRIMENTO_FUSELAGEM/COMPRIMENTO_FUSELAGEM)
 h_raiz = 0.9*(1-0.5*0/COMPRIMENTO_FUSELAGEM)
 h_ponta = 0.9*(1-0.5*COMPRIMENTO_FUSELAGEM/COMPRIMENTO_FUSELAGEM)
 
-def F_Afilamento(Propriadades_Seccao, Momentos, Forcas):
+def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
 
-    Altura_Media, Diametro_Medio = Propriadades_Seccao.Geometria_Media
     I_xx, I_yy, Ixy = Propriadades_Seccao.Segundo_Momentos_De_Area
     Ex_1,Ex_2,Ex_3 = Propriadades_Seccao.Elasticidades
     T1,T2,A3 = Propriadades_Seccao.Espessuras
@@ -56,6 +60,12 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas):
     Tensao_Direta_4 = Ex_3 * (Constante_A_Direta*X1+ Constante_B_Direta*Y1)
     Tensao_Direta_1 = Ex_3 * (Constante_A_Direta*X2 + Constante_B_Direta*Y2)
     
+    if Falha and A3 != 0:
+        for Tensao_Direta in (Tensao_Direta_1,Tensao_Direta_2,Tensao_Direta_3,Tensao_Direta_4):
+            Falha_Return = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, 0, Laminado_3)
+            if not Debug.DEBUG and Falha_Return: 
+                return None, Falha_Return
+        
     #Forcas de tracao/compressao
     Pz_3 = Tensao_Direta_3 * A_tensores_i
     Pz_2= Tensao_Direta_2* A_tensores_i
@@ -82,4 +92,5 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas):
     Sy_w = Forca_SY - (Py_3+Py_2+Py_4+Py_1)
 
     Sw = (Sx_w,Sy_w)
-    return (Sw, Px, Py)
+    
+    return (Sw, Px, Py), None

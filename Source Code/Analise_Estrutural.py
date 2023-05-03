@@ -4,7 +4,8 @@ import Teste_de_falha
 import math
 import numpy as np
 
-from Configuration import NUMERO_DE_PONTOS, Plotting, Falha, Debug
+from Configuration import NUMERO_DE_PONTOS, Plotting, Falha
+import Debug
 
 import matplotlib.pyplot as plt
 
@@ -66,9 +67,10 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     qs_0_i = (Sx * 1.2 - I_total + Soma_PxB - Soma_PyB) / (2 * A_Varrida) #Area Errada, esta area nao é a area da seccao mas é a area interior á seccao media. Nao alterei manel. Altera Tu.
     
     Qb1, Qb2, Qb3, Qb4, QbC = 0,0,0,0,0
-    if Debug:
-        Coords_X_,Coords_Y_,Coords_Z_, Metodos = [],[],[],[]
-        
+    if Debug.DEBUG:
+        Coords_X_,Coords_Y_,Coords_Z_, Modo_De_Falha = [],[],[],[]
+    
+    #qs_0_i = 0
     #VIGA HORIZONTAL, MEIO ATE PONTA
     for Ponto_S in np.linspace(0, Raio_Medio , NUMERO_DE_PONTOS):
         Coordenada_X =  - Ponto_S
@@ -78,18 +80,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
         
-        if Falha:
-            if Debug:
-                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
-                Coords_X_.append(Coordenada_X)
-                Coords_Y_.append(Coordenada_Y)
-                Coords_Z_.append(FS_Falha)
-                Metodos.append(Metodo)
-                
-            else:
-                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
-                if FS_Falha == 1:
-                    return 1, 0, 0
+        if Falha and Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2):  
+            return True, 0, 0
         
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -107,17 +99,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
        
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
-        if Falha:
-            if Debug:
-                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-                Coords_X_.append(Coordenada_X)
-                Coords_Y_.append(Coordenada_Y)
-                Coords_Z_.append(FS_Falha)
-                Metodos.append(Metodo)
-            else:
-                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-                if FS_Falha == 1:
-                    return 1, 0, 0
+        if Falha and Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1):  
+            return True, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -134,17 +117,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*Ponto_S + T1*(Raio_Medio**2)*(1-math.cos(Ponto_S)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(Ponto_S)+A3*X4)) + Qb4
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
-        if Falha:
-            if Debug:
-                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-                Coords_X_.append(Coordenada_X)
-                Coords_Y_.append(Coordenada_Y)
-                Coords_Z_.append(FS_Falha)
-                Metodos.append(Metodo)
-            else:
-                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-                if FS_Falha == 1:
-                    return 1, 0, 0
+        if Falha and Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1):  
+            return True, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -161,17 +135,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Fluxo_Corte = Ex_1 * (Constante_A_Corte*(T1*(Y1*Ponto_S - 0.5*Ponto_S**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Ponto_S + A3*X1)) + Qb1
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
-        if Falha:
-            if Debug:
-                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-                Coords_X_.append(Coordenada_X)
-                Coords_Y_.append(Coordenada_Y)
-                Coords_Z_.append(FS_Falha)
-                Metodos.append(Metodo)
-            else:
-                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
-                if FS_Falha == 1:
-                    return 1, 0, 0
+        if Falha and Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1):  
+            return True, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -188,17 +153,8 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Fluxo_Corte = Ex_2 * (Constante_A_Corte*(T2*Y2*Ponto_S + A3*Y2) + Constante_B_Corte*(T2*(X2*Ponto_S - 0.5*Ponto_S**2) + A3*X2)) + Qb2
         
         Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
-        if Falha:
-            if Debug:
-                FS_Falha,Metodo = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
-                Coords_X_.append(Coordenada_X)
-                Coords_Y_.append(Coordenada_Y)
-                Coords_Z_.append(FS_Falha)
-                Metodos.append(Metodo)
-            else:
-                FS_Falha = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2)
-                if FS_Falha == 1:
-                    return 1, 0, 0
+        if Falha and Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_2):  
+            return True, 0, 0
                 
         if Plotting:
             Coords_X.append(Coordenada_X)
@@ -209,11 +165,11 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
 
     # TORSÃO E DEFLEXÃO 
     # Torção 
-    G1 , G2 = Laminado_Class.self.Gxy, Laminado_2.G12
+    G1 , G2 = Laminado_1.Gxy, Laminado_2.Gxy
     Taxa_Torcao = (I_C3 + I_2C) / (G2 * T2) + (I_34 + I_41 + I_12) / (G1 * T1)  + qs_0_i * ((2 * Altura_Media + math.pi * Raio_Medio) / (G1 * T1) + (2 * Raio_Medio) / (G2 * T2))
-
+    Taxa_Torcao = Taxa_Torcao/(2*A_Varrida)
     # Deflexão
-    Taxa_Deflexao = Momento_X / Definir_Propriadades.Seccao[0][0]
+    Taxa_Deflecao = -Momento_X / I_xx
     
     # return FS_Falha
 
@@ -226,8 +182,5 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         ax.set_proj_type("ortho")
 
         plt.show()
-        
-    if Debug:
-        temp = list(zip(Coords_Z_, Metodos))
-        return sorted(temp,key=lambda x: x[0])[0], Taxa_Torcao, Taxa_Deflecao
-    return 0, Taxa_Torcao, Taxa_Deflecao
+    
+    return False, Taxa_Torcao, Taxa_Deflecao
