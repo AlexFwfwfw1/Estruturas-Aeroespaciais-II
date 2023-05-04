@@ -29,4 +29,4 @@ MATERIAL_GFRP = Material_Composito(
     v12=0.25, Xt=1000E6, Xc=600E6, Yt=30E6,
     Yc =110E6 , S =40E6, Cost=50, Name = "G")
 
-Materials_List = (MATERIAL_CFRP_HS, MATERIAL_CFRP_HM, MATERIAL_GFRP)
+Materials_List = (MATERIAL_CFRP_HS, MATERIAL_CFRP_HM, MATERIAL_GFRP,)

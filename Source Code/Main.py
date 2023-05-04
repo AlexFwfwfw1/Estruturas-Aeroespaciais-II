@@ -6,6 +6,7 @@ import Carregamento
 import Analise_Estrutural
 import Afilamento
 import Condicoes_Iniciais
+import Massa_E_Custo
 
 import numpy as np
 from Configuration import NUMERO_DE_SECCOES
@@ -78,6 +79,7 @@ if __name__ == "__main__":
     Laminado_2 = Condicoes_Iniciais.Laminado_Lista_2
     Laminado_3 = Condicoes_Iniciais.Laminado_Lista_3
 
+    F_Min = Massa_E_Custo.Recalcular_Funcao_Minimo(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor)
     start = timer()
     temp = Simulacao(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor, Dados_Precomputados)
     if Debug.DEBUG:
@@ -88,3 +90,4 @@ if __name__ == "__main__":
         print(temp)
     end = timer()
     print(f"Time Elapsed: {round((end-start)*1000, 5)} ms")
+    print(F_Min)

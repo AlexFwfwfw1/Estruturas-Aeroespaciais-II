@@ -60,3 +60,24 @@ def Custo(Laminado1, Laminado2, Laminado3, Espessura):
     return Custo_laminado1*K1 + Custo_laminado2*K2+ Custo_laminado3*Espessura*K3
 
 # def Calcular_Em_Paralelo_FMin()
+
+def Recalcular_Funcao_Minimo(Laminado1, Laminado2, Laminado3, Espessura):
+    Laminado1_Lista_K, Laminado2_Lista_K, Laminado3_Lista_K = np.sum(Laminado1,axis=0), np.sum(Laminado2,axis=0), np.sum(Laminado3,axis=0)
+    
+    Massa_laminado1, Massa_laminado2, Massa_laminado3 = np.inner(Laminado1_Lista_K,Rho),np.inner(Laminado2_Lista_K,Rho), np.inner(Laminado3_Lista_K,Rho)
+    Custo_laminado1, Custo_laminado2, Custo_laminado3 = np.inner(Laminado1_Lista_K,Custo_Vector), np.inner(Laminado2_Lista_K,Custo_Vector), np.inner(Laminado3_Lista_K,Custo_Vector)
+    
+    M_Total = Massa_laminado1*K1 + Massa_laminado2*K2+ Massa_laminado3*Espessura*K3
+    C_Total = Custo_laminado1*K1 + Custo_laminado2*K2+ Custo_laminado3*Espessura*K3
+    
+    return M_Total*0.6 + 0.004*C_Total
+
+def Recalcular_Funcao_Minimo(Massa_laminado1, Massa_laminado2, Massa_laminado3, Custo_laminado1, Custo_laminado2, Custo_laminado3, Espessura, Lam_1, Lam_3, Min):
+    
+    M_Total = Massa_laminado1[Lam_1]*K1 + Massa_laminado2*K2+ Massa_laminado3[Lam_3]*Espessura*K3
+    C_Total = Custo_laminado1[Lam_1]*K1 + Custo_laminado2*K2+ Custo_laminado3[Lam_3]*Espessura*K3
+    F_Min = M_Total*0.6 + 0.004*C_Total
+    
+    Range = np.argsort(F_Min[F_Min < Min])
+    
+    return Range

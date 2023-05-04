@@ -14,9 +14,9 @@ from alive_progress import alive_bar
 from tqdm import tqdm
 
 
-Laminado_1_Limits = {"N_Min": 50, "N_Max": 60}
+Laminado_1_Limits = {"N_Min": 50, "N_Max": 51}
 Laminado_2_Limits = Laminado_1_Limits
-Laminado_3_Limits = {"N_Min": 1, "N_Max": 2}
+Laminado_3_Limits = {"N_Min": 1, "N_Max": 5}
 Espessura_B_Limits = {"b_min": 0, "b_max": 0, "divisions": 1}
 
 FAZER_IMPAR = False
@@ -56,14 +56,14 @@ def laminado_simetrico(n, i, j):
     else:
         for Columns in range(j):
             Possibilidade_A = np.zeros((i, j))
-            Possibilidade_A[1,Columns] = 1
-            Possibilidade_A[2,Columns] = 1
+            Possibilidade_A[0,Columns] = 2
             Matriz_A_List.append(Possibilidade_A)
         for Columns in range(j):
             Possibilidade_A = np.zeros((i, j))
-            Possibilidade_A[0,Columns] = 1
-            Possibilidade_A[3,Columns] = 1
+            Possibilidade_A[1,Columns] = 1
+            Possibilidade_A[2,Columns] = 1
             Matriz_A_List.append(Possibilidade_A)
+        
     
     # Combinacoes tem de ser simetricas. Repete-se a ordem
     # Nao faz sentido estar a simular seccoes repetidas, logo podemos abstrair da ordem de camadas.
@@ -108,7 +108,7 @@ def laminado_simetrico(n, i, j):
     # No entanto, estou a verificar que nunca existem elementos repetidos inesperadamente. Pode-se retirar.
 
     # Com isto podemos multiplicar por dois para obter o laminado simetrico.
-    Combinacoes_Soma_N_Unica_Simetrica = Combinacoes_Soma_N_Unica * 2
+    Combinacoes_Soma_N_Unica_Simetrica = Combinacoes_Soma_N_Unica 
     # print(np.shape(Combinacoes_Soma_N))
     return Combinacoes_Soma_N_Unica_Simetrica
 
@@ -205,7 +205,9 @@ def Obter_Combinacoes():
         Combinacoes_Laminado_3,
     )
 
+ 
     
+
 Laminado1_Lista, Laminado2_Lista, Laminado3_Lista = Obter_Combinacoes()
 
 Possibilities_Number = (
@@ -237,10 +239,16 @@ def temp_f(bm):
         
     Sim_Started = 0
     Combinacao_Minimo = None
-    for Lam_2 in range(len(Laminado2_Lista)):
-        print("AAA",Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2],  Laminado3_Lista[Lam_3], Espessura)
-        raise TypeError
-        Funcao_Minimizacao = Massa_E_Custo.Funcao_Minimizante(
+
+    Ordered = Massa_E_Custo.Recalcular_Funcao_Minimo(Massa_1, Massa_2, Massa_3, Custo_1, Custo_2, Custo_3, Espessura, Lam_1, Lam_3, Min)
+    
+    for Lam_2 in Ordered:
+        # print(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2])
+        # raise
+        Sim_Started += 1
+        Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
+        if not Falha:
+            Funcao_Minimizacao = Massa_E_Custo.Funcao_Minimizante(
             Massa_1[Lam_1],
             Massa_2[Lam_2],
             Massa_3[Lam_3],
@@ -249,17 +257,11 @@ def temp_f(bm):
             Custo_3[Lam_3],
             Espessura,
         )
+            Combinacao_Minimo = (Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura)
         
-        if Funcao_Minimizacao < Min:
-            Sim_Started += 1
-            Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
-            if not Falha:
-                Min = Funcao_Minimizacao
-                Combinacao_Minimo = Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura
-        
-    if Multiprocessing:
-        existing_shm[0] = float(Min)
-    return Min, Combinacao_Minimo, Sim_Started 
+            if Multiprocessing:
+                existing_shm[0] = float(Funcao_Minimizacao)
+            return Funcao_Minimizacao, Combinacao_Minimo, Sim_Started 
                  
 
 if __name__ == "__main__":
@@ -272,7 +274,7 @@ if __name__ == "__main__":
     if Multiprocessing:
         freeze_support()
         with SharedMemoryManager() as smm:
-            Minimo = smm.ShareableList([10e100])
+            Minimo = smm.ShareableList([0.0032960613696955254])
             Name = Minimo.shm.name
             print(Name)
             
