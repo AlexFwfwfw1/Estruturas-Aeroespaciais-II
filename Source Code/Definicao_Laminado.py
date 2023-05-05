@@ -44,7 +44,10 @@ class Laminado_Class:
                 self.Matriz_A += Matriz_K_Possibilities[i,j] * self.Matriz_Laminado[i,j]
         self.Matriz_A = Espessura_Camada * np.array(self.Matriz_A)
         
-        self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
+        try:
+            self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
+        except:
+            return True
 
         self.List_Matriz_Stress = []
         for i in range(Shape_Lam[0]):

@@ -13,8 +13,8 @@ from Configuration import NUMERO_DE_SECCOES
 from timeit import default_timer as timer
 import Debug
 
-TORCAO_MAX = np.deg2rad(50)
-DEFLECAO_MAX = np.deg2rad(50)
+TORCAO_MAX = np.deg2rad(0.5)
+DEFLECAO_MAX = np.deg2rad(0.5)
             
 def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomputados):
     
@@ -28,6 +28,8 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
     Laminado_2 = Definicao_Laminado.Laminado_Class(Laminado2, Matriz_K_Possbilities, Matriz_Theta_Possibilidades, "Laminado_2")
     Laminado_3 = Definicao_Laminado.Laminado_Class(Laminado3, Matriz_K_Possbilities, Matriz_Theta_Possibilidades, "Laminado_3")
 
+    if Laminado_1 == True or Laminado_2 == True or Laminado_3 == True :
+        return True
     Laminados = (Laminado_1,Laminado_2,Laminado_3)
     print(Laminado_1.rho_Medio,Laminado_2.rho_Medio,Laminado_3.rho_Medio)
     Torcao, Deflecao = 0,0
@@ -64,7 +66,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
             return True
     else:
         return Debug.Sort_By_FS(), TORCAO_MAX/Torcao, DEFLECAO_MAX/Deflecao
-    print("Nao Falhou")
+    #print("Nao Falhou")
     return False
         
     
