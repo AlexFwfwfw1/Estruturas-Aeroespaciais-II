@@ -27,6 +27,8 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
     Laminado_2 = Definicao_Laminado.Laminado_Class(Laminado2, Matriz_K_Possbilities, Matriz_Theta_Possibilidades, "Laminado_2")
     Laminado_3 = Definicao_Laminado.Laminado_Class(Laminado3, Matriz_K_Possbilities, Matriz_Theta_Possibilidades, "Laminado_3")
 
+    if Laminado_1 == True or Laminado_2 == True or Laminado_3 == True :
+        return True
     Laminados = (Laminado_1,Laminado_2,Laminado_3)
 
     Torcao, Deflecao = 0,0
