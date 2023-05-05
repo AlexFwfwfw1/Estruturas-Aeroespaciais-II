@@ -63,7 +63,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
             return True
     else:
         return Debug.Sort_By_FS(), TORCAO_MAX/Torcao, DEFLECAO_MAX/Deflecao
-    print("Nao Falhou")
+    #print("Nao Falhou")
     return False
         
     

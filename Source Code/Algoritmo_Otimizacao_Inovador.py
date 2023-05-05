@@ -35,7 +35,7 @@ def Compensar(Laminado_Geral, Espessura, Coordenada):
     Temp_Min, Temp_Laminado = 10e100, None
     with np.nditer(Laminado_Geral, op_flags=['readwrite'], flags=['multi_index']) as it:
         for Simulacao in it:
-            
+    
             if it.multi_index != Coordenada and Simulacao[...] > 0 :
                 Simulacao[...] -= 1
                 Laminado_Geral[Coordenada] += 1
@@ -56,32 +56,35 @@ def Verificar_Falha(Laminado_Geral, Espessura):
             if Simulacao[...] > 0 :
                 Simulacao[...] -= 1
                 if Analisar(Laminado_Geral, Espessura):
-                    Algoritmo_Otimizacao(Compensar(Laminado_Geral, Espessura, it.multi_index))
+                    Algoritmo_Otimizacao(Compensar(Laminado_Geral, Espessura, it.multi_index), Espessura)
                 else:
-                    Hash.append((Laminado_Geral, Minimo(Laminado_Geral, Espessura)))
+                    Temp = np.copy(Laminado_Geral) 
+                    Hash.append((Temp, Minimo(Temp, Espessura)))
                 Simulacao[...] += 1
                 
-    for Angle in range(len(Laminado_Geral)):
-        if not np.all(Laminado_Geral[Angle] == 0) :
-            Laminado_Geral[Laminado_Geral < 0] = 0
-            Laminado_Geral[Angle] -= 1
+    # for Angle in range(len(Laminado_Geral)):
+    #     if not np.all(Laminado_Geral[Angle] == 0) :
+    #         Laminado_Geral[Laminado_Geral < 0] = 0
+    #         Laminado_Geral[Angle] -= 1
             
-            if Analisar(Laminado_Geral, Espessura):
-                Algoritmo_Otimizacao(Compensar(Laminado_Geral, Espessura))
-            else:
-                Hash.append((Laminado_Geral, Minimo(Laminado_Geral, Espessura)))
-            Laminado_Geral[Angle] += 1
+    #         if Analisar(Laminado_Geral, Espessura):
+    #             Algoritmo_Otimizacao(Compensar(Laminado_Geral, Espessura))
+    #         else:
+    #             Temp = np.copy(Laminado_Geral) 
+    #             Hash.append((Temp, Minimo(Temp, Espessura)))
+    #         Laminado_Geral[Angle] += 1
             
-    for Column in range(np.shape(Laminado_Geral)[1]):
-        if not np.all(Laminado_Geral[:,Column] == 0) :
-            Laminado_Geral[Laminado_Geral < 0] = 0
-            Laminado_Geral[:,Column] -= 1
+    # for Column in range(np.shape(Laminado_Geral)[1]):
+    #     if not np.all(Laminado_Geral[:,Column] == 0) :
+    #         Laminado_Geral[Laminado_Geral < 0] = 0
+    #         Laminado_Geral[:,Column] -= 1
             
-            if Analisar(Laminado_Geral, Espessura):
-                Algoritmo_Otimizacao(Compensar(Laminado_Geral, Espessura))
-            else: 
-                Hash.append((Laminado_Geral, Minimo(Laminado_Geral, Espessura)))
-            Laminado_Geral[:,Column] += 1
+    #         if Analisar(Laminado_Geral, Espessura):
+    #             Algoritmo_Otimizacao(Compensar(Laminado_Geral, Espessura))
+    #         else: 
+    #             Temp = np.copy(Laminado_Geral) 
+    #             Hash.append((Temp, Minimo(Temp, Espessura)))
+    #         Laminado_Geral[:,Column] += 1
     return sorted(Hash, key=lambda x: x[1])[0][0]
 
 def Algoritmo_Otimizacao(Laminado_Geral, Espessura):
@@ -92,8 +95,6 @@ def Algoritmo_Otimizacao(Laminado_Geral, Espessura):
     else:
         Laminado_Copia = Laminado_Geral + 1
         Laminado_Compensado = Verificar_Falha(Laminado_Copia, Espessura)
-        print(Laminado_Compensado)
-        raise
         return Algoritmo_Otimizacao(Laminado_Compensado, Espessura)
         
                         
