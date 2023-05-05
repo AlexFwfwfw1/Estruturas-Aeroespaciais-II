@@ -11,16 +11,22 @@ class Laminado_Class:
         self.Name = Name
         self.Obter_Laminado(Matriz_K_Possibilities,Matriz_Theta_Possibilidades)
         self.Propriadades()      
+        self.rho_Laminado()
         
     def Propriadades(self):
         self.Ex = 1/(self.Espessura_Total*self.Matriz_A_Inversa[0,0])
         self.Ey = 1/(self.Espessura_Total*self.Matriz_A_Inversa[1,1])
         self.Gxy = 1/(self.Espessura_Total*self.Matriz_A_Inversa[2,2])
         self.Vxy = -self.Matriz_A_Inversa[0,1]/self.Matriz_A_Inversa[0,0]
-        self.Vyx= -self.Matriz_A_Inversa[0,1]/self.Matriz_A_Inversa[1,1]
+        self.Vyx = -self.Matriz_A_Inversa[0,1]/self.Matriz_A_Inversa[1,1]
         self.Mx = -self.Matriz_A_Inversa[0,2]/self.Matriz_A_Inversa[0,0]
-        self.My = - self.Matriz_A_Inversa[1,2]/self.Matriz_A_Inversa[1,1]
-        
+        self.My = -self.Matriz_A_Inversa[1,2]/self.Matriz_A_Inversa[1,1]
+
+    def rho_Laminado(self):
+        self.Matriz_Laminado
+        Somatorio_Camadas = self.Matriz_Laminado.sum(axis=0)
+        self.rho_Medio = (Somatorio_Camadas[0]*1600+Somatorio_Camadas[1]*1600+Somatorio_Camadas[2]*1900)/self.Num_Camadas
+
     def Escrever_Propriadades(self):
         print(f"Ex : {self.Ex}\nEy : {self.Ey}\nGxy : {self.Gxy}\nvxy : {self.Vxy}\nvyx : {self.Vyx}\nmx : {self.Mx}\nmy : {self.My}\nt_total : {self.t_total}")
         
