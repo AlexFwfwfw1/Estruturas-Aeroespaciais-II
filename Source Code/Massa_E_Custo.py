@@ -72,7 +72,7 @@ def Recalcular_Funcao_Minimo(Laminado1, Laminado2, Laminado3, Espessura):
     
     return M_Total*0.6 + 0.004*C_Total
 
-def Recalcular_Funcao_Minimo(Massa_laminado1, Massa_laminado2, Massa_laminado3, Custo_laminado1, Custo_laminado2, Custo_laminado3, Espessura, Lam_1, Lam_3, Min):
+def Funcao_Minimo_Organizado(Massa_laminado1, Massa_laminado2, Massa_laminado3, Custo_laminado1, Custo_laminado2, Custo_laminado3, Espessura, Lam_1, Lam_3, Min):
     
     M_Total = Massa_laminado1[Lam_1]*K1 + Massa_laminado2*K2+ Massa_laminado3[Lam_3]*Espessura*K3
     C_Total = Custo_laminado1[Lam_1]*K1 + Custo_laminado2*K2+ Custo_laminado3[Lam_3]*Espessura*K3
