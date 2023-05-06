@@ -7,11 +7,15 @@ import numpy as np
 
 class Laminado_Class:
     def __init__(self,Matriz_Laminado, Matriz_K_Possibilities, Matriz_Theta_Possibilidades, Name):
-        self.Matriz_Laminado = Matriz_Laminado
-        self.Name = Name
-        self.Obter_Laminado(Matriz_K_Possibilities,Matriz_Theta_Possibilidades)
-        self.Propriadades()      
-        self.rho_Laminado()
+        if np.all(Matriz_Laminado == 0):
+            self.Cancelar = True 
+        else:
+            self.Cancelar = False
+            self.Matriz_Laminado = Matriz_Laminado
+            self.Name = Name
+            self.Obter_Laminado(Matriz_K_Possibilities,Matriz_Theta_Possibilidades)
+            self.Propriadades()      
+            self.rho_Laminado()
         
     def Propriadades(self):
         self.Ex = 1/(self.Espessura_Total*self.Matriz_A_Inversa[0,0])
@@ -44,10 +48,8 @@ class Laminado_Class:
                 self.Matriz_A += Matriz_K_Possibilities[i,j] * self.Matriz_Laminado[i,j]
         self.Matriz_A = Espessura_Camada * np.array(self.Matriz_A)
         
-        try:
-            self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
-        except:
-            return True
+        self.Matriz_A_Inversa = np.linalg.inv(self.Matriz_A)
+        
 
         self.List_Matriz_Stress = []
         for i in range(Shape_Lam[0]):

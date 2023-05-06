@@ -11,9 +11,10 @@ Forca_2 = MASSA_INERCIA_2*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 Forca_3 = MASSA_INERCIA_3*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 
 
-def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda):
-        
-    Peso_Cauda = Peso_Cauda + Peso_Por_Metro*(z/NUMERO_DE_SECCOES)   
+def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda): 
+    
+    Peso_Cauda.append(Peso_Por_Metro*(COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES)) 
+    
     
     #Edge Case
     if 0 > z or z > COMPRIMENTO_FUSELAGEM:  

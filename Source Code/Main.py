@@ -19,7 +19,8 @@ DEFLECAO_MAX = np.deg2rad(0.5)
 def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomputados):
     
     Debug.Resetar_Debug()
-    Peso_Cauda = 0
+    Peso_Cauda = []
+    Peso_Por_Metro = 0
     
     Matriz_K_Possbilities, Matriz_Theta_Possibilidades = Dados_Precomputados
     
@@ -28,7 +29,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
     Laminado_2 = Definicao_Laminado.Laminado_Class(Laminado2, Matriz_K_Possbilities, Matriz_Theta_Possibilidades, "Laminado_2")
     Laminado_3 = Definicao_Laminado.Laminado_Class(Laminado3, Matriz_K_Possbilities, Matriz_Theta_Possibilidades, "Laminado_3")
 
-    if Laminado_1 == True or Laminado_2 == True or Laminado_3 == True :
+    if Laminado_1.Cancelar == True or Laminado_2.Cancelar == True or Laminado_3.Cancelar == True :
         return True
     Laminados = (Laminado_1,Laminado_2,Laminado_3)
     
@@ -39,7 +40,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         
         
         # Carregamento
-        Forcas, Momentos, Peso_Cauda = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z, Seccao.Peso_Por_Metro, Peso_Cauda)
+        Forcas, Momentos, Peso_Cauda = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z, Peso_Por_Metro, Peso_Cauda)
 
         #Forcas de Corte dado o Afilamento
         Forcas_Afilamento, Falha_Return = Afilamento.F_Afilamento(Seccao, Momentos, Forcas, Laminado_3)  
@@ -56,6 +57,8 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
             Taxa_Deflecao = Taxa_Deflecao*0.5
         Torcao += Taxa_Torcao
         Deflecao += Taxa_Deflecao
+        Peso_Por_Metro = Seccao.Peso_Por_Metro 
+        
         
     Torcao, Deflecao = abs(Torcao*COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES), abs(Deflecao*COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES)
     # print(f"Torcao: {np.rad2deg(Torcao)} º, Deflecao: {np.rad2deg(Deflecao)} º, FS: ")
