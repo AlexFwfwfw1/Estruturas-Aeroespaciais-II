@@ -1,5 +1,5 @@
 Lista_de_Falhas = []
-DEBUG = False
+DEBUG = True
 List_Of_Esforcos = ("Tensao_X", "Tensao_Y", "Compressao_X", "Compressao_Y", "Corte", "Tsai_Hill", "Hoffman")
 
 def Resetar_Debug():

@@ -2,7 +2,7 @@ from Constantes import *
 import math
 
 class Propriadades_Seccao_Objeto:
-    def __init__(self,Segundo_Momentos_De_Area , Centroide , Geometria_Media, Areas , Elasticidades, Espessuras,  Coordenadas_X,Coordenadas_Y):
+    def __init__(self,Segundo_Momentos_De_Area , Centroide , Geometria_Media, Areas , Elasticidades, Espessuras, Coordenadas_X,Coordenadas_Y,Peso_Por_Metro):
         self.Segundo_Momentos_De_Area = Segundo_Momentos_De_Area
         self.Centroide = Centroide 
         self.Geometria_Media = Geometria_Media
@@ -11,11 +11,16 @@ class Propriadades_Seccao_Objeto:
         self.Espessuras = Espessuras
         self.Coordenadas_X = Coordenadas_X
         self.Coordenadas_Y = Coordenadas_Y
+        self.Peso_Por_Metro = Peso_Por_Metro
         
 
 def Definir_Propriadades(z,Laminados, b):
     
     Laminado_1,Laminado_2,Laminado_3 = Laminados 
+
+    rho_1 = Laminado_1.rho_Medio
+    rho_2 = Laminado_2.rho_Medio
+    rho_3 = Laminado_3.rho_Medio
 
     Espessura_laminado1 = Laminado_1.Espessura_Total
     Espessura_laminado2 = Laminado_2.Espessura_Total
@@ -35,9 +40,10 @@ def Definir_Propriadades(z,Laminados, b):
     A_vertical_i = 2*(h_altura_i*Espessura_laminado1)
     A_tensores_i = 4*Area_laminado3
     A_total_i = A_semicircuf_i + A_horizontal_i + A_vertical_i + A_tensores_i  
-    #A_total_with_rho = A_semicircuf_i*rho_1 + A_horizontal_i*rho_2 + A_vertical_i*rho_1 + A_tensores_i*rho_3
     A_total_with_Ez = A_semicircuf_i*Ez_1 + A_horizontal_i*Ez_2 + A_vertical_i*Ez_1 + A_tensores_i*Ez_3
     
+    Massa_Por_Metro = A_semicircuf_i*rho_1 + A_horizontal_i*rho_2 + A_vertical_i*rho_1 + A_tensores_i*rho_3
+    Peso_Por_Metro = Massa_Por_Metro*ACELERACAO_GRAVITICA
 
     y_semicircuf_i = w_diametro_ii/math.pi
     y_horizontal_i = (-h_altura_ii)
@@ -105,7 +111,7 @@ def Definir_Propriadades(z,Laminados, b):
     Coordenadas_X = (x_1 , x_2 , x_3 , x_4)
     Coordenadas_Y = (y_1 , y_2 , y_3 , y_4)
     
-    Seccao = Propriadades_Seccao_Objeto(Segundo_Momentos_De_Area , Centroide , Geometria_Media, Areas , Elasticidades, Espessuras,  Coordenadas_X,Coordenadas_Y)
+    Seccao = Propriadades_Seccao_Objeto(Segundo_Momentos_De_Area , Centroide , Geometria_Media, Areas , Elasticidades, Espessuras,  Coordenadas_X,Coordenadas_Y, Peso_Por_Metro)
 
     return Seccao
 
