@@ -31,7 +31,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
     if Laminado_1 == True or Laminado_2 == True or Laminado_3 == True :
         return True
     Laminados = (Laminado_1,Laminado_2,Laminado_3)
-    print(Laminado_1.rho_Medio,Laminado_2.rho_Medio,Laminado_3.rho_Medio)
+    
     Torcao, Deflecao = 0,0
     for Seccao_Z in np.linspace(COMPRIMENTO_FUSELAGEM,0,NUMERO_DE_SECCOES):
         # Propriadades da Seccao
