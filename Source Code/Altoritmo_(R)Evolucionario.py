@@ -5,6 +5,7 @@ import Massa_E_Custo
 import sys
 
 from multiprocessing import Pool, cpu_count
+from alive_progress import alive_bar 
 
 Dados_Precomputados = Condicoes_Iniciais.Matriz_K_Possbilities, Condicoes_Iniciais.Matriz_Theta_Possibilidades
 
@@ -57,28 +58,28 @@ def Flatten_List(Childs, Survivors):
 
 def Algoritmo_Otimizacao(Laminado_Geral):
     Survivors = []
-    Generation = 0
+    Generation = -1
     #Minimizar Camadas
     while not Analisar(Laminado_Geral):
         Laminado_Geral -= 1
     Laminado_Geral += 1
     Survivors.append((Laminado_Geral, Minimo(Laminado_Geral)))
-    while True:
-        Generation += 1
-        with Pool(cpu_count()) as MultiCore:
-            #Generate 20 copies and apply a random decrese to each Parent.
-            Childs = MultiCore.map(Create_Childs, Survivors)
-            #Flatten Lists beacuse of wierd artifacts on list mechanics.
-            Survivors = Flatten_List(Childs, Survivors)
-            
-        #Sort by Minimizing Function and 
-        Survivors = sorted(Survivors, key=lambda x: x[1])
-        while len(Survivors) > Maximum_Population:
-            Survivors.pop()                    
-        print(f"Generation: {Generation}")
-        print(f"Best Case Yet: {Survivors[0][0]} with f: {Survivors[0][1]}")   
-     
-# Compensar(Laminado_Inicial, 0, (0,0))
+    with alive_bar() as bar:
+        while True:
+            Generation += 1
+            with Pool(cpu_count()) as MultiCore:
+                #Generate 20 copies and apply a random decrese to each Parent.
+                Childs = MultiCore.map(Create_Childs, Survivors)
+                #Flatten Lists beacuse of wierd artifacts on list mechanics.
+                Survivors = Flatten_List(Childs, Survivors)
+                
+            #Sort by Minimizing Function and 
+            Survivors = sorted(Survivors, key=lambda x: x[1])
+            while len(Survivors) > Maximum_Population:
+                Survivors.pop()                    
+            print(f"Generation: {Generation}\nBest Case Yet: ")
+            print(f"{Survivors[0][0]} with f: {Survivors[0][1]}")   
+            bar()
 
 if __name__ == "__main__":
     Algoritmo_Otimizacao(Laminado_Inicial)
