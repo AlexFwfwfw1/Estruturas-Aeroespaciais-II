@@ -26,14 +26,14 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     Y1,Y2,Y3,Y4 = Propriadades_Seccao.Coordenadas_Y
     
     Sw, Px, Py = Forcas_Afilamento
-    Sy, Sx = Forcas
+    Sx, Sy = Forcas
 
     Forca_SX_W, Forca_SY_W = Sw
     Px_1, Px_2, Px_3, Px_4 = Px 
     Py_1, Py_2, Py_3, Py_4 = Py 
     Momento_X, Momento_Y = Momentos
     
-    Forca_SX_W = 0
+    # Forca_SX_W = 0
     
     Constante_A_Direta = (Momento_Y / I_yy)
     Constante_B_Direta = (Momento_X / I_xx)
@@ -46,15 +46,15 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     Qb3 = Ex_2 * (Constante_A_Corte*Raio_Medio*Y2*T2 + Constante_B_Corte*T2*(-0.5*Raio_Medio**2))
     Qb4 = Ex_1 * (Constante_A_Corte*(Altura_Media*Y3*T1 + T1*0.5*Altura_Media**2 + A3*Y3) + Constante_B_Corte*(T1*X3*Altura_Media+A3*X3)) +Qb3
     Qb1 = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*math.pi + T1*(Raio_Medio**2)*(1-math.cos(math.pi)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(math.pi)+A3*X4)) +Qb4
-    #Qbm = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*math.pi/2 + T1*(Raio_Medio**2)*(1-math.cos(math.pi/2)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(math.pi/2)+A3*X4)) +Qb4
+    Qbm = Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*math.pi/2 + T1*(Raio_Medio**2)*(1-math.cos(math.pi/2)) + A3*Y4) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(math.pi/2)+A3*X4)) +Qb4
     Qb2 = Ex_1 * (Constante_A_Corte*(T1*(Y1*Altura_Media - 0.5*Altura_Media**2) + Y1*A3) + Constante_B_Corte*(T1*X1*Altura_Media + A3*X1)) + Qb1
     QbC = Ex_2 * (Constante_A_Corte*(T2*Y2*Raio_Medio + A3*Y2) + Constante_B_Corte*(T2*(X2*Raio_Medio - 0.5*Raio_Medio**2) + A3*X2)) +Qb2 
 
-    I_C3 = Ex_2* (Constante_A_Corte * 0.5 * Y2 * Raio_Medio**2 - Constante_B_Corte*(1/6) * Raio_Medio**3)
-    I_34 = Ex_1* (Constante_A_Corte * (T1 * Y3 * Altura_Media**2 * 0.5 + (1/6) * T1 * Altura_Media**3  + A3 * Y3 * Altura_Media) + Constante_B_Corte * (T1 * X3 * 0.5 * Altura_Media**2  + A3 * X3 * Altura_Media)) + Qb3 * Altura_Media 
-    I_41 = Ex_1* (Constante_A_Corte * (T1 * 0.5 * Raio_Medio**2 * Y1 * math.pi**2  + T1 * Raio_Medio**3 * math.pi + A3 * Y4 * Raio_Medio * math.pi) + Constante_B_Corte * (-2* T1 * Raio_Medio**3 + A3 * X4 * Raio_Medio * math.pi)) + Qb4 * math.pi * Raio_Medio
-    I_12 = Ex_1* (Constante_A_Corte * (T1 * 0.5 * Y1 * Altura_Media**2  - (1/6) * T1 * Altura_Media**3  + Y1 * A3 * Altura_Media) + Constante_B_Corte * (0.5 * T1 * X1 * Altura_Media**2  + Constante_B_Corte * X1 * Altura_Media)) + Qb1 * Altura_Media
-    I_2C = Ex_2* (Constante_A_Corte * (T2 * 0.5 * Y2 * Raio_Medio**2  + A3 * Y2 * Raio_Medio) + Constante_B_Corte * (0.5 * T2 * X2 * Raio_Medio**2  - (1/6) * T2 * Raio_Medio**3  + A3 * X2 * Raio_Medio)) + Qb2 * Raio_Medio
+    I_C3 = Ex_2 * (Constante_A_Corte * T2 * 0.5 * Y2 * Raio_Medio**2 - T2 * Constante_B_Corte*(1/6) * Raio_Medio**3)
+    I_34 = Ex_1 * (Constante_A_Corte * (T1 * Y3 * Altura_Media**2 * 0.5 + (1/6) * T1 * Altura_Media**3  + A3 * Y3 * Altura_Media) + Constante_B_Corte * (T1 * X3 * 0.5 * Altura_Media**2  + A3 * X3 * Altura_Media)) + Qb3 * Altura_Media 
+    I_41 = Ex_1 * (Constante_A_Corte * (T1 * 0.5 * Raio_Medio**2 * Y1 * math.pi**2  + T1 * Raio_Medio**3 * math.pi + A3 * Y4 * Raio_Medio * math.pi) + Constante_B_Corte * (-2* T1 * Raio_Medio**3 + A3 * X4 * Raio_Medio * math.pi)) + Qb4 * math.pi * Raio_Medio
+    I_12 = Ex_1 * (Constante_A_Corte * (T1 * 0.5 * Y1 * Altura_Media**2  - (1/6) * T1 * Altura_Media**3  + Y1 * A3 * Altura_Media) + Constante_B_Corte * (0.5 * T1 * X1 * Altura_Media**2  + Constante_B_Corte * X1 * Altura_Media)) + Qb1 * Altura_Media
+    I_2C = Ex_2 * (Constante_A_Corte * (T2 * 0.5 * Y2 * Raio_Medio**2  + A3 * Y2 * Raio_Medio) + Constante_B_Corte * (0.5 * T2 * X2 * Raio_Medio**2  - (1/6) * T2 * Raio_Medio**3  + A3 * X2 * Raio_Medio)) + Qb2 * Raio_Medio
 
     #integração sentido horário
     I_total = - Altura_Media * I_C3 - Raio_Medio * I_34 - Raio_Medio * I_41 - Raio_Medio * I_12 - Altura_Media * I_2C

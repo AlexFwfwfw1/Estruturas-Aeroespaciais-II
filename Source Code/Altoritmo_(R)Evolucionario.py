@@ -16,22 +16,37 @@ Laminado3 = N_Inical*np.ones(Condicoes_Iniciais.Formato_3, dtype=int)
 Laminado_Inicial = np.append(np.append(Laminado1, Laminado2, axis=0), Laminado3, axis=0)
 
 Calculated_Sim = 0
-Generation_Birth = 50
+Generation_Birth = 100
 #The bigger the population, the bigger the porbability of finding the global minimum
 Maximum_Population = 1000
-Estagnacao_Atingida = 20
+
+Estagnacao_Atingida = 5
+Estagnacao_Max = 25
 Espessura = 0
+
+Espessura_Multipler = 0.005
 
 N = 5 #The bigger the N, bigger the divergence, bigger the probability of finidng the global solution
 
 def Analise_Estagnacao(Estagnacao, Entrada):
     Estagnacao.append(Entrada)
-    if len(Estagnacao) > Estagnacao_Atingida:
+    if len(Estagnacao) > Estagnacao_Max:
         Estagnacao.pop(0)
         Estagnacao = np.array(Estagnacao)
         if np.all(Estagnacao == Estagnacao[0]):
             print("Estagnacao atingida. Parando Simulacao Evolucionaria.")
+            print(f"Um total de {Calculated_Sim} Simulacoes Calculadas.")
             return True
+        
+        Counter, Count = (Estagnacao == Estagnacao[0]), 0
+        for i in Counter:
+            if not i:
+                return False
+            Count += 1
+            if Count > Estagnacao_Atingida:
+                global N 
+                N += 1 
+            
     return False
 
 def Print_Results(First_Place, Generation):
@@ -40,7 +55,7 @@ def Print_Results(First_Place, Generation):
     print(Laminado1)
     print(Laminado2)
     print(Laminado3)
-    print(f"With f: {First_Place[1]}")  
+    print(f"Espessura: {First_Place[1]}; F: {First_Place[2]}")  
     
 def Analisar(Laminado_Geral):
     #print(Laminado_Geral)
@@ -82,7 +97,9 @@ def Algoritmo_Otimizacao(Laminado_Geral):
     
     #Minimizar Camadas
     while not Analisar(Laminado_Geral):
+        print(Laminado_Geral)
         Laminado_Geral -= 1
+          
     Laminado_Geral += 1
     Survivors.append((Laminado_Geral, Minimo(Laminado_Geral)))
     
