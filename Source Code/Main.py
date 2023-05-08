@@ -38,9 +38,8 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         # Propriadades da Seccao
         Seccao = Propriadades_Seccao.Definir_Propriadades(Seccao_Z, Laminados, Espessura_Tensor)
         
-        
         # Carregamento
-        Forcas, Momentos, Peso_Cauda = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z, Peso_Por_Metro, Peso_Cauda)
+        Forcas, Momentos = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z, Peso_Por_Metro, Peso_Cauda)
 
         #Forcas de Corte dado o Afilamento
         Forcas_Afilamento, Falha_Return = Afilamento.F_Afilamento(Seccao, Momentos, Forcas, Laminado_3)  
@@ -75,7 +74,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
     
 
 if __name__ == "__main__":
-    
+    Debug.DEBUG = True
     Dados_Precomputados = Condicoes_Iniciais.Matriz_K_Possbilities,Condicoes_Iniciais.Matriz_Theta_Possibilidades
 
     Espessura_Tensor = Condicoes_Iniciais.Espessura_Tensor

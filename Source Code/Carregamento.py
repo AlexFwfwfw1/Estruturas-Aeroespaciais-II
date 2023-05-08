@@ -10,12 +10,20 @@ Forca_1 = MASSA_INERCIA_1*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 Forca_2 = MASSA_INERCIA_2*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 Forca_3 = MASSA_INERCIA_3*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 
-
+Delta_Z = COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES
 def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda): 
     
-    Peso_Cauda.append(Peso_Por_Metro*(COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES)) 
-    
-    
+    #Centroide Peso
+    Peso_Cauda.append((Peso_Por_Metro*Delta_Z, (z + Delta_Z/2))) 
+
+    Peso_Cauda_Total, Centroide_Peso_Cauda = 0, 0
+    for Peso_Ponto in Peso_Cauda:
+        Peso_Distribuido, C_Temp = Peso_Ponto 
+        Centroide_Peso_Cauda += C_Temp*Peso_Distribuido
+        Peso_Cauda_Total += Peso_Distribuido
+    if Peso_Cauda_Total != 0:
+        Centroide_Peso_Cauda  = Centroide_Peso_Cauda/Peso_Cauda_Total  
+        Peso_Cauda_Total = Peso_Cauda_Total*FATOR_DE_CARGA 
     #Edge Case
     if 0 > z or z > COMPRIMENTO_FUSELAGEM:  
         raise ValueError(f"Lamento. A Seccao em z = {z} está fora dos limites da fuselagem.")  
@@ -28,20 +36,18 @@ def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda):
 
     #Forcas em Y
     if 0 <= z < 0.6:
-        ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1
+        ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1 - Peso_Cauda_Total
     if 0.6 <= z < 2.2:
-        ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2
+        ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2 - Peso_Cauda_Total
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
-        ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3
-
+        ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3 - Peso_Cauda_Total
+    
     #Momentos em X
     if 0 <= z < 0.6:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-0.6)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1)*(0.6-z)
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-0.6)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1)*(0.6-z)- Peso_Cauda_Total*(Centroide_Peso_Cauda - z)
     if 0.6 <= z < 2.2:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-z)
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-z) - Peso_Cauda_Total*(Centroide_Peso_Cauda - z) 
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-z)
-    
-    
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-z)  - Peso_Cauda_Total*(Centroide_Peso_Cauda - z)
 
-    return (ForcaX,ForcaY),(MomentoX,MomentoY), Peso_Cauda
+    return (ForcaX,ForcaY),(MomentoX,MomentoY)

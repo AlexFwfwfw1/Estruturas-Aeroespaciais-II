@@ -67,8 +67,8 @@ def Definir_Propriadades(z,Laminados, b):
     distancia_y_tensoresUp_i = -y_CG
     distancia_y_tensoresDown_i = y_horizontal_i - y_CG
 
-    distancia_x_semicircuf_i = 0 
-    distancia_x_horizontal_i = 0
+    # distancia_x_semicircuf_i = 0 
+    # distancia_x_horizontal_i = 0
     distancia_x_vertical_i = w_diametro_ii/2
     distancia_x_tensores_i = w_diametro_ii/2
 
@@ -99,7 +99,7 @@ def Definir_Propriadades(z,Laminados, b):
     y_3 = y_2
     y_4 = y_1
     
-    A_Varrida = h_altura_ii * w_diametro_ii + math.pi/2* w_diametro_ii**2
+    A_Varrida = h_altura_ii * w_diametro_ii + math.pi/2* (w_diametro_ii/2)**2
     
     Elasticidades = (Ez_1,Ez_2,Ez_3)
     Espessuras = (Espessura_laminado1,Espessura_laminado2,Area_laminado3)

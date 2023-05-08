@@ -12,22 +12,22 @@ Formato_3 = (1, j_Materiais_Possiveis)
 
 Matriz_K_Possbilities,Matriz_Theta_Possibilidades = Definicao_Laminado.Obter_Matriz_K_Possibilities(Angulos_Possiveis, Materiais_Possiveis)
 
-Laminado_Lista_1 = 2*np.array([
-    [0,9,0],
+Laminado_Lista_1 = np.array([
     [0,0,0],
+    [0,12,0],
+    [0,12,0],
     [0,0,0],
-    [0,0,1],
 ])
 #2 Carbono Alta resistencia a 45 graus, 2 Fibra de carbono de alta res a -45 graus
-Laminado_Lista_2 =2* np.array([
+Laminado_Lista_2 = np.array([
     [0,0,0],
-    [2,1,5],
-    [31,0,3],
-    [0,0,2],
+    [0,12,0],
+    [0,12,0],
+    [0,0,0],
 ])
 #2 Carbono Alta resistencia a 45 graus, 2 Fibra de carbono de alta res a -45 graus
-Laminado_Lista_3 = 2*np.array([
-    [20,13,19]
+Laminado_Lista_3 = np.array([
+    [0,6,0]
 ])
 #2 Carbono Alta resistencia a 0 graus
 Espessura_Tensor = 0
