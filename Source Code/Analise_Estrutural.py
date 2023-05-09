@@ -53,11 +53,14 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     I_C3 = Ex_2 * (Constante_A_Corte * T2 * 0.5 * Y2 * Raio_Medio**2 - T2 * Constante_B_Corte*(1/6) * Raio_Medio**3)
     I_34 = Ex_1 * (Constante_A_Corte * (T1 * Y3 * Altura_Media**2 * 0.5 + (1/6) * T1 * Altura_Media**3  + A3 * Y3 * Altura_Media) + Constante_B_Corte * (T1 * X3 * 0.5 * Altura_Media**2  + A3 * X3 * Altura_Media)) + Qb3 * Altura_Media 
     I_41 = Ex_1 * (Constante_A_Corte * (T1 * 0.5 * Raio_Medio**2 * Y1 * math.pi**2  + T1 * Raio_Medio**3 * math.pi + A3 * Y4 * Raio_Medio * math.pi) + Constante_B_Corte * (-2* T1 * Raio_Medio**3 + A3 * X4 * Raio_Medio * math.pi)) + Qb4 * math.pi * Raio_Medio
+    I_41_= Raio_Medio*(Qb4*math.pi + Constante_A_Corte*Ex_1*math.pi*T1*Raio_Medio**2 + A3*Constante_B_Corte*Ex_1*math.pi*X4 + A3*Constante_A_Corte*Ex_1*math.pi*Y4 + (Constante_A_Corte*Ex_1*T1*Raio_Medio*Y4*math.pi**2)/2 + Constante_B_Corte*Ex_1*T1*math.cos(math.pi)*Raio_Medio**2 - Constante_A_Corte*Ex_1*T1*math.sin(math.pi)*Raio_Medio**2 )
     I_12 = Ex_1 * (Constante_A_Corte * (T1 * 0.5 * Y1 * Altura_Media**2  - (1/6) * T1 * Altura_Media**3  + Y1 * A3 * Altura_Media) + Constante_B_Corte * (0.5 * T1 * X1 * Altura_Media**2  + Constante_B_Corte * X1 * Altura_Media)) + Qb1 * Altura_Media
+    I_12_= Qb1*Altura_Media - 0.166667*Constante_A_Corte*Ex_1*T1*Altura_Media**3  + A3*Constante_B_Corte*Ex_1*Altura_Media*X1 + (Constante_B_Corte*Ex_1*T1*X1*Altura_Media**2)/2 + A3*Constante_A_Corte*Ex_1*Altura_Media*Y1 + 0.5*Constante_A_Corte*Ex_1*T1*Y1*Altura_Media**2
     I_2C = Ex_2 * (Constante_A_Corte * (T2 * 0.5 * Y2 * Raio_Medio**2  + A3 * Y2 * Raio_Medio) + Constante_B_Corte * (0.5 * T2 * X2 * Raio_Medio**2  - (1/6) * T2 * Raio_Medio**3  + A3 * X2 * Raio_Medio)) + Qb2 * Raio_Medio
+    #I_2C_ = Qb2*Raio_Medio - 0.166667*Constante_B_Corte*Ex_2*T2*Raio_Medio**3 + A3*Constante_B_Corte*Ex_2*Raio_Medio*X2 + 0.5*Constante_B_Corte*Ex_2*T2*X2*Raio_Medio**2 + A3*Constante_A_Corte*Ex_2*Raio_Medio*Y2 + (Constante_A_Corte*Ex_2*T2*Y2*Raio_Medio**2)/2
 
     #integração sentido horário
-    I_total = - Altura_Media * I_C3 - Raio_Medio * I_34 - Raio_Medio * I_41 - Raio_Medio * I_12 - Altura_Media * I_2C
+    I_total = - Altura_Media * I_C3 - Raio_Medio * I_34 - Raio_Medio * I_41_ - Raio_Medio * I_12_ - Altura_Media * I_2C
 
     PxBraço_1, PxBraço_2, PxBraço_3, PxBraço_4 = Px_1 * 0, Px_2 * Altura_Media , Px_3 * Altura_Media  , Px_4 * 0
     PyBraço_1, PyBraço_2, PyBraço_3, PyBraço_4 = Py_1 * Raio_Medio, Py_2 * Raio_Medio , Py_3 * (- Raio_Medio)  , Py_4 * (- Raio_Medio)

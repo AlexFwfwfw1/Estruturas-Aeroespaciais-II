@@ -6,10 +6,11 @@ from Configuration import Falha
 import Debug
 
 #Dimensoes da cauda na raiz e na ponta
-w_raiz = 1.5*(1-0.7*0/COMPRIMENTO_FUSELAGEM)
-w_ponta = 1.5*(1-0.7*COMPRIMENTO_FUSELAGEM/COMPRIMENTO_FUSELAGEM)
-h_raiz = 0.9*(1-0.5*0/COMPRIMENTO_FUSELAGEM)
-h_ponta = 0.9*(1-0.5*COMPRIMENTO_FUSELAGEM/COMPRIMENTO_FUSELAGEM)
+
+w_raiz = 1.5
+w_ponta = 1.5*(1-0.7)
+h_raiz = 0.9
+h_ponta = 0.9*(1-0.5)
 
 def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
 
@@ -29,8 +30,8 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
     A_tensores_i = 4*A3
 
     #Posicao dos tensores na raiz e na ponta
-    x_raiz_3 = x_raiz_4 = -(w_raiz- T1)/2
-    x_raiz_2 = x_raiz_1 = (w_raiz-T1)/2
+    x_raiz_3 = x_raiz_4 = -(w_raiz - T1)/2
+    x_raiz_2 = x_raiz_1 = (w_raiz - T1)/2
     y_raiz_3 = y_raiz_2 = -(h_raiz - T2/2)
     y_raiz_4 = y_raiz_1 = 0
 
@@ -55,10 +56,11 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
     delta_z = COMPRIMENTO_FUSELAGEM
 
     #Tensores diretas em cada tensor
-    Tensao_Direta_3 = Ex_3 * (Constante_A_Direta*X3+ Constante_B_Direta*Y3)
-    Tensao_Direta_2= Ex_3 * (Constante_A_Direta*X4 + Constante_B_Direta*Y4)
-    Tensao_Direta_4 = Ex_3 * (Constante_A_Direta*X1+ Constante_B_Direta*Y1)
-    Tensao_Direta_1 = Ex_3 * (Constante_A_Direta*X2 + Constante_B_Direta*Y2)
+    
+    Tensao_Direta_1 = Ex_3 * (Constante_A_Direta*X1 + Constante_B_Direta*Y1)
+    Tensao_Direta_2 = Ex_3 * (Constante_A_Direta*X2 + Constante_B_Direta*Y2)
+    Tensao_Direta_3 = Ex_3 * (Constante_A_Direta*X3 + Constante_B_Direta*Y3)
+    Tensao_Direta_4 = Ex_3 * (Constante_A_Direta*X4 + Constante_B_Direta*Y4)
     
     if Falha and A3 != 0:
         for Tensao_Direta in (Tensao_Direta_1,Tensao_Direta_2,Tensao_Direta_3,Tensao_Direta_4):
@@ -67,24 +69,26 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
                 return None, Falha_Return
         
     #Forcas de tracao/compressao
-    Pz_3 = Tensao_Direta_3 * A_tensores_i
-    Pz_2= Tensao_Direta_2* A_tensores_i
-    Pz_4 = Tensao_Direta_4 * A_tensores_i
+    
     Pz_1 = Tensao_Direta_1 * A_tensores_i
+    Pz_2 = Tensao_Direta_2 * A_tensores_i
+    Pz_3 = Tensao_Direta_3 * A_tensores_i
+    Pz_4 = Tensao_Direta_4 * A_tensores_i
     
     #Forcas transversais
+    
+    Px_1 = Pz_1*(delta_x_1/delta_z)
+    Py_1 = Pz_1*(delta_y_1/delta_z)
+    
+    Px_2 = Pz_2*(delta_x_2/delta_z)
+    Py_2 = Pz_2*(delta_y_2/delta_z)
+    
     Px_3 = Pz_3*(delta_x_3/delta_z)
     Py_3 = Pz_3*(delta_y_3/delta_z)
-
-    Px_2= Pz_2*(delta_x_2/delta_z)
-    Py_2= Pz_2*(delta_y_2/delta_z)
 
     Px_4 = Pz_4*(delta_x_4/delta_z)
     Py_4 = Pz_4*(delta_y_4/delta_z)
 
-    Px_1 = Pz_1*(delta_x_1/delta_z)
-    Py_1 = Pz_1*(delta_y_1/delta_z)
-    
     Px = (Px_1, Px_2, Px_3, Px_4)
     Py = (Py_1, Py_2, Py_3, Py_4)
 
