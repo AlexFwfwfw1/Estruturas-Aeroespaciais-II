@@ -16,12 +16,12 @@ Laminado3 = N_Inical*np.ones(Condicoes_Iniciais.Formato_3, dtype=int)
 Laminado_Inicial = np.append(np.append(Laminado1, Laminado2, axis=0), Laminado3, axis=0)
 
  
-Generation_Birth = 20
+Generation_Birth = 10
 #The bigger the population, the bigger the porbability of finding the global minimum
-Maximum_Population = 100
+Maximum_Population = 1000
 
 Estagnacao_Atingida = 25
-Estagnacao_Max = 100
+Estagnacao_Max = 250
 
 Espessura_Multipler = 0.05e-3
 Calculated_Sim = 0
