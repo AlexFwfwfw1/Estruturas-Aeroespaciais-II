@@ -238,7 +238,7 @@ if __name__ == "__main__":
     
     Optimized = [item for sublist in Results for item in sublist]
     for _ in range(Tentativas): 
-        Childs_Optimized = Cruzar_Sobreviventes(Optimized, _)
+        Childs_Optimized = Cruzar_Sobreviventes(Optimized)
         Optimized = Algoritmo_Otim_Best(Childs_Optimized)
     
     
