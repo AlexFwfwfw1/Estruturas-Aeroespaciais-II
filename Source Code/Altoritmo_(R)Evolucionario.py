@@ -227,7 +227,7 @@ def Cruzar_Sobreviventes(Best_Survivors):
     print(Childs)
     return Childs
 
-Espessuras_Poss = (200,500)
+Espessuras_Poss = (100, 250, 500, 750, 1000)
 
 if __name__ == "__main__":
     Tentativas = 3
