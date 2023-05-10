@@ -15,6 +15,8 @@ import Debug
 
 TORCAO_MAX = np.deg2rad(0.5)
 DEFLECAO_MAX = np.deg2rad(0.5)
+
+Paco_Z = COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES 
             
 def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomputados):
     
@@ -59,8 +61,7 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         Peso_Por_Metro = Seccao.Peso_Por_Metro 
         
         
-    Torcao, Deflecao = abs(Torcao*COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES), abs(Deflecao*COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES)
-    # print(f"Torcao: {np.rad2deg(Torcao)} º, Deflecao: {np.rad2deg(Deflecao)} º, FS: ")
+    Torcao, Deflecao = abs(Torcao*Paco_Z), abs(Deflecao*Paco_Z)
     if not Debug.DEBUG:
         if Torcao >= TORCAO_MAX:
             return True
@@ -87,10 +88,11 @@ if __name__ == "__main__":
     #F_Min = Massa_E_Custo.Recalcular_Funcao_Minimo(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor)
     start = timer()
     temp = Simulacao(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor, Dados_Precomputados)
+    F_min = Massa_E_Custo.Recalcular_Funcao_Minimo(Laminado_1, Laminado_2, Laminado_3, Espessura_Tensor)
     if Debug.DEBUG:
         Falha, Torcao, Deflecao = temp
         print(f"Ponto critico: {Falha[1]}, F.S : {Falha[0]} , Laminado: {Falha[2]}")
-        print(f"Torcao F.S: {Torcao}, Deflecao F.S : {Deflecao} ")
+        print(f"Torcao F.S: {Torcao}, Deflecao F.S : {Deflecao}, F_min: {F_min} ")
     else:
         print(temp)
     end = timer()

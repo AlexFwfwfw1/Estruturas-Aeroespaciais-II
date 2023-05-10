@@ -65,7 +65,7 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
             Debug.Adiocionar_Ponto(Fs_Point)
         elif Fs <= FS:
             return True
-    if Tensao_1 != 0:
+    if Tensao_12 != 0:
         Fs = abs(Material.S/Tensao_12)
         if Debug.DEBUG:
             Fs_Point = (Fs, "Corte",Laminado_Name)

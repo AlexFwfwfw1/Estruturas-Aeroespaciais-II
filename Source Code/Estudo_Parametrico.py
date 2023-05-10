@@ -14,8 +14,8 @@ from alive_progress import alive_bar
 from tqdm import tqdm
 
 
-Laminado_1_Limits = {"N_Min": 1, "N_Max": 10}
-Laminado_2_Limits = Laminado_1_Limits
+Laminado_1_Limits = {"N_Min": 7, "N_Max": 10}
+Laminado_2_Limits = {"N_Min": 20, "N_Max": 30}
 Laminado_3_Limits = {"N_Min": 1, "N_Max": 10}
 Espessura_B_Limits = {"b_min": 0, "b_max": 0.1, "divisions": 1}
 
