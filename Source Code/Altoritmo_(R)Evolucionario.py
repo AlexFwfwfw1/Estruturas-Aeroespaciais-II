@@ -163,8 +163,8 @@ def Algoritmo_Otimizacao(Laminado_Geral, Espessura, Number):
     Remove_Duplicates(Survivors)
     return Survivors
 
-def Algoritmo_Otim_Best(Best_Ones):
-    Text = "Results\\" + Text_ + "Best" + ".txt"
+def Algoritmo_Otim_Best(Best_Ones, Number):
+    Text = "Results\\" + Text_ + "Best" + str(Number) + ".txt"
     with open(Text, "w") as Output_File:
         Output_File.write("Simulation Algoritmo Evolucionario. Best Selected")
         Output_File.write(f"Configuration: Generation_Birth = {Generation_Birth}\nMaximum_Population = {Maximum_Population}\nN = {N}\n")
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     
     Optimized = [item for sublist in Results for item in sublist]
     for _ in range(Tentativas): 
-        Childs_Optimized = Cruzar_Sobreviventes(Optimized)
+        Childs_Optimized = Cruzar_Sobreviventes(Optimized, _)
         Optimized = Algoritmo_Otim_Best(Childs_Optimized)
     
     
