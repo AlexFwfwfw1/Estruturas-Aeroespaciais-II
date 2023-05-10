@@ -16,17 +16,17 @@ Laminado3 = N_Inical*np.ones(Condicoes_Iniciais.Formato_3, dtype=int)
 Laminado_Inicial = np.append(np.append(Laminado1, Laminado2, axis=0), Laminado3, axis=0)
 
 Calculated_Sim = 0
-Generation_Birth = 100
+Generation_Birth = 15
 #The bigger the population, the bigger the porbability of finding the global minimum
-Maximum_Population = 1000
+Maximum_Population = 200
 
 Estagnacao_Atingida = 5
-Estagnacao_Max = 25
+Estagnacao_Max = 20
 Espessura = 0
 
 Espessura_Multipler = 0.005
 
-N = 5 #The bigger the N, bigger the divergence, bigger the probability of finidng the global solution
+N = 3 #The bigger the N, bigger the divergence, bigger the probability of finidng the global solution
 
 def Analise_Estagnacao(Estagnacao, Entrada):
     Estagnacao.append(Entrada)
@@ -55,7 +55,7 @@ def Print_Results(First_Place, Generation):
     print(Laminado1)
     print(Laminado2)
     print(Laminado3)
-    print(f"Espessura: {First_Place[1]}; F: {First_Place[2]}")  
+    print(f"F: {First_Place[1]}")  
     
 def Analisar(Laminado_Geral):
     #print(Laminado_Geral)
