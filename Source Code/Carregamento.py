@@ -48,6 +48,6 @@ def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda):
     if 0.6 <= z < 2.2:
         MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-z) - Peso_Cauda_Total*(Centroide_Peso_Cauda - z) 
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
-        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-z)  - Peso_Cauda_Total*(Centroide_Peso_Cauda - z)
+        MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-z) - Peso_Cauda_Total*(Centroide_Peso_Cauda - z)
 
     return (ForcaX,ForcaY),(MomentoX,MomentoY)
