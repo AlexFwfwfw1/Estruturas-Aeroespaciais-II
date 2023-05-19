@@ -16,9 +16,9 @@ Laminado3 = N_Inical*np.ones(Condicoes_Iniciais.Formato_3, dtype=int)
 Laminado_Inicial = np.append(np.append(Laminado1, Laminado2, axis=0), Laminado3, axis=0)
 
  
-Generation_Birth = 25
+Generation_Birth = 5
 #The bigger the population, the bigger the porbability of finding the global minimum
-Maximum_Population = 1000
+Maximum_Population = 20
 
 Estagnacao_Atingida = 25
 Estagnacao_Max = 5
@@ -26,7 +26,7 @@ Estagnacao_Max = 5
 Espessura_Multipler = 0.05e-3
 Calculated_Sim = 0
 
-N = 1 #The bigger the N, bigger the divergence, bigger the probability of finidng the global solution
+N = 3 #The bigger the N, bigger the divergence, bigger the probability of finidng the global solution
 N_Espessura = 10
 
 Threshhold = 0.5
@@ -159,7 +159,7 @@ def Algoritmo_Otimizacao(Laminado_Geral, Espessura, Number):
             if Analise_Estagnacao(Estagnacao,Survivors[0][2]):
                 break
             bar()
-            
+    Survivors = sorted(Survivors, key=lambda x: x[2])
     Remove_Duplicates(Survivors)
     return Survivors
 
@@ -227,7 +227,7 @@ def Cruzar_Sobreviventes(Best_Survivors):
     print(Childs)
     return Childs
 
-Espessuras_Poss = (100, 250, 500, 750, 1000)
+Espessuras_Poss = [100*item for item in range(10)]
 
 if __name__ == "__main__":
     Tentativas = 3
@@ -238,8 +238,9 @@ if __name__ == "__main__":
     
     Optimized = [item for sublist in Results for item in sublist]
     for _ in range(Tentativas): 
-        Childs_Optimized = Cruzar_Sobreviventes(Optimized, _)
-        Optimized = Algoritmo_Otim_Best(Childs_Optimized)
+        Optimized = sorted(Optimized, key=lambda x: x[2])
+        Childs_Optimized = Cruzar_Sobreviventes(Optimized)
+        Optimized = Algoritmo_Otim_Best(Childs_Optimized,_)
     
     
     

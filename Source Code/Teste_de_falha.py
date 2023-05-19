@@ -28,7 +28,7 @@ def Tensoes_Eixos_Camada(Tensao_x, Tensao_y, Tensao_xy, Laminado):
             T = Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
             Ts = Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
             Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
-            if T:
+            if T or Ts or Ho:
                 return True  #FALHOU!
     return False
 
