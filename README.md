@@ -9,16 +9,20 @@ This project is a Composite Structural analysis of a fixed geometry aircraft tal
 - Filipe Soares (Barrico)
 - Manuel Alves 
 
-# Description
+## Description
 The engine can:
 - Calculate the equivalent charecteristics for a given set of composite compostition with a given set of composite materials and angles.
 - Calculate section inertial and elastic paremeters.
 - Using Structural Idealization methods and fault criterea, analyse fault points under a given safety factor.
 - Calculate beanding and tortion.
 
+The optimization algorithims implemented are:
+- Parametric Study (Impratical due to a large number of degrees of freedom)
+- Evolutionary Study (Pratical and activly used)
+
 
 The theory is described from the book:
-01. Gamboa. P.V., Apontamentos da unidade curricular - Estruturas Aeroespaciais II, ~390
+01. Gamboa. P.V., Apontamentos da unidade curricular - Estruturas Aeroespaciais II, 390
 acetatos, UBI, 2022.
 02. T. Megson; “Aircraft Structures for Engineering Students”; 6th Edition; Butterworth-
 Heinemann; 2017.
