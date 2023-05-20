@@ -139,7 +139,7 @@ def Algoritmo_Otimizacao(Laminado_Geral, Espessura, Number):
     Text = "Results\\" + Text_ + str(Number) + ".txt"
     with open(Text, "w") as Output_File:
         Output_File.write("Simulation Algoritmo Evolucionario.")
-        Output_File.write(f"Configuration: Generation_Birth = {Generation_Birth}\nMaximum_Population = {Maximum_Population}\n")
+        Output_File.write(f"Configuration: Generation_Birth = {Generation_Birth}\nMaximum_Population = {Maximum_Population}\nN = {N}\n")
     
     Estagnacao,Survivors = [], []
     Generation = -1
