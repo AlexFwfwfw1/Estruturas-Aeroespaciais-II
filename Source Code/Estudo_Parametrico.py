@@ -16,8 +16,8 @@ from tqdm import tqdm
 
 Laminado_1_Limits = {"N_Min": 7, "N_Max": 10}
 Laminado_2_Limits = {"N_Min": 20, "N_Max": 30}
-Laminado_3_Limits = {"N_Min": 1, "N_Max": 10}
-Espessura_B_Limits = {"b_min": 0, "b_max": 0.1, "divisions": 1}
+Laminado_3_Limits = {"N_Min": 2, "N_Max": 180}
+Espessura_B_Limits = {"b_min": 0, "b_max": 0.4, "divisions": 200}
 
 FAZER_IMPAR = False
 
@@ -217,7 +217,21 @@ Possibilities_Number = (
 
 def temp_f(bm):
     
-    Espessura, Lam_3, Shared_Memory = bm
+    Laminado_Lista_1 = np.array([
+    [0,0,0],
+    [2,0,0],
+    [4,0,0],
+    [0,0,0],
+    ])
+    #2 Carbono Alta resistencia a 45 graus, 2 Fibra de carbono de alta res a -45 graus
+    Laminado_Lista_2 = np.array([
+        [0,0,0],
+        [0,0,0],
+        [10,0,0],
+        [0,0,0],
+    ])
+    
+    Lam_3, Shared_Memory = bm
     if Multiprocessing:
         existing_shm = shared_memory.ShareableList(name=Shared_Memory)
         Min = existing_shm[0]
@@ -225,25 +239,18 @@ def temp_f(bm):
         
     Sim_Started = 0
     Combinacao_Minimo = None
-    for Lam_1 in range(len(Laminado1_Lista)):
-        for Lam_2 in range(len(Laminado2_Lista)):
-            
-            Funcao_Minimizacao = Massa_E_Custo.Funcao_Minimizante(
-                Massa_1[Lam_1],
-                Massa_2[Lam_2],
-                Massa_3[Lam_3],
-                Custo_1[Lam_1],
-                Custo_2[Lam_2],
-                Custo_3[Lam_3],
-                Espessura,
-            )
-            
-            if Funcao_Minimizacao < Min:
-                Sim_Started += 1
-                Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
-                if Falha == 0:
-                    Min = Funcao_Minimizacao
-                    Combinacao_Minimo = Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado3_Lista[Lam_3], Espessura
+    
+    for Espessura in Espessuras_B_Possiveis:
+        Funcao_Minimizacao = Massa_E_Custo.Recalcular_Funcao_Minimo(
+            Laminado_Lista_1,Laminado_Lista_2,Laminado3_Lista[Lam_3],Espessura)
+
+
+        if Funcao_Minimizacao < Min:
+            Sim_Started += 1
+            Falha = Main.Simulacao(Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
+            if Falha == 0:
+                Min = Funcao_Minimizacao
+                Combinacao_Minimo = Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura
         
     if Multiprocessing:
         existing_shm[0] = float(Min)
@@ -252,27 +259,25 @@ def temp_f(bm):
 
 if __name__ == "__main__":
     
-    Gap_Number = len(Laminado3_Lista)* Espessura_B_Limits["divisions"]
-    Total = len(Laminado1_Lista)*len(Laminado2_Lista)
+    Gap_Number = len(Laminado3_Lista)
+    Total = Espessura_B_Limits["divisions"]
     
     Core_List_Arguments = []
         
-    for Espessura in Espessuras_B_Possiveis:
-        for Lam_3 in range(len(Laminado3_Lista)):
-            Core_List_Arguments.append((Espessura, Lam_3))
+    for Lam_3 in range(len(Laminado3_Lista)):
+        Core_List_Arguments.append((Lam_3))
             
     if Multiprocessing:
         freeze_support()
         with SharedMemoryManager() as smm:
-            Minimo = smm.ShareableList([10e100])
+            Minimo = smm.ShareableList([12.94145137487304])
             Name = Minimo.shm.name
             print(Name)
             
             Core_List_Arguments = []
-            for Espessura in Espessuras_B_Possiveis:
-                for Lam_3 in range(len(Laminado3_Lista)):
-                    Core_List_Arguments.append((Espessura, Lam_3, Name))
-       
+            for Lam_3 in range(len(Laminado3_Lista)):
+                Core_List_Arguments.append(( Lam_3, Name))
+    
     
             Results = []
             with Pool(processes=cpu_count()) as Multi_Core_Process:
@@ -286,6 +291,7 @@ if __name__ == "__main__":
                 bar(Total)
                 
     Best_Simulation = sorted(Results,key=lambda x: x[0])[0]
+    print(Best_Simulation)
     Lam1_R,Lam2_R,Lam3_R, Espessura = Best_Simulation[1]
     Sim_Started = sum([pair[2] for pair in Results])
         
