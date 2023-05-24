@@ -16,8 +16,8 @@ from tqdm import tqdm
 
 Laminado_1_Limits = {"N_Min": 7, "N_Max": 10}
 Laminado_2_Limits = {"N_Min": 20, "N_Max": 30}
-Laminado_3_Limits = {"N_Min": 2, "N_Max": 180}
-Espessura_B_Limits = {"b_min": 0, "b_max": 0.4, "divisions": 200}
+Laminado_3_Limits = {"N_Min": 2, "N_Max": 100}
+Espessura_B_Limits = {"b_min": 0, "b_max": 0.4, "divisions": 10}
 
 FAZER_IMPAR = False
 
@@ -250,7 +250,7 @@ def temp_f(bm):
             Falha = Main.Simulacao(Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
             if Falha == 0:
                 Min = Funcao_Minimizacao
-                Combinacao_Minimo = Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura
+                Combinacao_Minimo = (Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura)
         
     if Multiprocessing:
         existing_shm[0] = float(Min)
@@ -266,7 +266,8 @@ if __name__ == "__main__":
         
     for Lam_3 in range(len(Laminado3_Lista)):
         Core_List_Arguments.append((Lam_3))
-            
+         
+    Results = []   
     if Multiprocessing:
         freeze_support()
         with SharedMemoryManager() as smm:
@@ -279,17 +280,18 @@ if __name__ == "__main__":
                 Core_List_Arguments.append(( Lam_3, Name))
     
     
-            Results = []
             with Pool(processes=cpu_count()) as Multi_Core_Process:
                 for result in tqdm(Multi_Core_Process.imap(func=temp_f, iterable=Core_List_Arguments),colour="blue",unit = " Simulacoes", dynamic_ncols = True,unit_scale = Total, total= Gap_Number, desc = "Estudo Paramétrico"):
                     Results.append(result)
+            print(Results)
     else:
         Results = []
         with alive_bar(total = Total*Gap_Number) as bar:
             for Core in Core_List_Arguments:
                 Results.append(temp_f(Core))
                 bar(Total)
-                
+             
+           
     Best_Simulation = sorted(Results,key=lambda x: x[0])[0]
     print(Best_Simulation)
     Lam1_R,Lam2_R,Lam3_R, Espessura = Best_Simulation[1]
