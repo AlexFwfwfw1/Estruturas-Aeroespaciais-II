@@ -5,15 +5,15 @@ This project is a Composite Structural analysis of a fixed geometry aircraft tal
 
 
 ## Autores
-- [@AlexFwfwfw1](https://www.github.com/AlexFwfwfw1) Alexandre Oliveira
-- Filipe Soares (Barrico)
+- [Alexandre Oliveira](https://www.github.com/AlexFwfwfw1)
+- Filipe Soares 
 - Manuel Alves 
 
 ## Description
 The engine can:
-- Calculate the equivalent charecteristics for a given set of composite compostition with a given set of composite materials and angles.
-- Calculate section inertial and elastic paremeters.
-- Using Structural Idealization methods and fault criterea, analyse fault points under a given safety factor.
+- Calculate the equivalent charecteristics of composite materials compostition for a set of materials and angles.
+- Calculate section inertial and elastic paremeters and characteristics.
+- Using Structural Idealization methods and fault criterea to analyse fault points and safety factors.
 - Calculate beanding and tortion.
 
 The optimization algorithims implemented are:
