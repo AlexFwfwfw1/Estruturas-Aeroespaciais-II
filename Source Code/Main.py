@@ -44,12 +44,12 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         Forcas, Momentos = Carregamento.Obter_Forcas_e_Momentos(Seccao_Z, Peso_Por_Metro, Peso_Cauda)
 
         #Forcas de Corte dado o Afilamento
-        Forcas_Afilamento, Falha_Return = Afilamento.F_Afilamento(Seccao, Momentos, Forcas, Laminado_3)  
+        Forcas_Afilamento, Falha_Return = Afilamento.F_Afilamento(Seccao, Momentos, Forcas, Laminado_3, Seccao_Z)  
         if Falha_Return:
             return True
         
         #Analise_Estrutural Tensoes Diretas, Corte e Qs0 é feito em parelo de forma a poupar memoria e tempo de calculo
-        Falha_Return, Taxa_Torcao, Taxa_Deflecao = Analise_Estrutural.Analise_Total(Seccao, Forcas, Momentos, Laminados, Forcas_Afilamento)
+        Falha_Return, Taxa_Torcao, Taxa_Deflecao = Analise_Estrutural.Analise_Total(Seccao, Forcas, Momentos, Laminados, Forcas_Afilamento, Seccao_Z)
         if Falha_Return:
             return True
         
@@ -61,11 +61,12 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         Peso_Por_Metro = Seccao.Peso_Por_Metro 
         
         
-    Torcao, Deflecao = abs(Torcao*Paco_Z), abs(Deflecao*Paco_Z)
+    Torcao, Deflecao = Torcao*Paco_Z, Deflecao*Paco_Z
+    # print(f"Torcao: {Torcao} rad, Deflecao: {Deflecao} rad")
     if not Debug.DEBUG:
-        if Torcao >= TORCAO_MAX:
+        if abs(Torcao) >= TORCAO_MAX:
             return True
-        if Deflecao >= DEFLECAO_MAX:
+        if abs(Deflecao) >= DEFLECAO_MAX:
             return True
     else:
         return Debug.Sort_By_FS(), TORCAO_MAX/Torcao, DEFLECAO_MAX/Deflecao

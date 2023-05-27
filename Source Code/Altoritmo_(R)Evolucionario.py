@@ -5,6 +5,7 @@ import Massa_E_Custo
 
 from multiprocessing import Pool, cpu_count, shared_memory
 from alive_progress import alive_bar 
+from timeit import default_timer as timer
 
 Simulation_Number = np.zeros((2))
 shm = shared_memory.SharedMemory(create=True, size=Simulation_Number.nbytes)
@@ -20,9 +21,9 @@ Laminado3 = N_Inical*np.ones(Condicoes_Iniciais.Formato_3, dtype=int)
 Laminado_Inicial = np.append(np.append(Laminado1, Laminado2, axis=0), Laminado3, axis=0)
 
  
-Generation_Birth = 15
+Generation_Birth = 20
 #The bigger the population, the bigger the porbability of finding the global minimum
-Maximum_Population = 250
+Maximum_Population = 750
 Espessura_Divergence = 5
 
 Estagnacao_Atingida = 2
@@ -260,9 +261,11 @@ def Detect_Last_Result():
             print(f"Files Detected: {i}")
             return i
 
-Espessuras_Poss = [1000*item for item in range(10)]
+Espessuras_Poss = [3**item for item in range(7)]
 
 if __name__ == "__main__":
+    start = timer()
+    
     Tentativas = 2
     Results = []
     Offset = Detect_Last_Result()
@@ -276,3 +279,6 @@ if __name__ == "__main__":
         Optimized = sorted(Optimized, key=lambda x: x[2])
         Childs_Optimized = Cruzar_Sobreviventes(Optimized)
         Optimized = Algoritmo_Otim_Best(Childs_Optimized,_)
+        
+    end = timer()
+    print(f"Time Elapsed: {round((end-start)*1000, 5)} ms")
