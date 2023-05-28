@@ -12,7 +12,7 @@ w_ponta = 1.5*(1-0.7)
 h_raiz = 0.9
 h_ponta = 0.9*(1-0.5)
 
-def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
+def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3, Seccao):
 
     I_xx, I_yy, Ixy = Propriadades_Seccao.Segundo_Momentos_De_Area
     Ex_1,Ex_2,Ex_3 = Propriadades_Seccao.Elasticidades
@@ -70,10 +70,10 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3):
         
     #Forcas de tracao/compressao
     
-    Pz_1 = Tensao_Direta_1 * A_tensores_i
-    Pz_2 = Tensao_Direta_2 * A_tensores_i
-    Pz_3 = Tensao_Direta_3 * A_tensores_i
-    Pz_4 = Tensao_Direta_4 * A_tensores_i
+    Pz_1 = Tensao_Direta_1 * A_tensores_i/4
+    Pz_2 = Tensao_Direta_2 * A_tensores_i/4
+    Pz_3 = Tensao_Direta_3 * A_tensores_i/4
+    Pz_4 = Tensao_Direta_4 * A_tensores_i/4
     
     #Forcas transversais
     

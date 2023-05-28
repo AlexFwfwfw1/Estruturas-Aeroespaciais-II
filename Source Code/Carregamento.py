@@ -11,6 +11,8 @@ Forca_2 = MASSA_INERCIA_2*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 Forca_3 = MASSA_INERCIA_3*ACELERACAO_GRAVITICA*FATOR_DE_CARGA
 
 Delta_Z = COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES
+
+Usar_Massa_Fuselagem = True
 def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda): 
     
     #Centroide Peso
@@ -42,6 +44,8 @@ def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda):
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
         ForcaY = CARGA_EMPENAGEM_HORIZONTAL-Forca_3 - Peso_Cauda_Total
     
+    if not Usar_Massa_Fuselagem:
+        Peso_Cauda_Total = 0
     #Momentos em X
     if 0 <= z < 0.6:
         MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-2.2)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2)*(2.2-0.6)+(CARGA_EMPENAGEM_HORIZONTAL-Forca_3-Forca_2-Forca_1)*(0.6-z)- Peso_Cauda_Total*(Centroide_Peso_Cauda - z)
@@ -50,4 +54,4 @@ def Obter_Forcas_e_Momentos(z, Peso_Por_Metro, Peso_Cauda):
     if 2.2 <= z <= COMPRIMENTO_FUSELAGEM:
         MomentoX = (CARGA_EMPENAGEM_HORIZONTAL-Forca_3)*(COMPRIMENTO_FUSELAGEM-z) - Peso_Cauda_Total*(Centroide_Peso_Cauda - z)
 
-    return (ForcaX,ForcaY),(MomentoX,MomentoY)
+    return (ForcaX,ForcaY),(-MomentoX,-MomentoY)
