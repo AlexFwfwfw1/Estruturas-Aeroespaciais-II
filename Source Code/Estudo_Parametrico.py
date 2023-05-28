@@ -220,14 +220,14 @@ def temp_f(bm):
     Laminado_Lista_1 = np.array([
     [0,0,0],
     [2,0,0],
-    [4,0,0],
+    [2,0,2],
     [0,0,0],
     ])
     #2 Carbono Alta resistencia a 45 graus, 2 Fibra de carbono de alta res a -45 graus
     Laminado_Lista_2 = np.array([
         [0,0,0],
-        [0,0,0],
-        [10,0,0],
+        [0,0,4],
+        [8,0,4],
         [0,0,0],
     ])
     
@@ -270,7 +270,7 @@ if __name__ == "__main__":
     if Multiprocessing:
         freeze_support()
         with SharedMemoryManager() as smm:
-            Minimo = smm.ShareableList([12.94145137487304])
+            Minimo = smm.ShareableList([15.162839588717956])
             Name = Minimo.shm.name
             print(Name)
             
