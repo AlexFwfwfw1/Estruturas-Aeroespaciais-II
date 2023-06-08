@@ -7,14 +7,17 @@ import Analise_Estrutural
 import Afilamento
 import Condicoes_Iniciais
 import Massa_E_Custo
+import Torcao_Deflecao
 
 import numpy as np
-from Configuration import NUMERO_DE_SECCOES
+from Configuration import NUMERO_DE_SECCOES, Plotting
 from timeit import default_timer as timer
 import Debug
 
-TORCAO_MAX = np.deg2rad(0.5)
-DEFLECAO_MAX = np.deg2rad(0.5)
+import Plotting_Lib
+
+TORCAO_MAX = 0.5
+DEFLECAO_MAX = 0.5
 
 Paco_Z = COMPRIMENTO_FUSELAGEM/NUMERO_DE_SECCOES 
             
@@ -35,8 +38,9 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         return True
     Laminados = (Laminado_1,Laminado_2,Laminado_3)
     
-    Torcao, Deflecao = 0,0
-    for Seccao_Z in np.linspace(COMPRIMENTO_FUSELAGEM,0,NUMERO_DE_SECCOES):
+    Torcao, Deflecao = [],[]
+    Seccoes_Z_List = np.linspace(COMPRIMENTO_FUSELAGEM,0,NUMERO_DE_SECCOES)
+    for Seccao_Z in Seccoes_Z_List:
         # Propriadades da Seccao
         Seccao = Propriadades_Seccao.Definir_Propriadades(Seccao_Z, Laminados, Espessura_Tensor)
         
@@ -52,24 +56,20 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
         Falha_Return, Taxa_Torcao, Taxa_Deflecao = Analise_Estrutural.Analise_Total(Seccao, Forcas, Momentos, Laminados, Forcas_Afilamento, Seccao_Z)
         if Falha_Return:
             return True
-        
-        if Seccao_Z == 0 or Seccao_Z == COMPRIMENTO_FUSELAGEM:
-            Taxa_Torcao = Taxa_Torcao*0.5
-            Taxa_Deflecao = Taxa_Deflecao*0.5
-        Torcao += Taxa_Torcao
-        Deflecao += Taxa_Deflecao
-        Peso_Por_Metro = Seccao.Peso_Por_Metro 
-        
-        
-    Torcao, Deflecao = Torcao*Paco_Z, Deflecao*Paco_Z
-    # print(f"Torcao: {Torcao} rad, Deflecao: {Deflecao} rad")
+        Torcao.append(Taxa_Torcao)
+        Deflecao.append(Taxa_Deflecao)
+    Theta_Z, Theta_X, Delta_Y = Torcao_Deflecao.Deformacao_E_Torcao(Torcao, Deflecao, Paco_Z)
+    if Plotting:
+        Plotting_Lib.Plot()
+    
+    print(f"Torcao: {Theta_Z} graus, Deflecao: {Theta_X} graus, Deflecao_Metro: {Delta_Y} metros")#,  Deflecao_Msx: {Deflecao_abs} metros")
     if not Debug.DEBUG:
-        if abs(Torcao) >= TORCAO_MAX:
+        if abs(Theta_Z) >= TORCAO_MAX:
             return True
-        if abs(Deflecao) >= DEFLECAO_MAX:
+        if abs(Theta_X) >= DEFLECAO_MAX:
             return True
     else:
-        return Debug.Sort_By_FS(), TORCAO_MAX/Torcao, DEFLECAO_MAX/Deflecao
+        return Debug.Sort_By_FS(), TORCAO_MAX/Theta_Z, DEFLECAO_MAX/Theta_X
     #print("Nao Falhou")
     return False
         

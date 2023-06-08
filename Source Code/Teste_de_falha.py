@@ -1,47 +1,55 @@
 from Constantes import *
 import numpy as np
 
-from Configuration import FS #com Fator de Segurança
+from Configuration import FS, Plotting #com Fator de Segurança
 import Debug
+import Plotting_Lib
 
 FS_Inv = 1/FS
 
 def Tensoes_Eixos_Camada(Tensao_x, Tensao_y, Tensao_xy, Laminado):
+    List = []
+    
     #Esta Matriz Tensao tem todas as 
     Matriz_Tensao_List = Laminado.List_Matriz_Stress
     Laminado_Name = Laminado.Name
     # print(Matriz_Tensao_List)
     Array_Tensao = np.array([Tensao_x, Tensao_y, Tensao_xy])
+    Elasticidade = np.matmul(Laminado.Matriz_A, Array_Tensao)
+    
     for Camada in Matriz_Tensao_List:
         #Obter Tensoes nos Eixos
         Matriz_Tensao,Material = Camada
         Tensao_Nos_Eixos = np.matmul(Matriz_Tensao,Array_Tensao) 
         Tensao_1 ,Tensao_2, Tensao_12 = tuple(Tensao_Nos_Eixos) 
 
-        
         #Criterio de Falha
         if Debug.DEBUG:
-            T = Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
-            Ts = Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
-            Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
+            T = Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
+            Ts = Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
+            Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
+            
         else:
             T = Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
             Ts = Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
             Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
             if T or Ts or Ho:
                 return True  #FALHOU!
+    if Plotting:
+        Plotting_Lib.Adiocionar_Ponto(Tensao_x)
+    
     return False
 
 
 # Critérios NÃO INTERATIVOS
 
-def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
-    
+def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name, List):
     if Tensao_1 > 0:
         Fs = abs(Material.Xt/Tensao_1)
         if Debug.DEBUG:
             Fs_Point = (Fs, "Tensao_X",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
+            List.append(abs(1/Fs))
         elif Fs <= FS:
             return True
     if Tensao_1 < 0: 
@@ -49,6 +57,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Compressao_X",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
+            List.append(abs(1/Fs))
+            
         elif Fs <= FS:
             return True
     if Tensao_2 > 0:
@@ -56,6 +66,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Tensao_Y",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
+            List.append(abs(1/Fs))
+            
         elif Fs <= FS:
             return True
     if Tensao_2 < 0: 
@@ -63,6 +75,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Compressao_Y",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
+            List.append(abs(1/Fs))
+            
         elif Fs <= FS:
             return True
     if Tensao_12 != 0:
@@ -70,6 +84,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Corte",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
+            List.append(abs(1/Fs))
+            
         elif Fs <= FS:
             return True
     
@@ -80,7 +96,7 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name):
 # Critérios INTERATIVOS
 
 # Critério de Tsai-Hill
-def Tsai_Hill(Tensao_1, Tensao_2, Tensao_12, Material,Laminado_Name):
+def Tsai_Hill(Tensao_1, Tensao_2, Tensao_12, Material,Laminado_Name, List):
 
     if Tensao_1 > 0: X = Material.Xt
     else: X = Material.Xc
@@ -93,13 +109,14 @@ def Tsai_Hill(Tensao_1, Tensao_2, Tensao_12, Material,Laminado_Name):
     f = (Tensao_1/X)**2 + (Tensao_2/Y)**2 + (Tensao_12/S)**2 - (Tensao_1/X)*(Tensao_2/X)
     if Debug.DEBUG:
         Debug.Adiocionar_Ponto((1/abs(f), "Tsai_Hill",Laminado_Name))
+    List.append(abs(f))
 
     if f >= FS_Inv:
         return True
     return False
 
 # Critério de Hoffman
-def Hoffman(Tensao_1, Tensao_2, Tensao_12, Material,Laminado_Name):
+def Hoffman(Tensao_1, Tensao_2, Tensao_12, Material,Laminado_Name, List):
     
     F1 = 1/Material.Xt - 1/Material.Xc
     F2 = 1/Material.Yt - 1/Material.Yc
@@ -111,7 +128,7 @@ def Hoffman(Tensao_1, Tensao_2, Tensao_12, Material,Laminado_Name):
     f = F1 * Tensao_1 + F2 * Tensao_2 + F11 * Tensao_1**2 + F22 * Tensao_2**2 + F33 * Tensao_12**2 + 2 * F12 * Tensao_1 * Tensao_2
     if Debug.DEBUG:
         Debug.Adiocionar_Ponto((1/abs(f), "Hoffman",Laminado_Name))
-
+    List.append(abs(f))
     if f >= FS_Inv:
         return True
     return False

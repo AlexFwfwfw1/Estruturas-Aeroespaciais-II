@@ -14,10 +14,10 @@ from alive_progress import alive_bar
 from tqdm import tqdm
 
 
-Laminado_1_Limits = {"N_Min": 4, "N_Max": 8}
-Laminado_2_Limits = {"N_Min": 8, "N_Max": 10}
-Laminado_3_Limits = {"N_Min": 1, "N_Max": 10}
-Espessura_B_Limits = {"b_min": 0.06, "b_max": 0.07, "divisions": 2}
+Laminado_1_Limits = {"N_Min": 7, "N_Max": 10}
+Laminado_2_Limits = {"N_Min": 20, "N_Max": 30}
+Laminado_3_Limits = {"N_Min": 75, "N_Max": 85}
+Espessura_B_Limits = {"b_min": 0.06, "b_max": 0.7, "divisions": 200}
 
 FAZER_IMPAR = False
 
@@ -217,12 +217,21 @@ Possibilities_Number = (
 
 def temp_f(bm):
     
-    Laminado_Lista_3 = np.array([
-    [0,86,0],
+    Laminado_Lista_1 = np.array([
+    [0,0,0],
+    [2,0,0],
+    [4,0,0],
+    [0,0,0],
+    ])
+    #2 Carbono Alta resistencia a 45 graus, 2 Fibra de carbono de alta res a -45 graus
+    Laminado_Lista_2 = np.array([
+        [0,0,0],
+        [0,0,0],
+        [10,0,0],
+        [0,0,0],
     ])
     
-    Espessura = 0.06161616161
-    Lam_1, Shared_Memory = bm
+    Espessura, Shared_Memory = bm
     if Multiprocessing:
         existing_shm = shared_memory.ShareableList(name=Shared_Memory)
         Min = existing_shm[0]
@@ -230,46 +239,45 @@ def temp_f(bm):
         
     Sim_Started = 0
     Combinacao_Minimo = None
-
-    for Lam_2 in range(len(Laminado2_Lista)):  
+    for Lam_3 in range(len(Laminado3_Lista)):
         Funcao_Minimizacao = Massa_E_Custo.Recalcular_Funcao_Minimo(
-        Laminado1_Lista[Lam_1],Laminado2_Lista[Lam_2],Laminado_Lista_3,Espessura)
+            Laminado_Lista_1,Laminado_Lista_2,Laminado3_Lista[Lam_3],Espessura)
+
+
         if Funcao_Minimizacao < Min:
             Sim_Started += 1
-            Falha = Main.Simulacao(Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado_Lista_3, Espessura, Dados_Precomputados)
+            Falha = Main.Simulacao(Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura, Dados_Precomputados)
             if Falha == 0:
                 Min = Funcao_Minimizacao
-                Combinacao_Minimo = (Laminado1_Lista[Lam_1], Laminado2_Lista[Lam_2], Laminado_Lista_3, Espessura)
+                Combinacao_Minimo = (Laminado_Lista_1, Laminado_Lista_2, Laminado3_Lista[Lam_3], Espessura)
         
     if Multiprocessing:
-        existing_shm[0] = float(Min)
+        if existing_shm[0] > float(Min):
+            existing_shm[0] = float(Min)
     return Min, Combinacao_Minimo, Sim_Started 
                  
 
 if __name__ == "__main__":
     
-    Gap_Number = len(Laminado1_Lista)
-    Total = len(Laminado2_Lista)
+    Gap_Number =  Espessura_B_Limits["divisions"]
+    Total =len(Laminado3_Lista)
     
     Core_List_Arguments = []
         
-    
-    for Lam_1 in range(len(Laminado1_Lista)):
-        Core_List_Arguments.append((Lam_1))
-      
+    for Espessura in Espessuras_B_Possiveis:
+        Core_List_Arguments.append((Espessura))
          
     Results = []   
     if Multiprocessing:
         freeze_support()
         with SharedMemoryManager() as smm:
-            Minimo = smm.ShareableList([20.68642010796392])
+            Minimo = smm.ShareableList([22])
             Name = Minimo.shm.name
             print(Name)
             
             Core_List_Arguments = []
-            
-            for Lam_1 in range(len(Laminado1_Lista)):
-                Core_List_Arguments.append((Lam_1,Name))
+            for Espessura in Espessuras_B_Possiveis:
+                Core_List_Arguments.append((Espessura, Name))
     
     
             with Pool(processes=cpu_count()) as Multi_Core_Process:

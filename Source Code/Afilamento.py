@@ -1,7 +1,8 @@
 from Constantes import *
 import Teste_de_falha
 
-from Configuration import Falha
+from Configuration import Falha, Plotting
+import Plotting_Lib
 
 import Debug
 
@@ -17,9 +18,10 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3, Seccao):
     I_xx, I_yy, Ixy = Propriadades_Seccao.Segundo_Momentos_De_Area
     Ex_1,Ex_2,Ex_3 = Propriadades_Seccao.Elasticidades
     T1,T2,A3 = Propriadades_Seccao.Espessuras
+    
 
     Momento_X, Momento_Y = Momentos
-    Forca_SX, Forca_SY = Forcas
+    Forca_SX, Forca_SY, Forca_SZ = Forcas
 
     Constante_A_Direta = (Momento_Y / I_yy)
     Constante_B_Direta = (Momento_X / I_xx)
@@ -62,9 +64,13 @@ def F_Afilamento(Propriadades_Seccao, Momentos, Forcas, Laminado_3, Seccao):
     Tensao_Direta_3 = Ex_3 * (Constante_A_Direta*X3 + Constante_B_Direta*Y3)
     Tensao_Direta_4 = Ex_3 * (Constante_A_Direta*X4 + Constante_B_Direta*Y4)
     
+    X = (X1, X2, X3, X4)
+    Y = (Y1, Y2, Y3, Y4)
+    Tensao = (Tensao_Direta_1, Tensao_Direta_2, Tensao_Direta_3, Tensao_Direta_4)
     if Falha and A3 != 0:
-        for Tensao_Direta in (Tensao_Direta_1,Tensao_Direta_2,Tensao_Direta_3,Tensao_Direta_4):
-            Falha_Return = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, 0, Laminado_3)
+        for i in range(4):
+            Falha_Return = Teste_de_falha.Tensoes_Eixos_Camada(Tensao[i], 0, 0, Laminado_3)
+            if Plotting: Plotting_Lib.Adicionar_Coor(X[i], Y[i], Seccao)
             if not Debug.DEBUG and Falha_Return: 
                 return None, Falha_Return
         
