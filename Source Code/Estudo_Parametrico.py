@@ -217,6 +217,18 @@ Possibilities_Number = (
 
 def temp_f(bm):
     
+    Laminado_Lista_1 = np.array([
+    [0,0,0],
+    [2,0,0],
+    [2,0,2],
+    [0,0,0],
+    ])
+    #2 Carbono Alta resistencia a 45 graus, 2 Fibra de carbono de alta res a -45 graus
+    Laminado_Lista_2 = np.array([
+        [0,0,0],
+        [0,0,4],
+        [8,0,4],
+        [0,0,0],
     Laminado_Lista_3 = np.array([
     [0,86,0],
     ])
