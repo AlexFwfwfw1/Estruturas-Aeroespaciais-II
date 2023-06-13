@@ -30,13 +30,13 @@ def Tensoes_Eixos_Camada(Tensao_x, Tensao_y, Tensao_xy, Laminado):
             Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
             
         else:
-            T = Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
-            Ts = Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
-            Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name)
+            T = Tensao_Max(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
+            Ts = Tsai_Hill(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
+            Ho = Hoffman(Tensao_1 ,Tensao_2, Tensao_12, Material, Laminado_Name, List)
             if T or Ts or Ho:
                 return True  #FALHOU!
     if Plotting:
-        Plotting_Lib.Adiocionar_Ponto(Tensao_x)
+        Plotting_Lib.Adiocionar_Ponto(max(List))
     
     return False
 
@@ -49,7 +49,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name, List):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Tensao_X",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
-            List.append(abs(1/Fs))
+            if Plotting:
+                List.append(abs(1/Fs))
         elif Fs <= FS:
             return True
     if Tensao_1 < 0: 
@@ -57,8 +58,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name, List):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Compressao_X",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
-            List.append(abs(1/Fs))
-            
+            if Plotting:
+                List.append(abs(1/Fs))
         elif Fs <= FS:
             return True
     if Tensao_2 > 0:
@@ -66,8 +67,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name, List):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Tensao_Y",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
-            List.append(abs(1/Fs))
-            
+            if Plotting:
+                List.append(abs(1/Fs))
         elif Fs <= FS:
             return True
     if Tensao_2 < 0: 
@@ -75,8 +76,8 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name, List):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Compressao_Y",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
-            List.append(abs(1/Fs))
-            
+            if Plotting:
+                List.append(abs(1/Fs))
         elif Fs <= FS:
             return True
     if Tensao_12 != 0:
@@ -84,11 +85,12 @@ def Tensao_Max(Tensao_1, Tensao_2, Tensao_12, Material, Laminado_Name, List):
         if Debug.DEBUG:
             Fs_Point = (Fs, "Corte",Laminado_Name)
             Debug.Adiocionar_Ponto(Fs_Point)
-            List.append(abs(1/Fs))
-            
+            if Plotting:
+                List.append(abs(1/Fs))
         elif Fs <= FS:
             return True
-    
+    if Plotting and len(List) == 0 :
+        List.append(0)
     return False
 
 

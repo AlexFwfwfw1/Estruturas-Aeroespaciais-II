@@ -74,6 +74,7 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
     Qb1, Qb2, Qb3, Qb4, QbC = 0,0,0,0,0
     if Debug.DEBUG:
         Coords_X_,Coords_Y_,Coords_Z_, Modo_De_Falha = [],[],[],[]
+        Coords_X,Coords_Y,Coords_Z = [],[],[]
     
     #qs_0_i = 0
     #VIGA HORIZONTAL, MEIO ATE PONTA
@@ -90,9 +91,9 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
             return True, 0, 0
         
         if Plotting:
-            # Coords_X.append(Coordenada_X)
-            # Coords_Y.append(Coordenada_Y)
-            # Coords_Z.append(Tensao_de_Corte)
+            Coords_X.append(Coordenada_X)
+            Coords_Y.append(Coordenada_Y)
+            Coords_Z.append(Tensao_de_Corte)
             Plotting_Lib.Adicionar_Coor(Coordenada_X, Coordenada_Y, Seccao)
             
         
@@ -106,15 +107,15 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         Fluxo_Corte = Ex_3*(Constante_A_Corte*A3*Y3 + Constante_B_Corte*A3*X3) + Ex_1 * (Constante_A_Corte*(Ponto_S*Y3*T1 + T1*0.5*Ponto_S**2 ) + Constante_B_Corte*(T1*X3*Ponto_S)) + Qb3
        
         
-        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T1
         FS_Criterea = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
         if Falha and FS_Criterea:  
             return True, 0, 0
                 
         if Plotting:
-            # Coords_X.append(Coordenada_X)
-            # Coords_Y.append(Coordenada_Y)
-            # Coords_Z.append(Tensao_de_Corte)
+            Coords_X.append(Coordenada_X)
+            Coords_Y.append(Coordenada_Y)
+            Coords_Z.append(Tensao_de_Corte)
             
             Plotting_Lib.Adicionar_Coor(Coordenada_X, Coordenada_Y, Seccao)
 
@@ -129,15 +130,15 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Fluxo_Corte = Ex_3*(Constante_A_Corte*A3*Y4 + Constante_B_Corte*A3*X4) + Ex_1 * (Constante_A_Corte*(T1*Raio_Medio*Y1*Ponto_S + T1*(Raio_Medio**2)*(1-math.cos(Ponto_S)) ) + Constante_B_Corte*(-T1*(Raio_Medio**2)*math.sin(Ponto_S))) + Qb4
         
-        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T1
         FS_Criterea = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
         if Falha and FS_Criterea:  
             return True, 0, 0
                 
         if Plotting:
-            # Coords_X.append(Coordenada_X)
-            # Coords_Y.append(Coordenada_Y)
-            # Coords_Z.append(Tensao_de_Corte)
+            Coords_X.append(Coordenada_X)
+            Coords_Y.append(Coordenada_Y)
+            Coords_Z.append(Tensao_de_Corte)
             
             Plotting_Lib.Adicionar_Coor(Coordenada_X, Coordenada_Y, Seccao)
 
@@ -152,7 +153,7 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
         
         Fluxo_Corte = Ex_3*(Constante_A_Corte*A3*Y1 + Constante_B_Corte*A3*X1) + Ex_1 * (Constante_A_Corte*(T1*(Y1*Ponto_S - 0.5*Ponto_S**2)) + Constante_B_Corte*(T1*X1*Ponto_S)) + Qb1
         
-        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T2
+        Tensao_de_Corte = (Fluxo_Corte + qs_0_i)/T1
         FS_Criterea = Teste_de_falha.Tensoes_Eixos_Camada(Tensao_Direta, 0, Tensao_de_Corte, Laminado_1)
         if Falha and FS_Criterea:  
             return True, 0, 0
@@ -181,9 +182,9 @@ def Analise_Total(Propriadades_Seccao, Forcas, Momentos, Laminados, Forcas_Afila
             return True, 0, 0
                 
         if Plotting:
-            # Coords_X.append(Coordenada_X)
-            # Coords_Y.append(Coordenada_Y)
-            # Coords_Z.append(Tensao_de_Corte)
+            Coords_X.append(Coordenada_X)
+            Coords_Y.append(Coordenada_Y)
+            Coords_Z.append(Tensao_de_Corte)
             
             Plotting_Lib.Adicionar_Coor(Coordenada_X, Coordenada_Y, Seccao)
 

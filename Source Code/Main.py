@@ -61,8 +61,8 @@ def Simulacao(Laminado1, Laminado2, Laminado3, Espessura_Tensor, Dados_Precomput
     Theta_Z, Theta_X, Delta_Y = Torcao_Deflecao.Deformacao_E_Torcao(Torcao, Deflecao, Paco_Z)
     if Plotting:
         Plotting_Lib.Plot()
-    
-    print(f"Torcao: {Theta_Z} graus, Deflecao: {Theta_X} graus, Deflecao_Metro: {Delta_Y} metros")#,  Deflecao_Msx: {Deflecao_abs} metros")
+    if Debug.DEBUG:
+        print(f"Torcao: {Theta_Z} graus, Deflecao: {Theta_X} graus, Deflecao_Metro: {Delta_Y} metros")#,  Deflecao_Msx: {Deflecao_abs} metros")
     if not Debug.DEBUG:
         if abs(Theta_Z) >= TORCAO_MAX:
             return True
@@ -99,3 +99,7 @@ if __name__ == "__main__":
     end = timer()
     print(f"Time Elapsed: {round((end-start)*1000, 5)} ms")
     #print(F_Min)
+
+
+#Set Debug constant in Debug.py to True
+#Set Plotting constant in Configuration.py to True to create F.S fields plots.

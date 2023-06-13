@@ -37,6 +37,6 @@ def Plot():
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     # ax.set_proj_type('persp', focal_length=0.2)
-    img = ax.scatter( Ponto_Z_Plot,Ponto_X_Plot ,Ponto_Y_Plot, c=PONTOFS, cmap="Spectral")
+    img = ax.scatter( Ponto_Z_Plot,Ponto_X_Plot ,Ponto_Y_Plot, c=PONTOFS, cmap="jet")
     fig.colorbar(img)
     plt.show()
